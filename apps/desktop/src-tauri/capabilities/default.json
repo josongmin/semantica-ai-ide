@@ -1,0 +1,34 @@
+{
+  "identifier": "default",
+  "description": "Default capability set for Semantica Desktop",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:window:allow-close",
+    "core:window:allow-set-title",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-start-dragging",
+    "core:window:allow-start-resize-dragging",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-is-maximized",
+    "core:window:allow-unmaximize",
+    "fs:allow-read",
+    "fs:allow-write",
+    "fs:allow-exists",
+    "fs:allow-mkdir",
+    "notification:default",
+    "notification:allow-notify",
+    "shell:allow-open",
+    "updater:default",
+    "clipboard-manager:allow-read-text",
+    "clipboard-manager:allow-write-text"
+  ],
+  "scope": {
+    "fs": {
+      "allow": ["$APPDATA/**", "$RESOURCE/**"]
+    }
+  }
+}

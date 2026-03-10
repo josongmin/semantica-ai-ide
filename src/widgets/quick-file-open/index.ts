@@ -1,0 +1,1 @@
+export { QuickFileOpenPalette } from "./QuickFileOpenPalette";

@@ -1,0 +1,1162 @@
+@import "tailwindcss";
+/* codicons: imported via main.tsx (Tailwind plugin bypass) */
+/* highlight.js theme is handled via VSCode CSS variables below */
+@import "@xterm/xterm/css/xterm.css";
+
+/* ═══════════════════════════════════════════════════════════════
+   Tokyo Night — 개발자 감성 테마
+   ═══════════════════════════════════════════════════════════════ */
+@theme {
+  /* ── Core Colors (Tokyo Night Storm) ── */
+  --color-vsc-bg: var(--vscode-editor-background, #1a1b26);
+  --color-vsc-fg: var(--vscode-editor-foreground, #a9b1d6);
+  --color-vsc-border: var(--vscode-panel-border, #3b4261);
+  --color-vsc-input-bg: var(--vscode-input-background, #1f2335);
+  --color-vsc-input-fg: var(--vscode-input-foreground, #a9b1d6);
+  --color-vsc-input-border: var(--vscode-input-border, #565f89);
+  --color-vsc-button: var(--vscode-button-background, #7aa2f7);
+  --color-vsc-button-fg: var(--vscode-button-foreground, #1a1b26);
+  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #89b4fa);
+  --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #565f89);
+  --color-vsc-button-secondary-fg: var(--vscode-button-secondaryForeground, #a9b1d6);
+  --color-vsc-badge-bg: var(--vscode-badge-background, #414868);
+  --color-vsc-badge-fg: var(--vscode-badge-foreground, #c0caf5);
+  --color-vsc-success: var(--vscode-terminal-ansiGreen, #9ece6a);
+  --color-vsc-warning: var(--vscode-editorWarning-foreground, #e0af68);
+  --color-vsc-error: var(--vscode-editorError-foreground, #f7768e);
+  --color-vsc-info: var(--vscode-editorInfo-foreground, #7dcfff);
+  --color-vsc-link: var(--vscode-textLink-foreground, #7aa2f7);
+  --color-vsc-selection: var(--vscode-editor-selectionBackground, #364a82);
+  --color-vsc-sidebar: var(--vscode-sideBar-background, #16161e);
+  --color-vsc-list-hover: var(--vscode-list-hoverBackground, #1f2335);
+  --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #364a82);
+  --color-vsc-focus: var(--vscode-focusBorder, #7dcfff);
+  --color-vsc-diff-insert: var(
+    --vscode-diffEditor-insertedTextBackground,
+    rgba(158, 206, 106, 0.2)
+  );
+  --color-vsc-diff-delete: var(--vscode-diffEditor-removedTextBackground, rgba(247, 118, 142, 0.2));
+  --color-vsc-diff-insert-line: var(
+    --vscode-diffEditor-insertedLineBackground,
+    rgba(158, 206, 106, 0.08)
+  );
+  --color-vsc-diff-delete-line: var(
+    --vscode-diffEditor-removedLineBackground,
+    rgba(247, 118, 142, 0.08)
+  );
+  --color-vsc-code-bg: var(
+    --vscode-textCodeBlock-background,
+    var(--vscode-editor-background, #1f2335)
+  );
+  --color-vsc-toolbar: var(--vscode-toolbar-hoverBackground, #292e42);
+
+  --color-vsc-surface-0: var(--vscode-editor-background, #1a1b26);
+  --color-vsc-surface-1: var(--vscode-sideBar-background, #16161e);
+  --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #1f2335);
+  --color-vsc-surface-3: var(--vscode-input-background, var(--vscode-editor-background, #292e42));
+
+  --color-vsc-accent: var(--vscode-focusBorder, #7dcfff);
+
+  /* ── Risk-level colors (System Lens) ── */
+  --color-risk-none: #565f89;
+  --color-risk-low: #9ece6a;
+  --color-risk-medium: #e0af68;
+  --color-risk-high: #ff9e64;
+  --color-risk-critical: #f7768e;
+
+  /* ── Lens symbol-kind fills (System Lens mini-graph) ── */
+  --color-lens-function: #7aa2f7;
+  --color-lens-class: #bb9af7;
+  --color-lens-hook: #9ece6a;
+  --color-lens-method: #7dcfff;
+  --color-lens-interface: #c0caf5;
+  --color-lens-variable: #e0af68;
+  --color-lens-module: #ff9e64;
+  --color-lens-type: #c0caf5;
+  --color-lens-enum: #e0af68;
+  --color-lens-namespace: #ff9e64;
+  --color-lens-runtime: #7dcfff;
+
+  /* ── Language color accents (editor tab bar) ── */
+  --color-lang-typescript: #7dcfff;
+  --color-lang-javascript: #e0af68;
+  --color-lang-python: #9ece6a;
+  --color-lang-rust: #ff9e64;
+  --color-lang-go: #2ac3de;
+  --color-lang-json: #e0af68;
+  --color-lang-markdown: #565f89;
+  --color-lang-css: #f7768e;
+  --color-lang-html: #ff9e64;
+  --color-lang-shell: #73daca;
+
+  /* ── Tab bar tokens ── */
+  --color-vsc-tab-active: var(--vscode-tab-activeBackground, #1a1b26);
+  --color-vsc-tab-inactive: var(--vscode-tab-inactiveBackground, #16161e);
+  --color-vsc-tab-border: var(--vscode-tab-border, #3b4261);
+  --color-vsc-dropdown: var(--vscode-dropdown-background, #1f2335);
+
+  /* ── Compat aliases (used across ~25 widgets) ── */
+  --color-vsc-bg-secondary: var(--vscode-sideBar-background, #16161e);
+  --color-vsc-bg-tertiary: var(--vscode-textCodeBlock-background, #1f2335);
+  --color-vsc-editor-bg: var(--vscode-editor-background, #1a1b26);
+  --color-vsc-panel-bg: var(--vscode-panel-background, #1a1b26);
+  --color-vsc-input: var(--vscode-input-background, #1f2335);
+  --color-vsc-badge: var(--vscode-badge-background, #414868);
+  --color-vsc-desc: var(--vscode-descriptionForeground, #565f89);
+  --color-vsc-panel-border: var(--vscode-panel-border, #3b4261);
+  --color-vsc-focusBorder: var(--vscode-focusBorder, #7dcfff);
+  --color-vsc-list-active-fg: var(--vscode-list-activeSelectionForeground, #c0caf5);
+  --color-vsc-text: var(--vscode-editor-foreground, #a9b1d6);
+
+  /* ── Syntax highlighting tokens (diff-viewer) ── */
+  --color-vsc-keyword: var(--vscode-debugTokenExpression-name, #bb9af7);
+  --color-vsc-string: var(--vscode-debugTokenExpression-string, #9ece6a);
+  --color-vsc-comment: color-mix(in srgb, #565f89 80%, transparent);
+  --color-vsc-number: var(--vscode-debugTokenExpression-number, #ff9e64);
+  --color-vsc-builtin: var(--vscode-debugTokenExpression-name, #7dcfff);
+  --color-vsc-operator: var(--vscode-editor-foreground, #89ddff);
+
+  --color-vsc-text-primary: var(--vscode-editor-foreground, #a9b1d6);
+  --color-vsc-text-secondary: color-mix(in srgb, #a9b1d6 88%, transparent);
+  --color-vsc-text-tertiary: color-mix(in srgb, #a9b1d6 72%, transparent);
+  --color-vsc-text-ghost: color-mix(in srgb, #a9b1d6 52%, transparent);
+
+  --font-size-2xs: 10px;
+  --font-size-3xs: 9px;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 12px;
+  --font-size-md: 13px;
+  --font-size-lg: 16px;
+  --font-chat:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.45;
+  --line-height-relaxed: 1.6;
+
+  --duration-instant: 0ms;
+  --duration-fast: 80ms;
+  --duration-normal: 120ms;
+  --duration-slow: 180ms;
+  --duration-glacial: 250ms;
+  --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  --ease-gentle: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.8, 0.64, 1);
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-full: 9999px;
+
+  --z-base: 0;
+  --z-sticky: 10;
+  --z-floating: 15;
+  --z-floating-dock: 16;
+  --z-overlay: 20;
+  --z-modal: 30;
+  --z-tooltip: 35;
+  --z-toast: 40;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 3px 10px rgba(0, 0, 0, 0.18);
+  --shadow-sheet: 0 -8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-panel: 0 8px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-modal: 0 24px 80px -12px rgba(0, 0, 0, 0.5);
+  --shadow-glow-error: 0 0 12px rgba(239, 68, 68, 0.5);
+  --shadow-glow-error-hover: 0 0 20px rgba(239, 68, 68, 0.7);
+  --shadow-glow-accent: 0 0 4px rgba(125, 207, 255, 0.1);
+  --shadow-glow-warning: 0 0 8px rgba(224, 175, 104, 0.15);
+
+  /* Panel scroll-area constraints */
+  --panel-max-h-xs: min(160px, 30vh);
+  --panel-max-h-sm: min(240px, 40vh);
+  --panel-max-h-md: min(300px, 40vh);
+  --panel-max-h-lg: min(400px, 50vh);
+  --panel-max-h-xl: min(600px, 85vh);
+}
+
+/* ── Color scheme: enables light-dark() CSS function ── */
+:root {
+  color-scheme: light dark;
+}
+
+/* ── Focus Ring Utility (cyan glow) ── */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-vsc-focus);
+    outline-offset: -1px;
+    box-shadow: 0 0 0 1px rgba(125, 207, 255, 0.15);
+    animation: focus-ring-in 100ms ease-out;
+  }
+}
+
+/* ── Tauri: window drag region (custom titlebar) ── */
+[data-tauri-drag-region] {
+  -webkit-app-region: drag;
+}
+[data-tauri-drag-region] button,
+[data-tauri-drag-region] a,
+[data-tauri-drag-region] input,
+[data-tauri-drag-region] [role="tab"],
+[data-tauri-drag-region] [role="tablist"] {
+  -webkit-app-region: no-drag;
+}
+
+/* ── Scrollbar hide utility ── */
+@utility scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── 2026 SOTA: overscroll-behavior — prevents scroll-chaining across nested panels ── */
+html {
+  overscroll-behavior: none;
+}
+
+/* ── 2026 SOTA: text-wrap balance/pretty for headings & prose ── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+p,
+li,
+figcaption {
+  text-wrap: pretty;
+}
+
+/* ── 2026 SOTA: Container query support for responsive widgets ── */
+@utility cq-container {
+  container-type: inline-size;
+}
+
+/* ── 2026 SOTA: @starting-style for frame-perfect entry animations ── */
+/* Toast entry — no flash-of-unstyled state */
+[data-toast-enter] {
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--ease-spring);
+  opacity: 1;
+  transform: translateX(0);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Dialog/overlay entry */
+[data-dialog-enter] {
+  transition:
+    opacity 200ms ease,
+    transform 250ms var(--ease-spring);
+  opacity: 1;
+  transform: scale(1);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Drawer enter from edge — full slide (SOTA++) */
+[data-drawer-enter="left"] {
+  transition:
+    opacity 200ms ease,
+    transform 250ms var(--ease-spring);
+  opacity: 1;
+  transform: translateX(0);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+[data-drawer-enter="right"] {
+  transition:
+    opacity 200ms ease,
+    transform 250ms var(--ease-spring);
+  opacity: 1;
+  transform: translateX(0);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Fade-in entry for conditional renders */
+[data-fade-enter] {
+  transition: opacity 150ms ease;
+  opacity: 1;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  font-size: var(--font-size-base);
+  background: var(--color-vsc-bg);
+  color: var(--color-vsc-fg);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Chat font — applied to entire chat message area */
+[data-testid="message-list"] {
+  font-family: var(--font-chat);
+  transition: font-family 200ms ease;
+}
+
+/* Code blocks: 활성 텍스트 영역과 동일한 폰트 적용 */
+[data-testid="message-list"] pre,
+[data-testid="message-list"] code {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Scrollbar — Tokyo Night tint, auto-hide */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 2px;
+  transition: background-color 0.3s ease;
+}
+
+*:hover > ::-webkit-scrollbar-thumb,
+*:hover::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vscode-scrollbarSlider-background, rgba(122, 162, 247, 0.2));
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vscode-scrollbarSlider-hoverBackground, rgba(122, 162, 247, 0.4));
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Horizontal scrollbar: visible only when hover/focus (activated) */
+.scrollbar-x-auto::-webkit-scrollbar {
+  height: 0;
+}
+.scrollbar-x-auto:hover::-webkit-scrollbar,
+.scrollbar-x-auto:focus-within::-webkit-scrollbar {
+  height: 4px;
+}
+
+/* CodeMirror editor scrollbar: hidden by default, visible on hover/scroll */
+.cm-scrollbar-autohide .cm-scroller::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.cm-scrollbar-autohide .cm-scroller::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+.cm-scrollbar-autohide .cm-scroller:hover::-webkit-scrollbar-thumb {
+  background: var(--vscode-scrollbarSlider-background, rgba(122, 162, 247, 0.2));
+}
+.cm-scrollbar-autohide .cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: var(--vscode-scrollbarSlider-hoverBackground, rgba(122, 162, 247, 0.4));
+}
+.cm-scrollbar-autohide .cm-scroller::-webkit-scrollbar-thumb:active {
+  background: var(--vscode-scrollbarSlider-activeBackground, rgba(122, 162, 247, 0.6));
+}
+.cm-scrollbar-autohide .cm-scroller {
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s ease;
+}
+.cm-scrollbar-autohide .cm-scroller:hover {
+  scrollbar-color: var(--vscode-scrollbarSlider-background, rgba(122, 162, 247, 0.2)) transparent;
+}
+
+/* Streaming cursor blink animation */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Pulse animation for status dots */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Message slide-in animation */
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Thinking dots bounce */
+@keyframes thinking-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Streaming reveal — 부드러운 페이드인 */
+@keyframes streaming-reveal {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Scale out (dialog close) */
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Slide in right (toast enter) */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide out right (toast dismiss) */
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Slide up in (command palette open) */
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide up from bottom (bottom sheet) */
+@keyframes slide-up-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide up out (command palette close) — fade only to avoid jerk */
+@keyframes slide-up-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Slide down in (banner enter) */
+@keyframes slide-down-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide down out (banner dismiss) */
+@keyframes slide-down-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Collapse height (MessageQueuePanel, etc.) — smooth layout transition */
+@keyframes collapse-height-out {
+  from {
+    opacity: 1;
+    max-height: 200px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+}
+
+/* Collapse using measured height (--collapse-h CSS var) for smooth exit */
+@keyframes collapse-measured {
+  from {
+    opacity: 1;
+    max-height: var(--collapse-h, 100px);
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* Bottom sheet exit — slide down */
+@keyframes slide-down-sheet {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+/* Surface crossfade */
+@keyframes surface-in {
+  from {
+    opacity: 0;
+    transform: scale(0.985) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* AI breathing glow */
+@keyframes ai-breathe {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(125, 207, 255, 0),
+      inset 0 0 0 1px rgba(125, 207, 255, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 20px 0 rgba(125, 207, 255, 0.06),
+      inset 0 0 0 1px rgba(125, 207, 255, 0.15);
+  }
+}
+
+/* AI orb pulse for header */
+@keyframes ai-orb {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Resize handle glow pulse */
+@keyframes resize-glow {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(125, 207, 255, 0.3);
+  }
+}
+
+/* Tab underline slide */
+@keyframes tab-underline-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Stagger entrance utility */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Keyboard overlay entrance */
+@keyframes overlay-backdrop-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes shortcut-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── SOTA Feature Animations ── */
+
+/* Slow spin for loop iteration icons */
+@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Waveform bars for voice mode */
+@keyframes waveform {
+  0%,
+  100% {
+    transform: scaleY(0.2);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Check pop for step completion */
+@keyframes check-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Focus ring entrance animation */
+@keyframes focus-ring-in {
+  from {
+    outline-width: 0px;
+    box-shadow: 0 0 0 0 rgba(125, 207, 255, 0);
+  }
+  to {
+    outline-width: 2px;
+    box-shadow: 0 0 0 1px rgba(125, 207, 255, 0.15);
+  }
+}
+
+/* Icon pop for copy/success feedback */
+@keyframes icon-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Step reveal for timeline items */
+@keyframes step-reveal {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Cache hit flash background */
+@keyframes cache-flash {
+  0% {
+    background: rgba(158, 206, 106, 0.3);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* Mode switch transition */
+@keyframes mode-switch {
+  0% {
+    transform: scale(0.9) rotate(-10deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* Tool call success flash — brief green highlight on completion */
+@keyframes tool-success-flash {
+  0% {
+    background: rgba(158, 206, 106, 0.15);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* Toc card stagger enter */
+@keyframes toc-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Running turn subtle pulse */
+@keyframes toc-running-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(125, 207, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(125, 207, 255, 0.08);
+  }
+}
+
+/* Responding button glow */
+@keyframes responding-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(125, 207, 255, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(125, 207, 255, 0.12),
+      0 2px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Skeleton utility */
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-vsc-surface-2) 25%,
+    var(--color-vsc-surface-3) 50%,
+    var(--color-vsc-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* Stagger children entrance — each child fades in with 30ms delay */
+@utility stagger-children {
+  & > * {
+    animation: stagger-in 200ms var(--ease-default) both;
+  }
+  & > *:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  & > *:nth-child(2) {
+    animation-delay: 30ms;
+  }
+  & > *:nth-child(3) {
+    animation-delay: 60ms;
+  }
+  & > *:nth-child(4) {
+    animation-delay: 90ms;
+  }
+  & > *:nth-child(5) {
+    animation-delay: 120ms;
+  }
+  & > *:nth-child(6) {
+    animation-delay: 150ms;
+  }
+  & > *:nth-child(7) {
+    animation-delay: 180ms;
+  }
+  & > *:nth-child(8) {
+    animation-delay: 210ms;
+  }
+  & > *:nth-child(9) {
+    animation-delay: 240ms;
+  }
+  & > *:nth-child(10) {
+    animation-delay: 270ms;
+  }
+}
+
+/* ── Theme crossfade transition (View Transitions API) ──
+   Uses a single composited crossfade instead of per-element transitions.
+   Much more performant — no per-element style recalc or repaint storms. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 250ms;
+  animation-timing-function: ease-in-out;
+}
+
+/* ── 2026 SOTA: Scroll-driven animation — progress bar tied to scroll ── */
+@utility scroll-progress {
+  view-timeline-name: --scroll-progress;
+  animation: scroll-progress-fill auto linear;
+  animation-timeline: scroll(nearest);
+}
+
+@keyframes scroll-progress-fill {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+/* ── 2026 SOTA: Scrollbar active state ── */
+::-webkit-scrollbar-thumb:active {
+  background: var(--vscode-scrollbarSlider-activeBackground, rgba(122, 162, 247, 0.6));
+}
+
+/* ── 2026 SOTA: Nested scroll containers — prevent scroll escape ── */
+[data-scroll-contain] {
+  overscroll-behavior: contain;
+}
+
+/* ── Accessibility: Reduced Motion ──
+   Respects user preference for reduced motion (WCAG 2.1 SC 2.3.3).
+   Disables all non-essential animations and transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* 2026: Also disable @starting-style transitions */
+  [data-toast-enter],
+  [data-dialog-enter],
+  [data-fade-enter] {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Selection styling ── */
+::selection {
+  background: var(--color-vsc-selection);
+}
+
+/* ── Skip link for keyboard navigation (screen-reader only until focused) ── */
+@utility sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Word break utility for long text in chat bubbles */
+@utility wrap-break-word {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+@utility surface-enter {
+  animation: surface-in 180ms var(--ease-default) both;
+}
+
+@utility ai-breathe {
+  animation: ai-breathe 3s ease-in-out infinite;
+}
+
+/* Glassmorphism panel effect */
+@utility glass-panel {
+  background: rgba(26, 27, 38, 0.75);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(125, 207, 255, 0.06);
+}
+
+/* Scroll shadow — disabled (was: top/bottom fade mask) */
+@utility scroll-shadow {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* Glass overlay backdrop */
+@utility glass-backdrop {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Syntax highlighting — VSCode theme-aware
+   Uses VSCode CSS variables with light-dark() fallbacks matching
+   VS Code Default Light+ / Tokyo Night Dark.
+   ══════════════════════════════════════════════════════════════ */
+.hljs {
+  color: var(--vscode-editor-foreground, light-dark(#1e1e1e, #a9b1d6));
+  background: transparent;
+}
+
+/* Keywords: if, const, return, class, import, export … */
+.hljs-keyword,
+.hljs-selector-tag {
+  color: var(--vscode-debugTokenExpression-name, light-dark(#0000ff, #bb9af7));
+}
+
+/* Strings & regex */
+.hljs-string,
+.hljs-regexp {
+  color: var(--vscode-debugTokenExpression-string, light-dark(#a31515, #9ece6a));
+}
+
+/* Numbers & literals */
+.hljs-number,
+.hljs-literal {
+  color: var(--vscode-debugTokenExpression-number, light-dark(#098658, #ff9e64));
+}
+
+/* Built-in types */
+.hljs-built_in,
+.hljs-type {
+  color: light-dark(#267f99, #2ac3de);
+}
+
+/* Comments */
+.hljs-comment,
+.hljs-quote {
+  color: var(--vscode-descriptionForeground, light-dark(#008000, #565f89));
+  font-style: italic;
+}
+
+/* Function / method names */
+.hljs-title,
+.hljs-title\.function,
+.hljs-section {
+  color: var(--vscode-symbolIcon-functionForeground, light-dark(#795e26, #7aa2f7));
+}
+
+/* Variables, params */
+.hljs-variable,
+.hljs-params {
+  color: var(--vscode-editor-foreground, light-dark(#001080, #a9b1d6));
+}
+
+/* Class / type names */
+.hljs-title\.class,
+.hljs-title\.class\.inherited {
+  color: var(--vscode-symbolIcon-classForeground, light-dark(#267f99, #2ac3de));
+}
+
+/* Tags (HTML/XML) */
+.hljs-tag,
+.hljs-name {
+  color: light-dark(#800000, #f7768e);
+}
+
+/* Attributes in tags & object keys */
+.hljs-attr,
+.hljs-attribute {
+  color: light-dark(#e50000, #bb9af7);
+}
+
+/* Diff addition / deletion */
+.hljs-addition {
+  color: light-dark(#098658, #9ece6a);
+}
+.hljs-deletion {
+  color: light-dark(#a31515, #f7768e);
+}
+
+/* Meta / preprocessor */
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-meta .hljs-string {
+  color: var(--vscode-descriptionForeground, light-dark(#808080, #565f89));
+}
+
+/* Punctuation & operators */
+.hljs-punctuation,
+.hljs-operator {
+  color: var(--vscode-editor-foreground, light-dark(#1e1e1e, #89ddff));
+}
+
+/* Template variable / interpolation */
+.hljs-template-variable,
+.hljs-subst {
+  color: light-dark(#267f99, #7dcfff);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}

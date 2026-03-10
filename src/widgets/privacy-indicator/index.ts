@@ -1,0 +1,1 @@
+export { PrivacyIndicator } from "./PrivacyIndicator";

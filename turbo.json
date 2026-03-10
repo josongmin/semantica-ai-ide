@@ -1,0 +1,41 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "cacheDir": "../.turbo-cache",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  },
+  "boundaries": {
+    "tags": {
+      "l0-protocol": {
+        "packages": ["@semantica/protocol"],
+        "dependencies": { "allow": [] }
+      },
+      "l1-infra": {
+        "packages": ["@semantica/kernel", "@semantica/core"],
+        "dependencies": { "allow": ["l0-protocol"] }
+      },
+      "l2-host": {
+        "packages": ["@semantica/extension-host", "@semantica/agent-runtime"],
+        "dependencies": { "allow": ["l0-protocol", "l1-infra"] }
+      },
+      "l3-app": {
+        "packages": ["@semantica/desktop", "@semantica/agentd", "semantica-code-agent-plugin"],
+        "dependencies": { "allow": ["l0-protocol", "l1-infra", "l2-host"] }
+      }
+    }
+  }
+}

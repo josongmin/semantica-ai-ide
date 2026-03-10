@@ -1,0 +1,15 @@
+export type {
+  ClassifiedError,
+  DiffRef,
+  ErrorCategory,
+  MessageId,
+  MessageStatus,
+  ServerEvent,
+  ServerEventBatch,
+  Turn,
+  TurnId,
+  TurnPhase,
+  TurnPhaseEntry,
+  TurnStatus,
+  UiMessage,
+} from "~shared/protocol";

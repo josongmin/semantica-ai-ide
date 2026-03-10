@@ -1,0 +1,1 @@
+export { DebateArena } from "./DebateArena";

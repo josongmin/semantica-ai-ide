@@ -1,0 +1,17 @@
+# P0 Gate 정의 (REF-CONSOLIDATION 5절)
+# gate-contract, gate-performance, gate-fixtures, gate-fixture-replay
+
+version: 1
+gates:
+  - id: gate-contract
+    tier: 1
+    description: protocol schema validation, backward compat, large payload must be ref
+  - id: gate-performance
+    tier: 1
+    description: INP, long task, frame, heap, postMessage, commit 상한
+  - id: gate-fixtures
+    tier: 1
+    description: golden 3종 - LLM streaming, attachment, plugin API call
+  - id: gate-fixture-replay
+    tier: 1
+    description: fixture replay → 기대 delta 일치

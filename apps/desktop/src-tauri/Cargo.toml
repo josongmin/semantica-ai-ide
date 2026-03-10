@@ -1,0 +1,30 @@
+[package]
+name = "semantica-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = 3
+lto = "thin"           # fat보다 빌드 빠름, no-LTO보다 성능 좋음
+codegen-units = 1      # 더 나은 최적화 (빌드 시간 ↑)
+strip = true           # 디버그 심볼 제거 → 바이너리 크기 감소
+panic = "abort"        # unwind 테이블 제거 → 바이너리 크기 감소
+
+[lib]
+name = "semantica_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-fs = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-os = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-updater = "2"
+portable-pty = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

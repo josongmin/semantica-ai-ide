@@ -1,0 +1,1 @@
+export { PinnedMemoryStrip } from "./PinnedMemoryStrip";

@@ -1,0 +1,48 @@
+import React from "react";
+
+import { Icon } from "../primitives/Icon";
+import { statusColor } from "../tokens";
+import { cn } from "../variants";
+
+const VARIANT_STYLES: Record<string, { container: string }> = {
+  error: { container: `bg-vsc-error/5 ${statusColor.error}` },
+  warning: { container: `bg-vsc-warning/5 ${statusColor.warning}` },
+  info: { container: `bg-vsc-info/5 ${statusColor.info}` },
+  success: { container: `bg-vsc-success/5 ${statusColor.success}` },
+};
+
+const iconMap = {
+  error: "error",
+  warning: "warning",
+  info: "info",
+  success: "pass-filled",
+} as const;
+
+interface InlineBannerProps {
+  variant: "error" | "warning" | "info" | "success";
+  icon?: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const InlineBanner = React.memo(function InlineBanner({
+  variant,
+  icon,
+  children,
+  className,
+}: InlineBannerProps) {
+  const styles = VARIANT_STYLES[variant] ?? { container: "" };
+
+  return (
+    <div
+      role={variant === "error" ? "alert" : "status"}
+      aria-live={variant === "error" ? "assertive" : "polite"}
+      className={cn("flex overflow-hidden rounded-md text-xs animate-[slide-down-in_200ms_ease]", styles.container, className)}
+    >
+      <div className="flex items-start gap-2 px-3 py-2 min-w-0 flex-1">
+        <Icon name={icon ?? iconMap[variant]} className="shrink-0 mt-px" tokenSize="sm" />
+        <div className="min-w-0 flex-1">{children}</div>
+      </div>
+    </div>
+  );
+});

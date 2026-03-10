@@ -1,0 +1,9 @@
+# gate-contract 스펙
+# protocol schema, backward compat, large payload → BlobRef
+
+version: 1
+rules:
+  - id: large_payload_ref
+    description: "대형 payload는 BlobRef로 전달"
+  - id: delta_batch_only
+    description: "DELTA_BATCH만 허용 (RFC-016 적용 전)"

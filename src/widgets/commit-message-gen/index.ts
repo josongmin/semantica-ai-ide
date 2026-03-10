@@ -1,0 +1,1 @@
+export { CommitMessageGenerator } from "./CommitMessageGenerator";

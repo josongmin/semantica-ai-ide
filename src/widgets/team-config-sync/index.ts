@@ -1,0 +1,1 @@
+export { TeamConfigSync } from "./TeamConfigSync";

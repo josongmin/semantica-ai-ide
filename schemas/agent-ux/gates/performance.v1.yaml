@@ -1,0 +1,79 @@
+version: 1
+owner: vscode-agent-ux
+purpose: webview_perf_lock
+
+environment:
+  runner: playwright
+  target: webview
+  warmup_ms: 1500
+  duration_ms: 12000
+  viewport:
+    width: 1200
+    height: 800
+
+thresholds:
+  inp_p95_ms: 120
+  long_task_threshold_ms: 50
+  long_task_count_max: 20
+  frame_over_16ms_ratio_max: 0.08
+  postmessage_rx_per_sec_max: 240
+  ui_commit_per_sec_max: 60
+  heap_growth_mb_max: 60
+
+scenarios:
+  - id: messages_10000_append
+    description: 10000 messages append + virtualization + scroll/click
+    steps:
+      - action: open_view
+        view_id: agent_ux
+      - action: inject
+        kind: messages
+        count: 10000
+        payload:
+          avg_chars: 220
+          with_diff_ref_ratio: 0.15
+      - action: interact
+        kind: scroll
+        repeats: 20
+        distance_px: 1600
+      - action: interact
+        kind: click_random_visible_rows
+        repeats: 60
+    metrics:
+      capture:
+        - inp
+        - long_tasks
+        - frames
+        - heap
+        - postmessage
+        - ui_commit
+
+  - id: streaming_1000cps_for_30s
+    description: 1000 chars/sec streaming을 60 commit/sec 상한으로 흡수
+    steps:
+      - action: open_view
+        view_id: agent_ux
+      - action: inject
+        kind: seed_message
+        payload:
+          id: m_stream
+          role: assistant
+      - action: stream
+        kind: append_text
+        target_id: m_stream
+        rate_chars_per_sec: 1000
+        duration_ms: 30000
+        chunk_policy:
+          tick_ms: 16
+      - action: interact
+        kind: type_in_prompt
+        repeats: 25
+        chars_per_repeat: 24
+    metrics:
+      capture:
+        - inp
+        - long_tasks
+        - frames
+        - heap
+        - postmessage
+        - ui_commit
