@@ -81,17 +81,27 @@ function TrayToggleButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1 px-2 rounded-[5px] border-none cursor-pointer",
-        "text-[11.5px] tracking-[0.01em] transition-all duration-150",
+        "inline-flex items-center gap-1 px-2 rounded-[5px] border-none cursor-pointer transition-all duration-150",
+        "text-[11.5px] tracking-[0.01em]",
         isActive
-          ? "text-vsc-fg bg-vsc-surface-2/80 shadow-[0_0.5px_1px_rgba(0,0,0,0.04)]"
-          : "text-vsc-text-ghost bg-transparent hover:text-vsc-text-secondary hover:bg-vsc-surface-1",
+          ? "text-vsc-accent font-medium bg-vsc-accent/12"
+          : "text-vsc-text-ghost bg-transparent hover:text-vsc-text-secondary hover:bg-vsc-surface-2/50",
       )}
-      style={{ height: BAR_H - 6 }}
+      style={{
+        height: BAR_H - 6,
+        ...(isActive && {
+          boxShadow:
+            "0 0 8px color-mix(in srgb, var(--color-vsc-accent) 35%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-vsc-accent) 20%, transparent)",
+        }),
+      }}
       title={label}
       aria-pressed={isActive}
     >
-      <Icon name={icon} size={13} className="shrink-0 opacity-70" />
+      <Icon
+        name={icon}
+        size={13}
+        className={cn("shrink-0", isActive ? "opacity-100" : "opacity-60")}
+      />
       <span>{label}</span>
     </button>
   );
@@ -101,9 +111,9 @@ function MetaChip({ icon, label, accent }: { icon: string; label: string; accent
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full cursor-default transition-colors duration-100",
+        "inline-flex items-center gap-1 rounded-full cursor-default",
         accent
-          ? "px-2 bg-linear-to-r from-rose-500/15 to-orange-400/10 text-rose-500 hover:from-rose-500/25 hover:to-orange-400/18"
+          ? "px-2 bg-rose-500/12 text-rose-500 hover:bg-rose-500/20"
           : "px-2 text-vsc-text-ghost hover:bg-vsc-surface-2/60",
       )}
       style={{ height: BAR_H - 6 }}
@@ -111,7 +121,7 @@ function MetaChip({ icon, label, accent }: { icon: string; label: string; accent
       <Icon
         name={icon}
         size={13}
-        className={cn("shrink-0", accent ? "text-rose-500 animate-pulse" : "opacity-70")}
+        className={cn("shrink-0", accent ? "text-rose-500" : "opacity-70")}
       />
       {accent && (
         <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-bold leading-none">

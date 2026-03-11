@@ -1,10 +1,10 @@
-import React, { Suspense, useCallback } from "react";
-import { useAtom, useSetAtom } from "jotai";
+import React, { Suspense } from "react";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 import { cn, Icon, Spinner } from "~shared/ui";
 
 import { activeTrayViewAtom, trayMaximizedAtom, trayVisibleAtom } from "../model/shellAtoms";
-import { getViewsForFrame, type ViewDefinition } from "../model/viewRegistry";
+import { getViewsForFrame } from "../model/viewRegistry";
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -15,26 +15,15 @@ interface TrayFrameProps {
 // ─── Component ──────────────────────────────────────────
 
 /**
- * Collapsible bottom tray frame with horizontal tabs + lazy-loaded content.
+ * Collapsible bottom tray frame with lazy-loaded content.
+ * Tab switching is handled by ShellStatusBar; this frame only shows content + actions.
  * All views stay mounted (display:none) to preserve scroll/state.
- * Double-click a tab to maximize the tray.
  */
 export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProps) {
   const views = getViewsForFrame("tray");
-  const [activeView, setActiveView] = useAtom(activeTrayViewAtom);
+  const activeView = useAtomValue(activeTrayViewAtom);
   const setVisible = useSetAtom(trayVisibleAtom);
   const [maximized, setMaximized] = useAtom(trayMaximizedAtom);
-
-  const handleTabClick = useCallback(
-    (id: string) => {
-      if (activeView === id) {
-        setMaximized((m) => !m);
-      } else {
-        setActiveView(id);
-      }
-    },
-    [activeView, setActiveView, setMaximized],
-  );
 
   return (
     <div
@@ -44,25 +33,8 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
       className="flex flex-col shrink-0 overflow-hidden bg-vsc-bg"
       style={{ height: maximized ? "calc(100vh - 80px)" : height }}
     >
-      {/* Tab bar + controls */}
-      <div className="flex items-center h-[34px] shrink-0 bg-vsc-surface-0">
-        {/* Tabs */}
-        <div
-          className="flex items-center gap-0 flex-1 min-w-0 pl-2"
-          role="tablist"
-          aria-label="Bottom panel tabs"
-        >
-          {views.map((view) => (
-            <ViewTab
-              key={view.id}
-              view={view}
-              isActive={activeView === view.id}
-              onClick={() => handleTabClick(view.id)}
-            />
-          ))}
-        </div>
-
-        {/* Panel actions */}
+      {/* Toolbar — actions only (tabs live in StatusBar) */}
+      <div className="flex items-center justify-end h-[28px] shrink-0 bg-vsc-surface-0 border-b border-vsc-border/10">
         <div className="flex items-center gap-0.5 pr-2 shrink-0">
           <PanelAction
             icon={maximized ? "collapse-all" : "expand-all"}
@@ -104,38 +76,6 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
 });
 
 // ─── Sub-components ─────────────────────────────────────
-
-function ViewTab({
-  view,
-  isActive,
-  onClick,
-}: {
-  view: ViewDefinition;
-  isActive: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      id={`tab-${view.id}`}
-      role="tab"
-      type="button"
-      aria-selected={isActive}
-      tabIndex={isActive ? 0 : -1}
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center gap-1.5 px-3 h-[26px] text-[11px] tracking-wide uppercase relative",
-        "cursor-pointer border-none transition-all duration-200 focus-ring rounded-md",
-        isActive
-          ? "text-vsc-fg font-semibold bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
-          : "text-vsc-text-tertiary bg-transparent hover:text-vsc-text-secondary hover:bg-white/50",
-      )}
-      title={view.shortcut ? `${view.title} (${view.shortcut})` : view.title}
-    >
-      <Icon name={view.icon} size={12} className={cn("shrink-0", isActive && "text-vsc-accent")} />
-      <span>{view.title}</span>
-    </button>
-  );
-}
 
 function PanelAction({
   icon,
