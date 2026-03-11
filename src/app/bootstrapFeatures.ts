@@ -16,6 +16,10 @@ import "~shared/views/symbols";
 import "~shared/views/findings";
 import "~shared/views/problems";
 import "~shared/views/output";
+import "~shared/views/debug";
+import "~shared/views/terminal";
+import "~shared/views/tasks";
+import "~shared/views/log";
 import "~shared/views/event-log";
 // ── Surface self-registration (side-effect imports) ──────────────────
 import "~domains/chat";

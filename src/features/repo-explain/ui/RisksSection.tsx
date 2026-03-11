@@ -55,8 +55,8 @@ const SEVERITY_CONFIG: Record<
   },
   low: {
     label: "Low",
-    color: "text-zinc-400",
-    bg: "bg-zinc-500/10 border-zinc-500/30",
+    color: "text-vsc-text-tertiary",
+    bg: "bg-vsc-surface-2/50 border-vsc-border/30",
     icon: "\u25CB",
   },
   info: {
@@ -69,7 +69,12 @@ const SEVERITY_CONFIG: Record<
 
 function sortBySeverity(risks: readonly RiskItem[]): readonly RiskItem[] {
   const order: Record<RiskSeverity, number> = {
-    critical: 0, high: 1, warning: 2, medium: 3, low: 4, info: 5,
+    critical: 0,
+    high: 1,
+    warning: 2,
+    medium: 3,
+    low: 4,
+    info: 5,
   };
   return [...risks].sort((a, b) => order[a.severity] - order[b.severity]);
 }
@@ -82,29 +87,25 @@ const RiskCard = memo(function RiskCard({ risk }: { risk: RiskItem }) {
   return (
     <div className={`rounded-md border p-3 ${config.bg}`}>
       <div className="mb-1 flex items-center gap-2">
-        <span className={config.color} aria-hidden="true">{config.icon}</span>
-        <span className="text-sm font-medium text-[var(--color-zinc-100,#f4f4f5)]">
-          {risk.title}
+        <span className={config.color} aria-hidden="true">
+          {config.icon}
         </span>
+        <span className="text-sm font-medium text-vsc-text-primary">{risk.title}</span>
         <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] font-medium ${config.color}`}>
           {config.label}
         </span>
       </div>
 
-      <p className="mb-2 text-xs text-[var(--color-zinc-300,#d4d4d8)]">
-        {risk.description}
-      </p>
+      <p className="mb-2 text-xs text-vsc-text-secondary">{risk.description}</p>
 
       {risk.suggestion && (
-        <p className="mb-2 text-xs text-[var(--color-blue-400,#60a5fa)]">
-          Suggestion: {risk.suggestion}
-        </p>
+        <p className="mb-2 text-xs text-vsc-accent">Suggestion: {risk.suggestion}</p>
       )}
 
       {risk.affectedFiles && risk.affectedFiles.length > 0 && (
         <div className="text-xs">
-          <span className="text-[var(--color-zinc-500,#71717a)]">Affected: </span>
-          <span className="font-mono text-[var(--color-zinc-400,#a1a1aa)]">
+          <span className="text-vsc-text-ghost">Affected: </span>
+          <span className="font-mono text-vsc-text-tertiary">
             {risk.affectedFiles.length <= 3
               ? risk.affectedFiles.join(", ")
               : `${risk.affectedFiles.slice(0, 3).join(", ")} +${risk.affectedFiles.length - 3} more`}
@@ -117,13 +118,14 @@ const RiskCard = memo(function RiskCard({ risk }: { risk: RiskItem }) {
 
 // ─── Summary Bar ───────────────────────────────────────────
 
-const RiskSummaryBar = memo(function RiskSummaryBar({
-  risks,
-}: {
-  risks: readonly RiskItem[];
-}) {
+const RiskSummaryBar = memo(function RiskSummaryBar({ risks }: { risks: readonly RiskItem[] }) {
   const counts: Record<RiskSeverity, number> = {
-    critical: 0, high: 0, warning: 0, medium: 0, low: 0, info: 0,
+    critical: 0,
+    high: 0,
+    warning: 0,
+    medium: 0,
+    low: 0,
+    info: 0,
   };
   for (const r of risks) counts[r.severity]++;
 
@@ -145,16 +147,11 @@ const RiskSummaryBar = memo(function RiskSummaryBar({
 
 // ─── Component ─────────────────────────────────────────────
 
-export const RisksSection = memo(function RisksSection({
-  risks,
-  className,
-}: RisksSectionProps) {
+export const RisksSection = memo(function RisksSection({ risks, className }: RisksSectionProps) {
   if (risks.length === 0) {
     return (
       <section className={className} aria-label="Risks">
-        <p className="text-sm text-[var(--color-green-400,#4ade80)]">
-          No risks detected. The codebase looks healthy.
-        </p>
+        <p className="text-sm text-vsc-success">No risks detected. The codebase looks healthy.</p>
       </section>
     );
   }

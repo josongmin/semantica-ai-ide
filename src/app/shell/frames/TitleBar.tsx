@@ -145,7 +145,7 @@ export const TitleBar = React.memo(function TitleBar() {
         >
           <span
             className="inline-flex items-center justify-center w-5 h-5 rounded text-[11px] font-bold shrink-0"
-            style={{ backgroundColor: "rgba(129,140,248,0.25)", color: gnb.accent }}
+            style={{ backgroundColor: "rgba(139,92,246,0.25)", color: gnb.accent }}
           >
             S
           </span>
@@ -200,7 +200,7 @@ export const TitleBar = React.memo(function TitleBar() {
           type="button"
           className="flex items-center justify-center w-6 h-6 rounded-full shrink-0
                      text-[10px] font-bold cursor-pointer border-none focus-ring transition-colors duration-150"
-          style={{ backgroundColor: "rgba(129,140,248,0.2)", color: gnb.accent }}
+          style={{ backgroundColor: "rgba(139,92,246,0.2)", color: gnb.accent }}
           title="Account"
           aria-label="Account"
         >

@@ -137,7 +137,7 @@ const GraphNode = memo(function GraphNode({
         rx={6}
         fill={fill}
         fillOpacity={0.15}
-        stroke={isCenter ? "var(--color-vsc-accent, #7aa2f7)" : fill}
+        stroke={isCenter ? "var(--color-vsc-accent, #8b5cf6)" : fill}
         strokeWidth={isCenter ? 2 : 1}
         strokeOpacity={0.6}
       />
@@ -150,7 +150,7 @@ const GraphNode = memo(function GraphNode({
         fontSize={10}
         fontFamily="monospace"
       >
-        {node.name.length > 12 ? `${node.name.slice(0, 11)  }\u2026` : node.name}
+        {node.name.length > 12 ? `${node.name.slice(0, 11)}\u2026` : node.name}
       </text>
     </g>
   );
@@ -207,7 +207,7 @@ export const LensMiniGraph = memo(function LensMiniGraph({
             y1={caller.y + NODE_H / 2}
             x2={center.x}
             y2={center.y + NODE_H / 2}
-            stroke="var(--color-vsc-border, #3b4261)"
+            stroke="var(--color-vsc-border, #d0d7de)"
             strokeWidth={1}
             strokeOpacity={0.5}
           />
@@ -221,7 +221,7 @@ export const LensMiniGraph = memo(function LensMiniGraph({
             y1={center.y + NODE_H / 2}
             x2={callee.x}
             y2={callee.y + NODE_H / 2}
-            stroke="var(--color-vsc-border, #3b4261)"
+            stroke="var(--color-vsc-border, #d0d7de)"
             strokeWidth={1}
             strokeOpacity={0.5}
           />
@@ -229,12 +229,7 @@ export const LensMiniGraph = memo(function LensMiniGraph({
 
         {/* Caller nodes */}
         {callerNodes.map((node) => (
-          <GraphNode
-            key={node.id}
-            node={node}
-            isCenter={false}
-            onClick={onNodeClick}
-          />
+          <GraphNode key={node.id} node={node} isCenter={false} onClick={onNodeClick} />
         ))}
 
         {/* Center node */}
@@ -242,12 +237,7 @@ export const LensMiniGraph = memo(function LensMiniGraph({
 
         {/* Callee nodes */}
         {calleeNodes.map((node) => (
-          <GraphNode
-            key={node.id}
-            node={node}
-            isCenter={false}
-            onClick={onNodeClick}
-          />
+          <GraphNode key={node.id} node={node} isCenter={false} onClick={onNodeClick} />
         ))}
       </svg>
     </div>

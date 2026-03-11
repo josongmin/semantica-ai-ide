@@ -101,11 +101,11 @@ export const ShellLayout = React.memo(function ShellLayout({
       {!isFocusMode && <TitleBar />}
 
       {/* Body: Content */}
-      <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-border/15">
+      <div className="flex flex-1 min-h-0 min-w-0">
         {/* Left section: Sidebar + Canvas + Tray */}
-        <div className="flex flex-col flex-1 min-w-0 gap-px bg-vsc-border/15">
+        <div className="flex flex-col flex-1 min-w-0">
           {/* Main row: Sidebar | Canvas */}
-          <div className="flex flex-1 min-h-0 min-w-0 gap-px">
+          <div className="flex flex-1 min-h-0 min-w-0">
             {isIdeMode && sidebarVisible && !isFocusMode && !isFullscreenSurface && (
               <>
                 <div className="shrink-0 h-full" style={{ width: sidebarWidth }}>

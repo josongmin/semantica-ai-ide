@@ -4,10 +4,10 @@
  */
 import { memo, useState } from "react";
 
-import { type ArchitectureInfo,ArchitectureSection } from "./ArchitectureSection";
-import { type DataFlow,FlowsSection } from "./FlowsSection";
-import { type ModuleInfo,ModulesSection } from "./ModulesSection";
-import { type RiskItem,RisksSection } from "./RisksSection";
+import { type ArchitectureInfo, ArchitectureSection } from "./ArchitectureSection";
+import { type DataFlow, FlowsSection } from "./FlowsSection";
+import { type ModuleInfo, ModulesSection } from "./ModulesSection";
+import { type RiskItem, RisksSection } from "./RisksSection";
 
 // ─── Types ─────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ export const RepoExplainPanel = memo(function RepoExplainPanel({
     <div className={`flex h-full flex-col ${className ?? ""}`}>
       {/* Tab bar */}
       <div
-        className="flex border-b border-[var(--color-zinc-700,#3f3f46)]"
+        className="flex border-b border-vsc-border/30"
         role="tablist"
         aria-label="Repo explain sections"
       >
@@ -63,14 +63,14 @@ export const RepoExplainPanel = memo(function RepoExplainPanel({
               aria-controls={`panel-${tab.id}`}
               className={`px-4 py-2 text-xs font-medium transition-colors ${
                 isActive
-                  ? "border-b-2 border-[var(--color-blue-400,#60a5fa)] text-[var(--color-blue-400,#60a5fa)]"
-                  : "text-[var(--color-zinc-400,#a1a1aa)] hover:text-[var(--color-zinc-200,#e4e4e7)]"
+                  ? "border-b-2 border-vsc-accent text-vsc-accent"
+                  : "text-vsc-text-tertiary hover:text-vsc-text-primary"
               }`}
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
               {tab.id === "risks" && data.risks.length > 0 && (
-                <span className="ml-1.5 rounded-full bg-[var(--color-red-500,#ef4444)]/20 px-1.5 py-0.5 text-[10px] text-[var(--color-red-400,#f87171)]">
+                <span className="ml-1.5 rounded-full bg-vsc-error/20 px-1.5 py-0.5 text-[10px] text-vsc-error">
                   {data.risks.length}
                 </span>
               )}

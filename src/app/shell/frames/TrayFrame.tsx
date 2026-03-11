@@ -45,7 +45,7 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
       style={{ height: maximized ? "calc(100vh - 80px)" : height }}
     >
       {/* Tab bar + controls */}
-      <div className="flex items-center h-[34px] border-t border-vsc-border/30 shrink-0 bg-vsc-surface-0">
+      <div className="flex items-center h-[34px] shrink-0 bg-vsc-surface-0">
         {/* Tabs */}
         <div
           className="flex items-center gap-0 flex-1 min-w-0 pl-2"

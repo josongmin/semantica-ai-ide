@@ -1,10 +1,12 @@
-import React from "react";
-import { useAtomValue } from "jotai";
+import React, { useCallback } from "react";
+import { useAtom, useAtomValue } from "jotai";
 
 import { currentGitBranchAtom } from "~entities/git-history/model/atoms";
 import { cn, Icon } from "~shared/ui";
 
 import { notificationsAtom } from "../../features/notifications/model/notificationAtoms";
+import { activeTrayViewAtom, trayVisibleAtom } from "./model/shellAtoms";
+import { getViewsForFrame } from "./model/viewRegistry";
 
 // ─── Status Bar (IntelliJ style footer) ─────────────────
 
@@ -14,6 +16,21 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
   const currentBranch = useAtomValue(currentGitBranchAtom);
   const notifications = useAtomValue(notificationsAtom);
   const unreadCount = notifications.length;
+  const trayViews = getViewsForFrame("tray");
+  const [activeView, setActiveView] = useAtom(activeTrayViewAtom);
+  const [trayVisible, setTrayVisible] = useAtom(trayVisibleAtom);
+
+  const handleTrayViewClick = useCallback(
+    (viewId: string) => {
+      if (trayVisible && activeView === viewId) {
+        setTrayVisible(false);
+      } else {
+        setTrayVisible(true);
+        setActiveView(viewId);
+      }
+    },
+    [trayVisible, activeView, setTrayVisible, setActiveView],
+  );
 
   return (
     <footer
@@ -24,25 +41,20 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
         BAR_H,
       )}
     >
-      {/* Left: breadcrumb path */}
+      {/* Left: tray view toggle buttons */}
       <div className="flex items-center min-w-0 flex-1">
-        <StatusItem>
-          <Icon name="folder" size={14} className="shrink-0 text-vsc-text-ghost" />
-          <span className="text-vsc-text-secondary">semantica</span>
-        </StatusItem>
-        <BreadcrumbSep />
-        <StatusItem>
-          <span>src</span>
-        </StatusItem>
-        <BreadcrumbSep />
-        <StatusItem>
-          <span>app</span>
-        </StatusItem>
-        <BreadcrumbSep />
-        <StatusItem>
-          <Icon name="file-code" size={14} className="shrink-0 text-vsc-text-ghost" />
-          <span>index.tsx</span>
-        </StatusItem>
+        {trayViews.map((view) => {
+          const isActive = trayVisible && activeView === view.id;
+          return (
+            <TrayToggleButton
+              key={view.id}
+              icon={view.icon}
+              label={view.title}
+              isActive={isActive}
+              onClick={() => handleTrayViewClick(view.id)}
+            />
+          );
+        })}
       </div>
 
       {/* Right: git + notifications */}
@@ -70,6 +82,38 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
 
 // ─── Primitives ─────────────────────────────────────────
 
+function TrayToggleButton({
+  icon,
+  label,
+  isActive,
+  onClick,
+}: {
+  icon: string;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2.5",
+        BAR_H,
+        "leading-none border-none cursor-pointer transition-colors duration-100",
+        isActive
+          ? "text-vsc-accent bg-white/10"
+          : "text-vsc-text-ghost bg-transparent hover:text-vsc-text-secondary hover:bg-white/8",
+      )}
+      title={label}
+      aria-pressed={isActive}
+    >
+      <Icon name={icon} size={14} className="shrink-0" />
+      <span className="text-[12px]">{label}</span>
+    </button>
+  );
+}
+
 function StatusItem({ children, highlight }: { children: React.ReactNode; highlight?: boolean }) {
   return (
     <span
@@ -84,10 +128,6 @@ function StatusItem({ children, highlight }: { children: React.ReactNode; highli
       {children}
     </span>
   );
-}
-
-function BreadcrumbSep() {
-  return <Icon name="chevron-right" size={12} className="text-vsc-text-ghost/40 shrink-0" />;
 }
 
 function StatusSep() {

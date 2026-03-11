@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import {
@@ -16,7 +9,7 @@ import {
 } from "../../../entities/workspace-graph";
 import { getVscodeColor } from "../../../shared/lib/vscodeTheme";
 import type { WorkspaceGraphNodeId } from "../../../shared/protocol";
-import { runForceLayout,type Vec2 } from "../hooks/useForceLayout";
+import { runForceLayout, type Vec2 } from "../hooks/useForceLayout";
 import { getKindColor } from "./kindConfig";
 
 // ─── Graph Canvas ─────────────────────────────────────────────
@@ -35,7 +28,7 @@ export const GraphCanvas = React.memo(function GraphCanvas() {
   const nodes = subgraph ? subgraph.nodes : visible;
   const nodeIds = useMemo(() => new Set(nodes.map((n) => n.id)), [nodes]);
   const edges = useMemo(() => {
-    const raw = subgraph ? subgraph.edges : graph?.edges ?? [];
+    const raw = subgraph ? subgraph.edges : (graph?.edges ?? []);
     return raw.filter((e) => nodeIds.has(e.source) && nodeIds.has(e.target));
   }, [subgraph, graph?.edges, nodeIds]);
 
@@ -52,13 +45,7 @@ export const GraphCanvas = React.memo(function GraphCanvas() {
 
   useLayoutEffect(() => {
     if (nodes.length === 0) return;
-    layoutRef.current = runForceLayout(
-      nodes,
-      edges,
-      size.w,
-      size.h,
-      selectedId,
-    );
+    layoutRef.current = runForceLayout(nodes, edges, size.w, size.h, selectedId);
   }, [nodes, edges, size.w, size.h, selectedId]);
 
   const handleClick = useCallback(
@@ -103,8 +90,8 @@ export const GraphCanvas = React.memo(function GraphCanvas() {
     if (layout.size === 0) return;
 
     // Edges
-    const edgeColor = getVscodeColor("--vscode-charts-blue", "#7aa2f7");
-    ctx.strokeStyle = `${edgeColor  }33`; // ~0.2 alpha
+    const edgeColor = getVscodeColor("--vscode-charts-blue", "#8b5cf6");
+    ctx.strokeStyle = `${edgeColor}33`; // ~0.2 alpha
     ctx.lineWidth = 1;
     for (const edge of edges) {
       const sp = layout.get(edge.source);
@@ -130,7 +117,7 @@ export const GraphCanvas = React.memo(function GraphCanvas() {
       ctx.globalAlpha = isSelected ? 1 : 0.75;
       ctx.fill();
       if (isSelected) {
-        ctx.strokeStyle = `${getVscodeColor("--vscode-editor-foreground", "#ffffff")  }e6`; // ~0.9 alpha
+        ctx.strokeStyle = `${getVscodeColor("--vscode-editor-foreground", "#1f2328")}e6`; // ~0.9 alpha
         ctx.lineWidth = 2;
         ctx.stroke();
       }

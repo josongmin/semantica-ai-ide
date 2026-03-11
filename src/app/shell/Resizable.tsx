@@ -71,7 +71,7 @@ export const ResizeHandle = React.memo(function ResizeHandle({
         "transition-[background-color] duration-fast",
         isHz ? "w-px cursor-col-resize" : "h-px cursor-row-resize",
         // Base color
-        dragging ? "bg-vsc-accent/60" : "bg-vsc-border/15 hover:bg-vsc-accent/30",
+        dragging ? "bg-vsc-accent/60" : "bg-vsc-border/25 hover:bg-vsc-accent/30",
         className,
       )}
     >

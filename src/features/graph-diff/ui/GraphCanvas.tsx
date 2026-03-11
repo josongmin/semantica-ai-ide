@@ -38,10 +38,10 @@ interface GraphCanvasProps {
 // ─── Constants ─────────────────────────────────────────────
 
 const STATUS_COLORS: Record<DiffStatus, string> = {
-  added: "var(--color-green-500, #22c55e)",
-  removed: "var(--color-red-500, #ef4444)",
-  modified: "var(--color-amber-500, #f59e0b)",
-  unchanged: "var(--color-zinc-400, #a1a1aa)",
+  added: "var(--color-vsc-success, #1a7f37)",
+  removed: "var(--color-vsc-error, #cf222e)",
+  modified: "var(--color-vsc-warning, #9a6700)",
+  unchanged: "var(--color-vsc-text-ghost)",
 };
 
 const NODE_RADIUS = 18;
@@ -111,7 +111,7 @@ const NodeCircle = memo(function NodeCircle({
           cy={node.cy}
           r={NODE_RADIUS + ringWidth}
           fill="none"
-          stroke="var(--color-blue-400, #60a5fa)"
+          stroke="var(--color-vsc-accent, #8b5cf6)"
           strokeWidth={ringWidth}
         />
       )}
@@ -121,7 +121,7 @@ const NodeCircle = memo(function NodeCircle({
         y={node.cy + NODE_RADIUS + 14}
         textAnchor="middle"
         fontSize={11}
-        fill="var(--color-zinc-300, #d4d4d8)"
+        fill="var(--color-vsc-text-secondary)"
       >
         {node.name}
       </text>
