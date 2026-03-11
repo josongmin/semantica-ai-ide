@@ -57,7 +57,7 @@ export const CommitMessageCard = React.memo(function CommitMessageCard({
   const style = TYPE_STYLE[type] ?? DEFAULT_TYPE_STYLE;
 
   return (
-    <div className="relative group/code my-1.5 -mx-1 rounded-lg border border-vsc-border/40 bg-vsc-surface-1/50 overflow-hidden">
+    <div className="relative group/code my-1.5 -mx-1 rounded-xl border border-vsc-border/40 bg-vsc-surface-1/50 overflow-hidden">
       {/* Content area */}
       <div className="px-2.5 py-1.5">
         {/* Subject line + type badge in top-right */}

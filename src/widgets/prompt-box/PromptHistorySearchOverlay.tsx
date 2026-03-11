@@ -82,14 +82,13 @@ export const PromptHistorySearchOverlay = React.memo(function PromptHistorySearc
   useEffect(() => {
     if (open) {
       inputRef.current?.focus();
-       
+
       setSelectedIndex(0);
     }
   }, [open]);
 
   // Reset selection when query changes
   useEffect(() => {
-     
     setSelectedIndex(0);
   }, [query]);
 
@@ -138,7 +137,7 @@ export const PromptHistorySearchOverlay = React.memo(function PromptHistorySearc
               key={item.index}
               type="button"
               className={cn(
-                "w-full text-left px-3 py-1.5 text-xs truncate cursor-pointer transition-colors duration-fast focus-ring",
+                "w-full text-left px-3 py-1.5 text-xs truncate cursor-pointer focus-ring",
                 i === selectedIndex
                   ? "bg-vsc-list-active text-vsc-list-active-fg"
                   : "hover:bg-vsc-list-hover text-vsc-text-primary",

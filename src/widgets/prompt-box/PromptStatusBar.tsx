@@ -66,7 +66,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
               variant="ghost"
               size="xs"
               icon="attach"
-              className="text-vsc-text-ghost hover:text-vsc-text-secondary transition-colors duration-fast p-0.5 min-h-5 min-w-5 [&_.codicon]:text-2xs"
+              className="text-vsc-text-ghost hover:text-vsc-text-secondary transition-none p-0.5 min-h-5 min-w-5 [&_.codicon]:text-2xs"
               title="Attach file"
               aria-label="Attach file"
             />
@@ -74,7 +74,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
               variant="ghost"
               size="xs"
               onClick={onOpenCommands}
-              className="text-vsc-text-ghost hover:text-vsc-text-secondary transition-colors duration-fast font-medium p-0.5 min-h-5 min-w-5"
+              className="text-vsc-text-ghost hover:text-vsc-text-secondary transition-none font-medium p-0.5 min-h-5 min-w-5"
               title="Commands"
               aria-label="Open commands"
             >
@@ -91,7 +91,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
           size="icon"
           onClick={onStop}
           aria-label="Stop agent"
-          className="w-[18px] h-[18px] rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-all duration-fast p-0"
+          className="w-[18px] h-[18px] rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
           title="Stop (Esc)"
         >
           <Icon name="primitive-square" tokenSize="2xs" className="text-[9px]" />
@@ -103,7 +103,8 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
           onClick={canSend ? onSend : undefined}
           disabled={!canSend}
           aria-label={isRunning ? "Queue message" : "Send message"}
-          className="w-[18px] h-[18px] rounded-md disabled:opacity-30 transition-all duration-fast p-0"
+          className="w-[18px] h-[18px] rounded-md disabled:opacity-30 transition-none p-0"
+          style={{ backgroundColor: "var(--color-gnb-accent, #818cf8)" }}
           title={isRunning ? "Queue (Enter)" : "Send (Enter)"}
         >
           <Icon name="arrow-up" tokenSize="2xs" />

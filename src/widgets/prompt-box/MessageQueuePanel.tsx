@@ -3,18 +3,15 @@ import { useAtomValue, useSetAtom } from "jotai";
 
 import { messageQueueAtom, removeQueuedMessageAtom } from "~shared/bootstrap/send-message";
 
-import { useAnimatedPresence } from "../../shared/lib/hooks/useAnimatedPresence";
-import { cn, Icon, Text } from "../../shared/ui";
+import { Icon, Text } from "../../shared/ui";
 
 /**
  * Displays queued messages inside the prompt box as a single list.
  * Each row is a record within one shared container — dividers separate items.
- * Auto-hides when queue is empty with exit animation to prevent layout jitter.
  */
 export const MessageQueuePanel = React.memo(function MessageQueuePanel() {
   const queue = useAtomValue(messageQueueAtom);
   const removeAt = useSetAtom(removeQueuedMessageAtom);
-  const { mounted, exiting, onAnimationEnd } = useAnimatedPresence(queue.length > 0, 150);
 
   const handleRemove = useCallback(
     (index: number) => {
@@ -23,23 +20,19 @@ export const MessageQueuePanel = React.memo(function MessageQueuePanel() {
     [removeAt],
   );
 
-  if (!mounted) return null;
+  if (queue.length === 0) return null;
 
   return (
     <div
-      className={cn(
-        "mx-1.5 mb-1.5 rounded-xl border border-vsc-border/40 bg-vsc-surface-1 overflow-hidden",
-        exiting && "animate-[collapse-height-out_150ms_ease]",
-      )}
+      className="mx-1.5 mb-1.5 rounded-xl border border-vsc-border/40 bg-vsc-surface-1 overflow-hidden"
       data-testid="message-queue-panel"
-      onAnimationEnd={onAnimationEnd}
     >
       <div className="max-h-[180px] overflow-y-auto">
         {queue.map((msg, index) => (
           <div
             key={msg.text.slice(0, 40)}
             className="flex items-center gap-2 px-3 py-1.5
-                       hover:bg-vsc-list-hover/50 transition-colors duration-fast
+                       hover:bg-vsc-list-hover/50 transition-none
                        group/qi"
           >
             {/* Icon */}
@@ -67,7 +60,7 @@ export const MessageQueuePanel = React.memo(function MessageQueuePanel() {
                 className="h-6 px-2.5 rounded-full text-2xs font-medium
                            bg-transparent text-vsc-text-secondary border border-vsc-border
                            hover:bg-vsc-toolbar hover:text-vsc-text-primary
-                           transition-colors duration-fast cursor-pointer focus-ring"
+                           transition-none cursor-pointer focus-ring"
                 aria-label={`Steer queued message ${index + 1}`}
               >
                 Steer
@@ -79,7 +72,7 @@ export const MessageQueuePanel = React.memo(function MessageQueuePanel() {
                 aria-label={`Remove queued message ${index + 1}`}
                 className="flex items-center justify-center size-6 rounded-md
                            text-vsc-text-ghost hover:text-vsc-error hover:bg-vsc-error/10
-                           transition-colors duration-fast cursor-pointer focus-ring"
+                           transition-none cursor-pointer focus-ring"
               >
                 <Icon name="trash" tokenSize="xs" />
               </button>
@@ -89,7 +82,7 @@ export const MessageQueuePanel = React.memo(function MessageQueuePanel() {
                 aria-label={`More actions for queued message ${index + 1}`}
                 className="flex items-center justify-center size-6 rounded-md
                            text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-toolbar
-                           transition-colors duration-fast cursor-pointer focus-ring"
+                           transition-none cursor-pointer focus-ring"
               >
                 <Icon name="ellipsis" tokenSize="xs" />
               </button>

@@ -57,7 +57,7 @@ const AttachmentChip = React.memo(function AttachmentChip({
           onClick={handleRemove}
           aria-label={`Remove ${attachment.name}`}
           className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-vsc-fg/60 text-vsc-bg
-                     opacity-0 group-hover:opacity-100 transition-opacity duration-fast cursor-pointer focus-ring"
+                     opacity-0 group-hover:opacity-100 cursor-pointer focus-ring"
         >
           <Icon name="x" tokenSize="xs" />
         </button>
@@ -92,9 +92,9 @@ const AttachmentChip = React.memo(function AttachmentChip({
         type="button"
         onClick={handleRemove}
         aria-label={`Remove ${attachment.name}`}
-        className="p-0.5 rounded-full hover:bg-vsc-error/20 transition-colors duration-fast cursor-pointer focus-ring"
+        className="p-0.5 rounded-full hover:bg-vsc-error/20 cursor-pointer focus-ring"
       >
-        <Icon name="x" tokenSize="xs" className="text-vsc-text-tertiary hover:text-vsc-error transition-colors duration-fast" />
+        <Icon name="x" tokenSize="xs" className="text-vsc-text-tertiary hover:text-vsc-error" />
       </button>
     </span>
   );

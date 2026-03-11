@@ -30,7 +30,7 @@ const PromptQuotePreview = React.memo(function PromptQuotePreview({
         type="button"
         onClick={onClear}
         aria-label="Remove quote"
-        className="p-0.5 rounded hover:bg-vsc-toolbar transition-colors duration-fast cursor-pointer shrink-0 focus-ring"
+        className="p-0.5 rounded hover:bg-vsc-toolbar cursor-pointer shrink-0 focus-ring"
       >
         <Icon name="close" tokenSize="2xs" className="text-vsc-text-tertiary" />
       </button>

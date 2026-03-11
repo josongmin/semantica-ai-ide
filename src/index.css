@@ -7,30 +7,30 @@
    P0 Theme — GitHub Light 기반 쿨 뉴트럴 라이트
    ═══════════════════════════════════════════════════════════════ */
 @theme {
-  /* ── Core Colors (GitHub Light) ── */
+  /* ── Core Colors (GitHub Light — P0 Theme) ── */
   --color-vsc-bg: var(--vscode-editor-background, #ffffff);
   --color-vsc-fg: var(--vscode-editor-foreground, #1f2328);
-  --color-vsc-border: var(--vscode-panel-border, #d1d9e0);
-  --color-vsc-input-bg: var(--vscode-input-background, #ffffff);
+  --color-vsc-border: var(--vscode-panel-border, #d0d7de);
+  --color-vsc-input-bg: var(--vscode-input-background, #f6f8fa);
   --color-vsc-input-fg: var(--vscode-input-foreground, #1f2328);
-  --color-vsc-input-border: var(--vscode-input-border, #d1d9e0);
-  --color-vsc-button: var(--vscode-button-background, #818cf8);
+  --color-vsc-input-border: var(--vscode-input-border, #d0d7de);
+  --color-vsc-button: var(--vscode-button-background, #1f883d);
   --color-vsc-button-fg: var(--vscode-button-foreground, #ffffff);
-  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #6366f1);
-  --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #ebecf0);
+  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #1a7f37);
+  --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #f6f8fa);
   --color-vsc-button-secondary-fg: var(--vscode-button-secondaryForeground, #1f2328);
-  --color-vsc-badge-bg: var(--vscode-badge-background, #818cf8);
+  --color-vsc-badge-bg: var(--vscode-badge-background, #0969da);
   --color-vsc-badge-fg: var(--vscode-badge-foreground, #ffffff);
   --color-vsc-success: var(--vscode-terminal-ansiGreen, #1a7f37);
   --color-vsc-warning: var(--vscode-editorWarning-foreground, #9a6700);
-  --color-vsc-error: var(--vscode-editorError-foreground, #d1242f);
+  --color-vsc-error: var(--vscode-editorError-foreground, #cf222e);
   --color-vsc-info: var(--vscode-editorInfo-foreground, #0969da);
   --color-vsc-link: var(--vscode-textLink-foreground, #0969da);
-  --color-vsc-selection: var(--vscode-editor-selectionBackground, #add6ff);
+  --color-vsc-selection: var(--vscode-editor-selectionBackground, #0969da22);
   --color-vsc-sidebar: var(--vscode-sideBar-background, #f6f8fa);
-  --color-vsc-list-hover: var(--vscode-list-hoverBackground, #eaeef2);
-  --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #ddf4ff);
-  --color-vsc-focus: var(--vscode-focusBorder, #818cf8);
+  --color-vsc-list-hover: var(--vscode-list-hoverBackground, #f6f8fa);
+  --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #0969da1a);
+  --color-vsc-focus: var(--vscode-focusBorder, #0969da);
   --color-vsc-diff-insert: var(--vscode-diffEditor-insertedTextBackground, rgba(26, 127, 55, 0.15));
   --color-vsc-diff-delete: var(--vscode-diffEditor-removedTextBackground, rgba(209, 36, 47, 0.15));
   --color-vsc-diff-insert-line: var(
@@ -45,14 +45,14 @@
     --vscode-textCodeBlock-background,
     var(--vscode-editor-background, #f6f8fa)
   );
-  --color-vsc-toolbar: var(--vscode-toolbar-hoverBackground, #eaeef2);
+  --color-vsc-toolbar: var(--vscode-toolbar-hoverBackground, #f6f8fa);
 
   --color-vsc-surface-0: var(--vscode-editor-background, #ffffff);
   --color-vsc-surface-1: var(--vscode-sideBar-background, #f6f8fa);
-  --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #f0f3f6);
-  --color-vsc-surface-3: var(--vscode-input-background, var(--vscode-editor-background, #eaeef2));
+  --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #eaeef2);
+  --color-vsc-surface-3: var(--vscode-input-background, #d0d7de);
 
-  --color-vsc-accent: var(--vscode-focusBorder, #818cf8);
+  --color-vsc-accent: var(--vscode-focusBorder, #0969da);
 
   /* ── Risk-level colors (System Lens) ── */
   --color-risk-none: #656d76;
@@ -89,34 +89,36 @@
   /* ── Tab bar tokens ── */
   --color-vsc-tab-active: var(--vscode-tab-activeBackground, #ffffff);
   --color-vsc-tab-inactive: var(--vscode-tab-inactiveBackground, #f6f8fa);
-  --color-vsc-tab-border: var(--vscode-tab-border, #d1d9e0);
+  --color-vsc-tab-border: var(--vscode-tab-border, #d0d7de);
   --color-vsc-dropdown: var(--vscode-dropdown-background, #ffffff);
 
   /* ── Compat aliases (used across ~25 widgets) ── */
   --color-vsc-bg-secondary: var(--vscode-sideBar-background, #f6f8fa);
-  --color-vsc-bg-tertiary: var(--vscode-textCodeBlock-background, #f0f3f6);
+  --color-vsc-bg-tertiary: var(--vscode-textCodeBlock-background, #eaeef2);
   --color-vsc-editor-bg: var(--vscode-editor-background, #ffffff);
   --color-vsc-panel-bg: var(--vscode-panel-background, #ffffff);
-  --color-vsc-input: var(--vscode-input-background, #ffffff);
+  --color-vsc-input: var(--vscode-input-background, #f6f8fa);
   --color-vsc-badge: var(--vscode-badge-background, #0969da);
   --color-vsc-desc: var(--vscode-descriptionForeground, #656d76);
-  --color-vsc-panel-border: var(--vscode-panel-border, #d1d9e0);
-  --color-vsc-focusBorder: var(--vscode-focusBorder, #818cf8);
+  --color-vsc-panel-border: var(--vscode-panel-border, #d0d7de);
+  --color-vsc-focusBorder: var(--vscode-focusBorder, #0969da);
   --color-vsc-list-active-fg: var(--vscode-list-activeSelectionForeground, #1f2328);
   --color-vsc-text: var(--vscode-editor-foreground, #1f2328);
 
   /* ── Syntax highlighting tokens (diff-viewer) ── */
   --color-vsc-keyword: var(--vscode-debugTokenExpression-name, #cf222e);
   --color-vsc-string: var(--vscode-debugTokenExpression-string, #0a3069);
-  --color-vsc-comment: color-mix(in srgb, #656d76 80%, transparent);
+  --color-vsc-comment: color-mix(in srgb, #57606a 72%, transparent);
   --color-vsc-number: var(--vscode-debugTokenExpression-number, #0550ae);
+  --color-vsc-function: var(--vscode-symbolIcon-functionForeground, #8250df);
+  --color-vsc-property: var(--vscode-symbolIcon-propertyForeground, #0550ae);
   --color-vsc-builtin: var(--vscode-debugTokenExpression-name, #8250df);
   --color-vsc-operator: var(--vscode-editor-foreground, #1f2328);
 
   --color-vsc-text-primary: var(--vscode-editor-foreground, #1f2328);
-  --color-vsc-text-secondary: color-mix(in srgb, #1f2328 75%, transparent);
-  --color-vsc-text-tertiary: color-mix(in srgb, #1f2328 50%, transparent);
-  --color-vsc-text-ghost: color-mix(in srgb, #1f2328 30%, transparent);
+  --color-vsc-text-secondary: color-mix(in srgb, #1f2328 78%, transparent);
+  --color-vsc-text-tertiary: color-mix(in srgb, #1f2328 56%, transparent);
+  --color-vsc-text-ghost: color-mix(in srgb, #1f2328 36%, transparent);
 
   --font-size-2xs: 10px;
   --font-size-3xs: 9px;

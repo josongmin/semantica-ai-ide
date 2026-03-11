@@ -18,7 +18,6 @@ const ProgressEntry = React.memo(function ProgressEntry({ progressKey }: { progr
 
   useEffect(() => {
     if (isComplete) {
-       
       setFading(true);
       timerRef.current = setTimeout(() => {
         removeProgress(progressKey);
@@ -36,11 +35,7 @@ const ProgressEntry = React.memo(function ProgressEntry({ progressKey }: { progr
 
   return (
     <div
-      className={cn(
-        "flex items-center gap-2 transition-opacity duration-slow",
-        "animate-[fade-in_200ms_ease-out]",
-        fading && "opacity-0",
-      )}
+      className={cn("flex items-center gap-2", fading && "opacity-0")}
       data-testid={`progress-${progressKey}`}
     >
       <Text size="2xs" tone="tertiary" truncate className="max-w-[100px]">

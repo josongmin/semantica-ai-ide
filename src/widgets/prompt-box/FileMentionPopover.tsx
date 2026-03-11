@@ -41,7 +41,6 @@ export const FileMentionPopover = React.memo(function FileMentionPopover({
 
   // Reset focus when filtered list changes
   useEffect(() => {
-     
     setFocusIndex(0);
   }, [filtered]);
 
@@ -117,7 +116,7 @@ export const FileMentionPopover = React.memo(function FileMentionPopover({
         className={cn(
           "z-[--z-overlay]",
           "glass-panel border border-vsc-border/40 rounded-lg shadow-lg py-1 max-h-[--panel-max-h-sm] overflow-y-auto scroll-shadow",
-          exiting ? "animate-[fade-out_100ms_ease]" : "animate-[fade-in_100ms_ease]",
+          exiting ? "opacity-0" : "opacity-100",
         )}
       >
         {filtered.map((file, index) => {
@@ -134,7 +133,7 @@ export const FileMentionPopover = React.memo(function FileMentionPopover({
               onClick={() => onSelect(file)}
               className={cn(
                 "w-full text-left px-3 py-1.5 flex items-center gap-2 cursor-pointer",
-                "transition-colors duration-fast focus-ring",
+                "focus-ring",
                 index === focusIndex ? "bg-vsc-list-hover" : "hover:bg-vsc-list-hover",
               )}
               data-testid={`file-mention-item-${index}`}

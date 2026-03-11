@@ -45,10 +45,10 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
       style={{ height: maximized ? "calc(100vh - 80px)" : height }}
     >
       {/* Tab bar + controls */}
-      <div className="flex items-center h-[30px] border-b border-vsc-border/20 shrink-0 px-1 bg-vsc-bg">
+      <div className="flex items-center h-[34px] border-t border-vsc-border/30 shrink-0 bg-vsc-surface-0">
         {/* Tabs */}
         <div
-          className="flex items-center gap-px flex-1 min-w-0"
+          className="flex items-center gap-0 flex-1 min-w-0 pl-2"
           role="tablist"
           aria-label="Bottom panel tabs"
         >
@@ -63,7 +63,7 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
         </div>
 
         {/* Panel actions */}
-        <div className="flex items-center gap-px shrink-0">
+        <div className="flex items-center gap-0.5 pr-2 shrink-0">
           <PanelAction
             icon={maximized ? "collapse-all" : "expand-all"}
             label={maximized ? "Restore Panel" : "Maximize Panel"}
@@ -123,23 +123,16 @@ function ViewTab({
       tabIndex={isActive ? 0 : -1}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 h-[--height-row-md] text-2xs rounded-sm relative",
-        "cursor-pointer bg-transparent border-none transition-[color,background-color,opacity] duration-normal focus-ring",
+        "inline-flex items-center gap-1.5 px-3 h-[26px] text-[11px] tracking-wide uppercase relative",
+        "cursor-pointer border-none transition-all duration-200 focus-ring rounded-md",
         isActive
-          ? "text-vsc-fg font-medium"
-          : "text-vsc-text-tertiary hover:text-vsc-text-secondary",
+          ? "text-vsc-fg font-semibold bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
+          : "text-vsc-text-tertiary bg-transparent hover:text-vsc-text-secondary hover:bg-white/50",
       )}
       title={view.shortcut ? `${view.title} (${view.shortcut})` : view.title}
     >
-      <Icon name={view.icon} tokenSize="2xs" className="shrink-0" />
+      <Icon name={view.icon} size={12} className={cn("shrink-0", isActive && "text-vsc-accent")} />
       <span>{view.title}</span>
-      {/* Animated underline */}
-      {isActive && (
-        <span
-          className="absolute bottom-0 left-1 right-1 h-[2px] rounded-full bg-vsc-accent"
-          style={{ animation: "tab-underline-in 200ms var(--ease-spring) both" }}
-        />
-      )}
     </button>
   );
 }
@@ -158,14 +151,14 @@ function PanelAction({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center justify-center w-6 h-[--height-row-sm] rounded-sm",
-        "cursor-pointer bg-transparent border-none transition-colors duration-fast focus-ring",
-        "text-vsc-text-tertiary hover:text-vsc-fg hover:bg-vsc-list-hover",
+        "inline-flex items-center justify-center w-[22px] h-[22px] rounded-md",
+        "cursor-pointer bg-transparent border-none transition-all duration-200 focus-ring",
+        "text-vsc-text-ghost hover:text-vsc-text-primary hover:bg-white/60",
       )}
       title={label}
       aria-label={label}
     >
-      <Icon name={icon} tokenSize="2xs" />
+      <Icon name={icon} size={12} />
     </button>
   );
 }

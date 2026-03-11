@@ -31,7 +31,7 @@ import {
  * - "vscode-sync": clears all overrides so VSCode host variables flow through
  */
 const SYSTEM_DARK_THEME: ThemeId = "tokyo-night";
-const SYSTEM_LIGHT_THEME: ThemeId = "claude-light";
+const SYSTEM_LIGHT_THEME: ThemeId = "github-light";
 
 /** Wrap a DOM mutation in a View Transition crossfade when available. */
 function withViewTransition(fn: () => void) {
