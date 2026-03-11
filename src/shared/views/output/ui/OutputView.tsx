@@ -106,7 +106,7 @@ export const OutputView = React.memo(function OutputView() {
   });
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       {/* Channel tabs + controls */}
       <div className="flex items-center gap-1 px-2 py-1 border-b border-vsc-border/30 shrink-0">
         {CHANNELS.map((ch) => (
@@ -141,10 +141,7 @@ export const OutputView = React.memo(function OutputView() {
             title={level}
             aria-label={level}
           >
-            <Icon
-              name={levelIcon(level)}
-              tokenSize="2xs"
-            />
+            <Icon name={levelIcon(level)} tokenSize="2xs" />
           </button>
         ))}
 

@@ -14,6 +14,7 @@ export interface PromptStatusBarProps {
   onSend: () => void;
   onStop: () => void;
   canSend: boolean;
+  hideActionButton?: boolean;
 }
 
 /**
@@ -29,6 +30,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
   onSend,
   onStop,
   canSend,
+  hideActionButton,
 }: PromptStatusBarProps) {
   const showStop = isRunning && !canSend;
 
@@ -85,31 +87,32 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
       </div>
 
       {/* Primary action — single button that morphs between Send ↔ Stop */}
-      {showStop ? (
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onStop}
-          aria-label="Stop agent"
-          className="w-[18px] h-[18px] rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
-          title="Stop (Esc)"
-        >
-          <Icon name="primitive-square" tokenSize="2xs" className="text-[9px]" />
-        </Button>
-      ) : (
-        <Button
-          variant="primary"
-          size="icon"
-          onClick={canSend ? onSend : undefined}
-          disabled={!canSend}
-          aria-label={isRunning ? "Queue message" : "Send message"}
-          className="w-[18px] h-[18px] rounded-md disabled:opacity-30 transition-none p-0"
-          style={{ backgroundColor: "var(--color-gnb-accent, #818cf8)" }}
-          title={isRunning ? "Queue (Enter)" : "Send (Enter)"}
-        >
-          <Icon name="arrow-up" tokenSize="2xs" />
-        </Button>
-      )}
+      {!hideActionButton &&
+        (showStop ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onStop}
+            aria-label="Stop agent"
+            className="w-[18px] h-[18px] rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
+            title="Stop (Esc)"
+          >
+            <Icon name="primitive-square" tokenSize="2xs" className="text-[9px]" />
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            size="icon"
+            onClick={canSend ? onSend : undefined}
+            disabled={!canSend}
+            aria-label={isRunning ? "Queue message" : "Send message"}
+            className="w-[18px] h-[18px] rounded-md disabled:opacity-30 transition-none p-0"
+            style={{ backgroundColor: "var(--color-gnb-accent, #818cf8)" }}
+            title={isRunning ? "Queue (Enter)" : "Send (Enter)"}
+          >
+            <Icon name="arrow-up" tokenSize="2xs" />
+          </Button>
+        ))}
     </div>
   );
 });

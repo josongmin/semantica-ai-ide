@@ -86,7 +86,6 @@ export const ViewModeSelector = memo(function ViewModeSelector({
       <div className="flex items-center gap-0.5 ml-auto">
         <HeaderAction icon="new-file" title="New File" />
         <HeaderAction icon="target" title="Locate File" />
-        <HeaderAction icon="close" title="Close" />
         <HeaderAction icon="ellipsis" title="More Actions" />
       </div>
     </div>

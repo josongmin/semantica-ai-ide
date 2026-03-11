@@ -83,7 +83,7 @@ export const TrayFrame = React.memo(function TrayFrame({ height }: TrayFrameProp
               key={view.id}
               role="tabpanel"
               aria-labelledby={`tab-${view.id}`}
-              className="absolute inset-0"
+              className="absolute inset-0 flex-col"
               style={{ display: isActive ? "flex" : "none" }}
             >
               <Suspense

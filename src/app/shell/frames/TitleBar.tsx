@@ -4,7 +4,6 @@ import {
   Activity,
   Bell,
   Bot,
-  Bug,
   ChevronDown,
   Code2,
   GitBranch,
@@ -12,7 +11,6 @@ import {
   Lightbulb,
   type LucideIcon,
   MoreHorizontal,
-  Play,
   Search,
   Settings,
   ShieldCheck,
@@ -29,7 +27,6 @@ import {
 import { cn } from "~shared/ui";
 
 import { conversationSearchOpenAtom } from "../../../shared/lib/atoms/dialogAtoms";
-import { Separator } from "../components/TopBarPrimitives";
 import { detachToFloatingAtom } from "../model/floatingAtoms";
 import { activeNavCategoryAtom, type NavCategoryId, type NavToolId } from "../model/navRegistry";
 import { activeSurfaceAtom } from "../model/shellAtoms";
@@ -155,6 +152,25 @@ export const TitleBar = React.memo(function TitleBar() {
           <span className="truncate max-w-[140px]">semantica</span>
           <ChevronDown size={12} className="shrink-0" style={{ color: gnb.textGhost }} />
         </button>
+      </div>
+
+      {/* ── Center: Feature Nav (responsive overflow) ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <ResponsiveNavGroup
+          items={NAV_ITEMS}
+          activeCategory={activeCategory}
+          onCategoryClick={handleCategoryClick}
+          onToolClick={handleToolClick}
+          leftRef={leftRef}
+          rightRef={rightRef}
+        />
+      </div>
+
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* ── Right: Branch + Search + Utilities ── */}
+      <div ref={rightRef} className="flex items-center gap-1 px-3 shrink-0 z-10">
         <button
           type="button"
           className="inline-flex items-center gap-1 px-2 h-7 rounded-md text-[12px]
@@ -173,54 +189,7 @@ export const TitleBar = React.memo(function TitleBar() {
           <span className="truncate max-w-[120px]">{currentBranch}</span>
           <ChevronDown size={12} className="shrink-0" style={{ color: gnb.textGhost }} />
         </button>
-
-        <Separator />
-
-        <GnbIconButton Icon={Play} label="Run" />
-        <GnbIconButton Icon={Bug} label="Debug" />
-      </div>
-
-      {/* ── Center: Feature Nav (responsive overflow) ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <ResponsiveNavGroup
-          items={NAV_ITEMS}
-          activeCategory={activeCategory}
-          onCategoryClick={handleCategoryClick}
-          onToolClick={handleToolClick}
-          leftRef={leftRef}
-          rightRef={rightRef}
-        />
-      </div>
-
-      {/* Spacer */}
-      <div className="flex-1" />
-
-      {/* ── Right: Search + Utilities ── */}
-      <div ref={rightRef} className="flex items-center gap-1 px-3 shrink-0 z-10">
-        <button
-          type="button"
-          onClick={() => setSearchOpen(true)}
-          className={cn(
-            "inline-flex items-center gap-1.5 h-7 px-2.5 rounded-md",
-            "cursor-pointer text-[12px]",
-            "transition-colors duration-fast focus-ring min-w-[180px]",
-          )}
-          style={{
-            backgroundColor: gnb.pillBg,
-            border: `1px solid ${gnb.border}`,
-            color: gnb.textGhost,
-          }}
-          title="Search (⌘K)"
-        >
-          <Search size={15} className="shrink-0" />
-          <span className="flex-1 text-left">Search...</span>
-          <kbd className="text-[10px] font-mono shrink-0" style={{ color: gnb.textGhost }}>
-            ⌘K
-          </kbd>
-        </button>
-
-        <Separator />
-
+        <GnbIconButton Icon={Search} label="Search (⌘K)" onClick={() => setSearchOpen(true)} />
         <GnbIconButton Icon={Bell} label="Notifications" />
         <GnbIconButton
           Icon={Settings}
@@ -355,7 +324,7 @@ function ResponsiveNavGroup({
               backgroundColor: overflowOpen ? gnb.hover : "transparent",
             }}
           >
-            <MoreHorizontal size={15} strokeWidth={1.75} />
+            <MoreHorizontal size={15} strokeWidth={2} />
           </button>
         )}
       </GnbGroup>
@@ -390,7 +359,7 @@ function ResponsiveNavGroup({
                   backgroundColor: isItemActive ? gnb.hover : "transparent",
                 }}
               >
-                <NavIcon size={15} strokeWidth={1.75} className="shrink-0" />
+                <NavIcon size={15} strokeWidth={2} className="shrink-0" />
                 <span>{item.label}</span>
               </button>
             );
@@ -440,7 +409,7 @@ function GnbIconButton({
                  cursor-pointer bg-transparent border-none transition-all duration-fast focus-ring"
       style={{ color: isActive ? gnb.accent : gnb.textDim }}
     >
-      <Icon size={16} strokeWidth={1.75} />
+      <Icon size={16} strokeWidth={2} />
     </button>
   );
 }
@@ -482,7 +451,7 @@ function GnbNavButton({
     >
       <Icon
         size={15}
-        strokeWidth={1.75}
+        strokeWidth={2}
         className="shrink-0"
         style={isActive ? { color: gnb.accentSecondary } : undefined}
       />

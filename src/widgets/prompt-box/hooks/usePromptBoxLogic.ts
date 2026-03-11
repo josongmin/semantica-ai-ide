@@ -188,6 +188,7 @@ export function usePromptBoxLogic() {
     dragDrop: fileCtx.dragDrop,
     activeDescendant,
     argHint,
+    canSend: sendCtx.canSend,
     handleSend: sendCtx.handleSend,
     handleStop: sendCtx.handleStop,
     handleHistorySelect,

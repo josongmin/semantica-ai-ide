@@ -101,77 +101,72 @@ export const ShellLayout = React.memo(function ShellLayout({
       {!isFocusMode && <TitleBar />}
 
       {/* Body: Content */}
-      <div className="flex flex-1 min-h-0 min-w-0">
-        {/* Content row: Left section (Sidebar + Canvas + Tray) | Agent */}
-        <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-border/15">
-          {/* Left section: Sidebar + Canvas + Tray */}
-          <div className="flex flex-col flex-1 min-w-0 gap-px">
-            {/* Main row: Sidebar | Canvas */}
-            <div className="flex flex-1 min-h-0 min-w-0 gap-px">
-              {isIdeMode && sidebarVisible && !isFocusMode && !isFullscreenSurface && (
-                <>
-                  <div className="shrink-0 h-full" style={{ width: sidebarWidth }}>
-                    <SidebarFrame width={sidebarWidth} />
-                  </div>
-                  <ResizeHandle direction="horizontal" onResize={handleSidebarResize} />
-                </>
-              )}
-
-              {/* Canvas */}
-              <div
-                role="main"
-                data-keyboard-zone="canvas"
-                className="flex flex-col flex-1 min-w-0 overflow-hidden bg-vsc-bg"
-              >
-                <div
-                  className={cn(
-                    "flex-1 min-h-0 overflow-hidden relative",
-                    isZenMode && "flex justify-center",
-                  )}
-                >
-                  <div className={cn("w-full h-full", isZenMode && "max-w-[800px]")}>
-                    {children}
-                  </div>
-
-                  {isFocusMode && (
-                    <button
-                      type="button"
-                      onClick={() => toggleFocus()}
-                      aria-label={isZenMode ? "Exit zen mode" : "Exit focus mode"}
-                      className="absolute top-2 right-2 z-10 px-2 py-1 rounded-md text-2xs
-                                 glass-panel text-vsc-text-ghost
-                                 hover:text-vsc-fg
-                                 opacity-0 hover:opacity-100 focus:opacity-100
-                                 transition-opacity duration-slow cursor-pointer"
-                    >
-                      {isZenMode
-                        ? `Exit Zen Mode (${IS_MAC ? "⌘" : "Ctrl+"}K Z)`
-                        : `Exit Focus Mode (${IS_MAC ? "⌘" : "Ctrl+"}\\)`}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Tray — spans Sidebar + Canvas only, Agent is beside it */}
-            {isIdeMode && trayVisible && !isFocusMode && !isFullscreenSurface && (
+      <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-border/15">
+        {/* Left section: Sidebar + Canvas + Tray */}
+        <div className="flex flex-col flex-1 min-w-0 gap-px bg-vsc-border/15">
+          {/* Main row: Sidebar | Canvas */}
+          <div className="flex flex-1 min-h-0 min-w-0 gap-px">
+            {isIdeMode && sidebarVisible && !isFocusMode && !isFullscreenSurface && (
               <>
-                <ResizeHandle direction="vertical" onResize={handleTrayResize} />
-                <TrayFrame height={trayHeight} />
+                <div className="shrink-0 h-full" style={{ width: sidebarWidth }}>
+                  <SidebarFrame width={sidebarWidth} />
+                </div>
+                <ResizeHandle direction="horizontal" onResize={handleSidebarResize} />
               </>
             )}
+
+            {/* Canvas */}
+            <div
+              role="main"
+              data-keyboard-zone="canvas"
+              className="flex flex-col flex-1 min-w-0 overflow-hidden bg-vsc-bg"
+            >
+              <div
+                className={cn(
+                  "flex-1 min-h-0 overflow-hidden relative",
+                  isZenMode && "flex justify-center",
+                )}
+              >
+                <div className={cn("w-full h-full", isZenMode && "max-w-[800px]")}>{children}</div>
+
+                {isFocusMode && (
+                  <button
+                    type="button"
+                    onClick={() => toggleFocus()}
+                    aria-label={isZenMode ? "Exit zen mode" : "Exit focus mode"}
+                    className="absolute top-2 right-2 z-10 px-2 py-1 rounded-md text-2xs
+                               glass-panel text-vsc-text-ghost
+                               hover:text-vsc-fg
+                               opacity-0 hover:opacity-100 focus:opacity-100
+                               transition-opacity duration-slow cursor-pointer"
+                  >
+                    {isZenMode
+                      ? `Exit Zen Mode (${IS_MAC ? "⌘" : "Ctrl+"}K Z)`
+                      : `Exit Focus Mode (${IS_MAC ? "⌘" : "Ctrl+"}\\)`}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Agent Panel — full height, beside left section */}
-          {agentVisible && !isFocusMode && !isFullscreenSurface && (
+          {/* Tray — spans Sidebar + Canvas width, Agent is beside it */}
+          {isIdeMode && trayVisible && !isFocusMode && !isFullscreenSurface && (
             <>
-              <ResizeHandle direction="horizontal" onResize={handleAgentResize} />
-              <div className="shrink-0 h-full" style={{ width: agentWidth }}>
-                <AgentFrame width={agentWidth}>{agentContent}</AgentFrame>
-              </div>
+              <ResizeHandle direction="vertical" onResize={handleTrayResize} />
+              <TrayFrame height={trayHeight} />
             </>
           )}
         </div>
+
+        {/* Agent Panel — full height, beside left section */}
+        {agentVisible && !isFocusMode && !isFullscreenSurface && (
+          <>
+            <ResizeHandle direction="horizontal" onResize={handleAgentResize} />
+            <div className="shrink-0 h-full" style={{ width: agentWidth }}>
+              <AgentFrame width={agentWidth}>{agentContent}</AgentFrame>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Status Bar — full width, z-40 */}

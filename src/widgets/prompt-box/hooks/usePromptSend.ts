@@ -108,10 +108,13 @@ export function usePromptSend({
     }
   }, [isRunning, messageQueue, setMessageQueue, send, textareaRef]);
 
+  const canSend = (text.trim().length > 0 || attachments.length > 0) && !sending;
+
   return {
     send,
     sending,
     isRunning,
+    canSend,
     enqueueMessage,
     handleSend,
     handleStop,

@@ -72,6 +72,7 @@ export const PromptBox = React.memo(function PromptBox() {
     argHint,
 
     // Handlers
+    canSend,
     handleSend,
     handleStop,
     handleHistorySelect,
@@ -169,7 +170,7 @@ export const PromptBox = React.memo(function PromptBox() {
           onOpenCommands={handleOpenCommands}
           onSend={handleSend}
           onStop={handleStop}
-          canSend={!!text.trim()}
+          canSend={canSend}
         />
       </div>
     </div>
