@@ -181,8 +181,8 @@ function EditorStatusBar({
   language,
   lineCount,
   gitBranch,
-  encoding,
-  indent,
+  encoding: _encoding,
+  indent: _indent,
 }: {
   cursor: EditorCursorState;
   language: string;
@@ -215,10 +215,6 @@ function EditorStatusBar({
       {/* ── Right ── */}
       <div className="ml-auto flex items-center gap-px">
         <StatusChip label={posLabel} />
-        <StatusSep />
-        <StatusChip label={indent} />
-        <StatusSep />
-        <StatusChip label={encoding} />
         <StatusSep />
         <StatusChip icon="symbol-namespace" label={langLabel} highlight />
         <StatusSep />

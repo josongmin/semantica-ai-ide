@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { atom, useAtomValue } from "jotai";
 
-import { Badge, cn, Icon, Text } from "~shared/ui";
+import { cn, Icon, Text } from "~shared/ui";
 
 // ─── Problem Model ───────────────────────────────────────
 
@@ -417,27 +417,14 @@ const FileGroup = React.memo(function FileGroup({
           tokenSize="3xs"
           className="text-vsc-text-ghost shrink-0 transition-transform duration-100"
         />
-        <FileTypeIcon fileName={fileName} />
-        <span className="text-vsc-fg font-medium truncate">{fileName}</span>
-        <span className="text-vsc-text-ghost truncate text-3xs opacity-60">{dirPath}</span>
+        <span className="text-vsc-fg font-medium truncate text-3xs">{fileName}</span>
+        <span className="text-vsc-text-ghost truncate text-3xs opacity-50">{dirPath}</span>
 
-        <div className="ml-auto flex items-center gap-1 shrink-0">
-          {fileErrors > 0 && (
-            <Badge
-              variant="error"
-              text={fileErrors}
-              className="min-w-4! min-h-4! text-3xs! px-1!"
-            />
-          )}
-          {fileWarnings > 0 && (
-            <Badge
-              variant="warning"
-              text={fileWarnings}
-              className="min-w-4! min-h-4! text-3xs! px-1!"
-            />
-          )}
+        <div className="ml-auto flex items-center gap-1.5 shrink-0 text-3xs tabular-nums">
+          {fileErrors > 0 && <span className="text-vsc-error opacity-70">{fileErrors}</span>}
+          {fileWarnings > 0 && <span className="text-vsc-warning opacity-70">{fileWarnings}</span>}
           {diagnostics.length - fileErrors - fileWarnings > 0 && (
-            <span className="text-3xs text-vsc-text-ghost tabular-nums">
+            <span className="text-vsc-text-ghost opacity-50">
               +{diagnostics.length - fileErrors - fileWarnings}
             </span>
           )}
@@ -527,27 +514,3 @@ const DiagnosticRow = React.memo(function DiagnosticRow({
     </div>
   );
 });
-
-// ─── File Type Icon ─────────────────────────────────────
-
-function FileTypeIcon({ fileName }: { fileName: string }) {
-  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
-  let iconName = "file";
-  let colorClass = "text-vsc-text-tertiary";
-
-  if (ext === "tsx" || ext === "jsx") {
-    iconName = "symbol-misc";
-    colorClass = "text-sky-400";
-  } else if (ext === "ts" || ext === "js") {
-    iconName = "symbol-namespace";
-    colorClass = "text-amber-400";
-  } else if (ext === "css" || ext === "scss") {
-    iconName = "symbol-color";
-    colorClass = "text-purple-400";
-  } else if (ext === "json") {
-    iconName = "symbol-structure";
-    colorClass = "text-emerald-400";
-  }
-
-  return <Icon name={iconName} tokenSize="2xs" className={cn("shrink-0", colorClass)} />;
-}

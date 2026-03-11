@@ -23,4 +23,18 @@ export const resetDiagnosticsAtom = atom(null, (_get, set) => {
   set(diagnosticsMapAtom, new Map());
 });
 
+/** Derived: total error / warning counts across all files */
+export const diagnosticCountsAtom = atom((get) => {
+  const map = get(diagnosticsMapAtom);
+  let errors = 0;
+  let warnings = 0;
+  for (const diags of map.values()) {
+    for (const d of diags) {
+      if (d.severity === "error") errors++;
+      else if (d.severity === "warning") warnings++;
+    }
+  }
+  return { errors, warnings };
+});
+
 registerResetAtom(resetDiagnosticsAtom);

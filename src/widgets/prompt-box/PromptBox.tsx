@@ -87,7 +87,7 @@ export const PromptBox = React.memo(function PromptBox() {
   // ─── Render ─────────────────────────────────────────────
 
   return (
-    <div className="mx-2 mb-0 mt-0.5">
+    <div className="mx-2 mb-1 mt-0.5">
       <MessageQueuePanel />
 
       <div

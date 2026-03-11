@@ -1,9 +1,15 @@
 import React, { useCallback } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
+import { diagnosticCountsAtom } from "~features/diagnostics/model/diagnosticAtoms";
 import { currentGitBranchAtom } from "~entities/git-history/model/atoms";
+import {
+  hasActiveAgentsAtom,
+  runningAgentsCountAtom,
+} from "~shared/entities/agent-instance/model/atoms";
 import { cn, Icon } from "~shared/ui";
 
+import { indexProgressAtom, indexStatusAtom } from "../../entities/semantic-index/model/atoms";
 import { notificationsAtom } from "../../features/notifications/model/notificationAtoms";
 import { activeTrayViewAtom, trayVisibleAtom } from "./model/shellAtoms";
 import { getViewsForFrame } from "./model/viewRegistry";
@@ -12,6 +18,13 @@ import { getViewsForFrame } from "./model/viewRegistry";
 
 const BAR_H = 28;
 
+function getGraphVariant(status: string): "danger" | "active" | "success" | "muted" {
+  if (status === "error") return "danger";
+  if (status === "indexing") return "active";
+  if (status === "ready") return "success";
+  return "muted";
+}
+
 export const ShellStatusBar = React.memo(function ShellStatusBar() {
   const currentBranch = useAtomValue(currentGitBranchAtom);
   const notifications = useAtomValue(notificationsAtom);
@@ -19,6 +32,17 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
   const trayViews = getViewsForFrame("tray");
   const [activeView, setActiveView] = useAtom(activeTrayViewAtom);
   const [trayVisible, setTrayVisible] = useAtom(trayVisibleAtom);
+
+  // P0: Agent
+  const hasActive = useAtomValue(hasActiveAgentsAtom);
+  const runningCount = useAtomValue(runningAgentsCountAtom);
+
+  // P0: Graph / Index
+  const indexStatus = useAtomValue(indexStatusAtom);
+  const indexProgress = useAtomValue(indexProgressAtom);
+
+  // P0: Diagnostics
+  const { errors, warnings } = useAtomValue(diagnosticCountsAtom);
 
   const handleTrayViewClick = useCallback(
     (viewId: string) => {
@@ -32,14 +56,34 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
     [trayVisible, activeView, setTrayVisible, setActiveView],
   );
 
+  // ─── Derived labels ──────────────────────────────────
+  const agentLabel = hasActive ? `Agent Running (${runningCount})` : "Agent Idle";
+  const agentIcon = hasActive ? "sync~spin" : "check";
+
+  let graphLabel: string;
+  let graphIcon: string;
+  if (indexStatus === "indexing") {
+    graphLabel = `Indexing ${indexProgress}%`;
+    graphIcon = "loading~spin";
+  } else if (indexStatus === "ready") {
+    graphLabel = "Indexed";
+    graphIcon = "database";
+  } else if (indexStatus === "error") {
+    graphLabel = "Index Error";
+    graphIcon = "warning";
+  } else {
+    graphLabel = "Index Idle";
+    graphIcon = "circle-outline";
+  }
+
   return (
     <footer
       role="contentinfo"
-      className="relative z-40 flex items-center justify-between bg-vsc-surface-1 border-t border-vsc-border/20 select-none shrink-0"
+      className="relative z-40 flex items-center border-t border-vsc-border/20 select-none shrink-0"
       style={{ height: BAR_H }}
     >
-      {/* Left: tray panel buttons */}
-      <div className="flex items-center gap-px pl-1">
+      {/* ─── Tray Buttons Zone ─── */}
+      <div className="flex items-center gap-px pl-1 pr-1 self-stretch bg-vsc-surface-2/60">
         {trayViews.map((view) => {
           const isActive = trayVisible && activeView === view.id;
           return (
@@ -54,16 +98,119 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
         })}
       </div>
 
-      {/* Right: meta info */}
-      <div className="flex items-center gap-px pr-1">
-        <MetaChip icon="git-branch" label={currentBranch} />
-        {unreadCount > 0 && <MetaChip icon="bell-dot" label={String(unreadCount)} accent />}
+      {/* ─── Meta Info Zone ─── */}
+      <div className="flex-1 flex items-center justify-between bg-vsc-surface-1 self-stretch">
+        {/* Left: empty spacer */}
+        <div />
+
+        {/* Right: AI status + diagnostics + git + notifications */}
+        <div className="flex items-center gap-px pr-1">
+          <StatusPill
+            icon={agentIcon}
+            label={agentLabel}
+            variant={hasActive ? "active" : "muted"}
+          />
+
+          <Separator />
+
+          <StatusPill icon={graphIcon} label={graphLabel} variant={getGraphVariant(indexStatus)} />
+
+          <Divider />
+
+          <DiagnosticChip errors={errors} warnings={warnings} />
+
+          <Separator />
+
+          <MetaChip icon="git-branch" label={currentBranch} />
+
+          {unreadCount > 0 && <MetaChip icon="bell-dot" label={String(unreadCount)} accent />}
+        </div>
       </div>
     </footer>
   );
 });
 
 // ─── Sub-components ─────────────────────────────────────
+
+function Divider() {
+  return <span className="w-px h-3.5 bg-vsc-border/50 mx-1.5 shrink-0" />;
+}
+
+function Separator() {
+  return <span className="w-px h-3 bg-vsc-border/20 mx-0.5 shrink-0" />;
+}
+
+type PillVariant = "muted" | "active" | "success" | "danger";
+
+const pillStyles: Record<PillVariant, string> = {
+  muted: "text-vsc-text-ghost",
+  active: "text-sky-500",
+  success: "text-emerald-500",
+  danger: "text-rose-500",
+};
+
+function StatusPill({
+  icon,
+  label,
+  variant = "muted",
+}: {
+  icon: string;
+  label: string;
+  variant?: PillVariant;
+}) {
+  const isSpin = icon.endsWith("~spin");
+  const iconName = isSpin ? icon.replace("~spin", "") : icon;
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 px-2 rounded-full cursor-default text-[11px] tracking-wide",
+        pillStyles[variant],
+      )}
+      style={{ height: BAR_H - 6 }}
+    >
+      <Icon name={iconName} size={12} className={cn("shrink-0", isSpin && "animate-spin")} />
+      <span className="truncate max-w-[140px]">{label}</span>
+    </span>
+  );
+}
+
+function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number }) {
+  const hasErrors = errors > 0;
+  const hasWarnings = warnings > 0;
+  const clean = !hasErrors && !hasWarnings;
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2 rounded-full cursor-default text-[11px] tracking-wide",
+        clean && "text-vsc-text-ghost",
+      )}
+      style={{ height: BAR_H - 6 }}
+    >
+      {/* Errors */}
+      <span
+        className={cn(
+          "inline-flex items-center gap-0.5",
+          hasErrors ? "text-rose-400" : "text-vsc-text-ghost",
+        )}
+      >
+        <Icon name="error" size={12} className="shrink-0" />
+        <span>{errors}</span>
+      </span>
+      {/* Warnings */}
+      <span
+        className={cn(
+          "inline-flex items-center gap-0.5",
+          hasWarnings ? "text-amber-400" : "text-vsc-text-ghost",
+        )}
+      >
+        <Icon name="warning" size={12} className="shrink-0" />
+        <span>{warnings}</span>
+      </span>
+    </span>
+  );
+}
 
 function TrayToggleButton({
   icon,
@@ -84,8 +231,8 @@ function TrayToggleButton({
         "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
         "text-[11.25px] tracking-[0.01em]",
         isActive
-          ? "text-vsc-accent bg-vsc-accent/15"
-          : "text-vsc-text-ghost bg-transparent hover:text-vsc-text-secondary hover:bg-vsc-surface-2/50",
+          ? "text-vsc-fg font-medium bg-vsc-surface-2/80"
+          : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
       )}
       style={{ height: BAR_H - 7 }}
       title={label}
@@ -94,7 +241,7 @@ function TrayToggleButton({
       <Icon
         name={icon}
         size={12}
-        className={cn("shrink-0", isActive ? "text-vsc-accent" : "opacity-60")}
+        className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-70")}
       />
       <span>{label}</span>
     </button>
