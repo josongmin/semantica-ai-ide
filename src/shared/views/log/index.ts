@@ -13,7 +13,7 @@ registerView({
   detachable: true,
   restorable: true,
   persistence: "workspace",
-  priority: 60,
+  priority: 50,
   component: lazy(() =>
     import("./ui/LogView").then((m) => ({
       default: m.LogView,

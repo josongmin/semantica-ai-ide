@@ -129,9 +129,7 @@ const TabItem = React.memo(function TabItem({
       )}
     >
       {/* Bottom accent — colored line for active tab */}
-      {isActive && (
-        <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-vsc-accent/70 z-1" />
-      )}
+      {isActive && <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-vsc-accent z-1" />}
       {!isActive && <span className="absolute bottom-0 left-0 right-0 h-px bg-vsc-border/20" />}
 
       {/* Language icon — colored per language */}

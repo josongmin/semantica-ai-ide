@@ -1086,31 +1086,35 @@ body {
 /* Keywords: if, const, return, class, import, export … */
 .hljs-keyword,
 .hljs-selector-tag {
-  color: var(--vscode-debugTokenExpression-name, light-dark(#cf222e, #ff7b72));
+  color: var(--vscode-debugTokenExpression-name, light-dark(#d73a49, #bb9af7));
 }
 
-/* Strings & regex */
-.hljs-string,
+/* Strings */
+.hljs-string {
+  color: var(--vscode-debugTokenExpression-string, light-dark(#032f62, #9ece6a));
+}
+
+/* Regex */
 .hljs-regexp {
-  color: var(--vscode-debugTokenExpression-string, light-dark(#0a3069, #a5d6ff));
+  color: light-dark(#032f62, #89ddff);
 }
 
 /* Numbers & literals */
 .hljs-number,
 .hljs-literal {
-  color: var(--vscode-debugTokenExpression-number, light-dark(#8b5cf6, #79c0ff));
+  color: var(--vscode-debugTokenExpression-number, light-dark(#005cc5, #ff9e64));
 }
 
 /* Built-in types */
 .hljs-built_in,
 .hljs-type {
-  color: light-dark(#8250df, #d2a8ff);
+  color: light-dark(#6f42c1, #2ac3de);
 }
 
 /* Comments */
 .hljs-comment,
 .hljs-quote {
-  color: var(--vscode-descriptionForeground, light-dark(#6e7781, #8b949e));
+  color: var(--vscode-descriptionForeground, light-dark(#6a737d, #565f89));
   font-style: italic;
 }
 
@@ -1118,58 +1122,69 @@ body {
 .hljs-title,
 .hljs-title\.function,
 .hljs-section {
-  color: var(--vscode-symbolIcon-functionForeground, light-dark(#8250df, #d2a8ff));
+  color: var(--vscode-symbolIcon-functionForeground, light-dark(#6f42c1, #7aa2f7));
 }
 
 /* Variables, params */
-.hljs-variable,
+.hljs-variable {
+  color: var(--vscode-editor-foreground, light-dark(#24292e, #c0caf5));
+}
 .hljs-params {
-  color: var(--vscode-editor-foreground, light-dark(#24292f, #e6edf3));
+  color: light-dark(#e36209, #e0af68);
 }
 
 /* Class / type names */
 .hljs-title\.class,
 .hljs-title\.class\.inherited {
-  color: var(--vscode-symbolIcon-classForeground, light-dark(#953800, #ffa657));
+  color: var(--vscode-symbolIcon-classForeground, light-dark(#6f42c1, #2ac3de));
 }
 
 /* Tags (HTML/XML) */
 .hljs-tag,
 .hljs-name {
-  color: light-dark(#116329, #7ee787);
+  color: light-dark(#22863a, #f7768e);
 }
 
 /* Attributes in tags & object keys */
 .hljs-attr,
 .hljs-attribute {
-  color: light-dark(#8b5cf6, #79c0ff);
+  color: light-dark(#e36209, #73daca);
+}
+
+/* Property names */
+.hljs-property {
+  color: light-dark(#e36209, #73daca);
 }
 
 /* Diff addition / deletion */
 .hljs-addition {
-  color: light-dark(#116329, #aff5b4);
+  color: light-dark(#22863a, #9ece6a);
 }
 .hljs-deletion {
-  color: light-dark(#82071e, #ffdcd7);
+  color: light-dark(#d73a49, #f7768e);
 }
 
 /* Meta / preprocessor */
 .hljs-meta,
 .hljs-meta .hljs-keyword,
 .hljs-meta .hljs-string {
-  color: var(--vscode-descriptionForeground, light-dark(#6e7781, #8b949e));
+  color: var(--vscode-descriptionForeground, light-dark(#6a737d, #565f89));
 }
 
-/* Punctuation & operators */
-.hljs-punctuation,
+/* Operators */
 .hljs-operator {
-  color: var(--vscode-editor-foreground, light-dark(#1f2328, #e6edf3));
+  color: light-dark(#d73a49, #89ddff);
+}
+
+/* Punctuation */
+.hljs-punctuation {
+  color: light-dark(#24292e, #9aa5ce);
 }
 
 /* Template variable / interpolation */
 .hljs-template-variable,
 .hljs-subst {
-  color: light-dark(#953800, #ffa657);
+  color: light-dark(#e36209, #e0af68);
 }
 
 .hljs-emphasis {

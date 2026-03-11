@@ -17,7 +17,6 @@ import "~shared/views/findings";
 import "~shared/views/problems";
 import "~shared/views/output";
 import "~shared/views/debug";
-import "~shared/views/terminal";
 import "~shared/views/tasks";
 import "~shared/views/log";
 import "~shared/views/event-log";

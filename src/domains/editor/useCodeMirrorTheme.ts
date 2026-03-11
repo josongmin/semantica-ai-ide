@@ -3,12 +3,7 @@ import type { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { useAtomValue } from "jotai";
 
-import {
-  LIGHT_THEME_IDS,
-  THEME_PRESETS,
-  type ThemeId,
-  themeIdAtom,
-} from "~shared/lib/theme";
+import { LIGHT_THEME_IDS, THEME_PRESETS, type ThemeId, themeIdAtom } from "~shared/lib/theme";
 
 // ─── Helpers ─────────────────────────────────────────────
 
@@ -55,6 +50,17 @@ function buildCodeMirrorTheme(themeId: ThemeId): Extension {
   const number = c("--color-vsc-number");
   const fn = c("--color-vsc-function");
   const property = c("--color-vsc-property");
+
+  // Derived semantic colors per palette (SOTA-level differentiation)
+  const tag = isLight ? "#22863a" : "#f7768e"; // JSX/HTML tags
+  const regexp = isLight ? "#032f62" : "#89ddff"; // Regex literals
+  const constant = isLight ? "#005cc5" : "#ff9e64"; // Constants/enums
+  const typeColor = isLight ? "#6f42c1" : "#2ac3de"; // Types/interfaces
+  const operator = isLight ? "#d73a49" : "#89ddff"; // Operators
+  const punctuation = isLight ? "#24292e" : "#9aa5ce"; // Brackets/punctuation
+  const escape = isLight ? "#005cc5" : "#89ddff"; // Escape sequences
+  const variableName = isLight ? "#24292e" : "#c0caf5"; // Variables
+  const parameter = isLight ? "#e36209" : "#e0af68"; // Parameters
 
   return EditorView.theme(
     {
@@ -183,34 +189,65 @@ function buildCodeMirrorTheme(themeId: ThemeId): Extension {
       },
 
       // ── Syntax token colors (classHighlighter .tok-* classes) ──
+      // Keywords & control flow
       ".tok-keyword": { color: keyword },
-      ".tok-operator": { color: textSecondary },
+      ".tok-operator": { color: operator },
+      ".tok-controlKeyword": { color: keyword },
+
+      // Literals
       ".tok-number": { color: number },
       ".tok-string": { color: string },
-      ".tok-string2": { color: string },
+      ".tok-string2": { color: regexp },
+      ".tok-regexp": { color: regexp },
+      ".tok-escape": { color: escape, fontWeight: "bold" },
+      ".tok-literal": { color: constant },
+      ".tok-bool": { color: constant },
+      ".tok-atom": { color: constant },
+      ".tok-null": { color: constant },
+
+      // Comments
       ".tok-comment": { color: comment, fontStyle: "italic" },
-      ".tok-variableName": { color: fg },
-      ".tok-variableName2": { color: fn },
-      ".tok-definition": { color: fn },
-      ".tok-punctuation": { color: textSecondary },
+
+      // Names & identifiers
+      ".tok-variableName": { color: variableName },
+      ".tok-variableName2": { color: parameter },
+      ".tok-definition": { color: fn, fontWeight: "500" },
       ".tok-propertyName": { color: property },
-      ".tok-typeName": { color: accent },
-      ".tok-className": { color: accent },
-      ".tok-namespace": { color: accent },
+      ".tok-function": { color: fn },
+
+      // Types & classes
+      ".tok-typeName": { color: typeColor },
+      ".tok-className": { color: typeColor },
+      ".tok-namespace": { color: typeColor },
       ".tok-macroName": { color: fn },
-      ".tok-literal": { color: number },
-      ".tok-bool": { color: number },
-      ".tok-atom": { color: number },
-      ".tok-separator": { color: textSecondary },
-      ".tok-labelName": { color: fn },
-      ".tok-attributeName": { color: accent },
+
+      // Punctuation & structure
+      ".tok-punctuation": { color: punctuation },
+      ".tok-separator": { color: punctuation },
+      ".tok-paren": { color: punctuation },
+      ".tok-squareBracket": { color: punctuation },
+      ".tok-brace": { color: punctuation },
+      ".tok-angleBracket": { color: punctuation },
+
+      // JSX / HTML
+      ".tok-tagName": { color: tag },
+      ".tok-attributeName": { color: property },
       ".tok-attributeValue": { color: string },
+
+      // Markdown & docs
       ".tok-heading": { color: keyword, fontWeight: "bold" },
       ".tok-link": { color: c("--color-vsc-link"), textDecoration: "underline" },
       ".tok-emphasis": { fontStyle: "italic" },
       ".tok-strong": { fontWeight: "bold" },
-      ".tok-invalid": { color: c("--color-vsc-error") },
-      ".tok-meta": { color: textGhost },
+      ".tok-strikethrough": { textDecoration: "line-through" },
+
+      // Labels & meta
+      ".tok-labelName": { color: fn },
+      ".tok-meta": { color: comment },
+      ".tok-processingInstruction": { color: comment },
+      ".tok-documentMeta": { color: comment },
+      ".tok-annotation": { color: fn },
+      ".tok-invalid": { color: c("--color-vsc-error"), textDecoration: "underline wavy" },
     },
     { dark: !isLight },
   );
