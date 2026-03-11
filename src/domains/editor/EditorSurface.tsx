@@ -70,12 +70,9 @@ export function EditorSurface() {
   const closeContextMenu = useCallback(() => setCtxMenu(null), []);
 
   return (
-    <div className="flex flex-col h-full bg-vsc-surface-0">
+    <div className="flex flex-col h-full bg-white">
       {/* Tab Bar */}
       <EditorTabBar />
-
-      {/* Breadcrumb */}
-      {activeTab && <Breadcrumb filePath={activeTab.filePath} />}
 
       {/* Editor / Welcome */}
       <div className="flex-1 min-h-0">
@@ -109,8 +106,9 @@ export function EditorSurface() {
   );
 }
 
-// ─── Breadcrumb ─────────────────────────────────────────
+// ─── Breadcrumb (reserved) ────────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
 function Breadcrumb({ filePath }: { filePath: string }) {
   const rawSegments = filePath.split("/");
   const displaySegments =

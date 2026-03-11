@@ -54,7 +54,7 @@ export const EditorTabBar = React.memo(function EditorTabBar() {
 
   if (tabs.length === 0) {
     return (
-      <div className="flex items-center h-[30px] px-4 bg-vsc-surface-1 text-xs text-vsc-text-ghost shrink-0">
+      <div className="flex items-center h-[30px] px-4 bg-white text-xs text-vsc-text-ghost shrink-0">
         <Icon name="files" tokenSize="2xs" className="mr-1.5 opacity-30" />
         No files open
       </div>
@@ -64,7 +64,7 @@ export const EditorTabBar = React.memo(function EditorTabBar() {
   return (
     <div
       className={cn(
-        "flex items-stretch h-[30px] bg-vsc-surface-1 overflow-x-auto shrink-0",
+        "flex items-stretch h-[30px] bg-white overflow-x-auto shrink-0",
         "scrollbar-none",
       )}
       role="tablist"
@@ -124,8 +124,8 @@ const TabItem = React.memo(function TabItem({
         // Separator between tabs
         !isFirst && "border-l border-vsc-border/20",
         isActive
-          ? "bg-vsc-surface-0 text-vsc-text-primary"
-          : "text-vsc-fg/70 hover:text-vsc-fg hover:bg-vsc-surface-0/40",
+          ? "bg-white text-vsc-text-primary"
+          : "text-vsc-fg/70 hover:text-vsc-fg hover:bg-white/40",
       )}
     >
       {/* Bottom accent — colored line for active tab */}

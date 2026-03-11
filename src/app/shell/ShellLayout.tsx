@@ -113,7 +113,7 @@ export const ShellLayout = React.memo(function ShellLayout({
         {showNavBar && <NavBar width={navExpanded ? NAV_EXPANDED_W : NAV_RAIL_W} />}
 
         {/* Content row: Left section (Sidebar + Canvas + Tray) | Agent */}
-        <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-surface-1">
+        <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-border/15">
           {/* Left section: Sidebar + Canvas + Tray */}
           <div className="flex flex-col flex-1 min-w-0 gap-px">
             {/* Main row: Sidebar | Canvas */}

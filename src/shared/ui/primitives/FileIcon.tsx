@@ -193,28 +193,26 @@ export const FileIcon = React.memo(function FileIcon({
         role="img"
         aria-label="File"
       >
-        <rect x="3" y="1" width="10" height="14" rx="1.5" fill="#3a3d45" opacity=".25" />
-        <rect
-          x="3"
-          y="1"
-          width="10"
-          height="14"
-          rx="1.5"
+        {/* Document body */}
+        <path
+          d="M4 1.5h5.5L13 5v9a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14V3A1.5 1.5 0 014.5 1.5z"
+          fill="#78909c"
+          opacity=".15"
+        />
+        {/* Corner fold */}
+        <path d="M9.5 1.5V4.5a.5.5 0 00.5.5h3" fill="#78909c" opacity=".15" />
+        <path
+          d="M4.5 1.5h5L13 5v9a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14V3A1.5 1.5 0 014.5 1.5zM9.5 1.5V4.5a.5.5 0 00.5.5h3"
           fill="none"
-          stroke="#6b7280"
-          strokeWidth=".4"
-          opacity=".3"
+          stroke="#78909c"
+          strokeWidth=".6"
+          opacity=".35"
         />
       </svg>
     );
   }
 
-  // Minimal colored badge icon — no document outline, just the badge
-  const badgeW = icon.label.length > 2 ? 16 : 14;
-  const badgeH = 10;
-  const badgeX = (16 - badgeW) / 2;
-  const badgeY = (16 - badgeH) / 2;
-  const fontSize = icon.label.length > 2 ? 5.5 : 6;
+  const fontSize = icon.label.length > 2 ? 4.8 : 5.2;
 
   return (
     <svg
@@ -225,26 +223,34 @@ export const FileIcon = React.memo(function FileIcon({
       role="img"
       aria-label={icon.label}
     >
-      {/* Colored pill badge */}
-      <rect
-        x={badgeX}
-        y={badgeY}
-        width={badgeW}
-        height={badgeH}
-        rx="2.5"
+      {/* Document body */}
+      <path
+        d="M4.5 1.5h5L13 5v9a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14V3A1.5 1.5 0 014.5 1.5z"
         fill={icon.color}
-        opacity=".85"
+        opacity=".12"
       />
+      {/* Corner fold — colored accent */}
+      <path d="M9.5 1.5L13 5h-3a.5.5 0 01-.5-.5V1.5z" fill={icon.color} opacity=".45" />
+      {/* Outline */}
+      <path
+        d="M4.5 1.5h5L13 5v9a1.5 1.5 0 01-1.5 1.5h-7A1.5 1.5 0 013 14V3A1.5 1.5 0 014.5 1.5z"
+        fill="none"
+        stroke={icon.color}
+        strokeWidth=".5"
+        opacity=".4"
+      />
+      {/* Extension label */}
       <text
-        x="8"
-        y="8"
+        x="7.5"
+        y="11"
         dominantBaseline="central"
         textAnchor="middle"
         fontFamily="system-ui, -apple-system, sans-serif"
         fontSize={fontSize}
         fontWeight="700"
-        fill="#fff"
-        letterSpacing=".4"
+        fill={icon.color}
+        opacity=".85"
+        letterSpacing=".3"
       >
         {icon.label}
       </text>
