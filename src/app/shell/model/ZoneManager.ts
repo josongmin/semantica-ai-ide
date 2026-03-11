@@ -51,15 +51,19 @@ export function loadShellLayout(): ShellLayoutState | null {
 
     // RFC-016 §8.2: Validate restored View IDs against viewRegistry
     const validTrayView = getViewById(atv) ? atv : "problems";
-    const rawSidebarView =
-      typeof parsed.activeSidebarView === "string"
-        ? parsed.activeSidebarView
-        : typeof parsed.activeSidebarPanel === "string"
-          ? parsed.activeSidebarPanel
-          : "file-tree";
+    let rawSidebarView: string;
+    if (typeof parsed.activeSidebarView === "string") {
+      rawSidebarView = parsed.activeSidebarView;
+    } else if (typeof parsed.activeSidebarPanel === "string") {
+      rawSidebarView = parsed.activeSidebarPanel;
+    } else {
+      rawSidebarView = "file-tree";
+    }
     const validSidebarView = getViewById(rawSidebarView) ? rawSidebarView : "file-tree";
+    const navBarExp = typeof parsed.navBarExpanded === "boolean" ? parsed.navBarExpanded : true;
 
     return {
+      navBarExpanded: navBarExp,
       sidebarWidth: clamp(sw, 160, 480),
       sidebarVisible: sv,
       agentPanelWidth: clamp(aw, 200, 600),

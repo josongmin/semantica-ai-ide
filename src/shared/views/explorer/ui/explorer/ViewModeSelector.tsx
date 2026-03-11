@@ -68,18 +68,16 @@ export const ViewModeSelector = memo(function ViewModeSelector({
         <button
           type="button"
           className={cn(
-            "flex items-center gap-1 w-full px-3 h-[28px]",
+            "flex items-center gap-1.5 w-full px-2.5 h-[26px]",
             "bg-transparent border-none cursor-pointer text-left",
             "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
           )}
         >
-          <Icon name="root-folder" tokenSize="2xs" className="text-vsc-text-tertiary shrink-0" />
-          <span className="text-sm font-medium text-vsc-fg truncate">{VIEW_MODE_LABEL[value]}</span>
-          <Icon
-            name="chevron-down"
-            tokenSize="2xs"
-            className="text-vsc-text-ghost shrink-0 ml-auto"
-          />
+          <Icon name="root-folder" size={13} className="text-vsc-text-tertiary shrink-0" />
+          <span className="text-[13px] font-medium text-vsc-fg truncate">
+            {VIEW_MODE_LABEL[value]}
+          </span>
+          <Icon name="chevron-down" size={10} className="text-vsc-text-ghost shrink-0 ml-auto" />
         </button>
       }
     />

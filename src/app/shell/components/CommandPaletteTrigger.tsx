@@ -15,7 +15,7 @@ export const CommandPaletteTrigger = React.memo(function CommandPaletteTrigger()
       type="button"
       onClick={() => setSearchOpen(true)}
       className={cn(
-        "inline-flex items-center gap-1.5 h-6 px-2 rounded-md",
+        "inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full",
         "cursor-pointer bg-vsc-surface-2/40 border border-vsc-border/15",
         "text-2xs text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-2/60",
         "transition-colors duration-fast focus-ring",

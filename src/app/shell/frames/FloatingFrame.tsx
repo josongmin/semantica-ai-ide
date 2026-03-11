@@ -126,7 +126,7 @@ export const FloatingFrame = React.memo(function FloatingFrame({
         zIndex: state.zOrder,
       }}
       className={cn(
-        "flex flex-col rounded-lg overflow-hidden pointer-events-auto",
+        "flex flex-col overflow-hidden pointer-events-auto",
         "border border-vsc-border/40 bg-vsc-bg shadow-lg shadow-black/10",
         isTopWindow && "ring-1 ring-vsc-accent/25 shadow-xl shadow-black/15",
         "transition-shadow duration-normal",

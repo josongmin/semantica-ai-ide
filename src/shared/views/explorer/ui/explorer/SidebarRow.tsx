@@ -27,6 +27,7 @@ export const SidebarRow = memo(function SidebarRow({
   badge,
   onBadgeClick,
   agents,
+  isSelected,
   ...rest
 }: {
   depth: number;
@@ -42,6 +43,8 @@ export const SidebarRow = memo(function SidebarRow({
   badge?: string;
   onBadgeClick?: () => void;
   agents?: readonly AgentPresence[];
+  /** 현재 열린 파일 — 옅은 녹색 하이라이트 */
+  isSelected?: boolean;
 } & React.AriaAttributes) {
   const statusColor: string | undefined = status ? STATUS_COLOR[status] : undefined;
   const statusBg: string | undefined = status ? STATUS_BG[status] : undefined;
@@ -50,13 +53,13 @@ export const SidebarRow = memo(function SidebarRow({
     <button
       type="button"
       className={cn(
-        "group/row flex items-center w-full pr-4 gap-0.5",
+        "group/row flex items-center w-full pr-3 gap-1",
         "bg-transparent border-none cursor-pointer text-left",
-        "hover:bg-vsc-list-hover/60 active:bg-vsc-list-active-bg",
-        "transition-colors duration-fast focus-ring rounded-none",
+        "hover:bg-vsc-list-hover/60 transition-colors duration-fast focus-ring rounded-none",
+        isSelected ? "bg-vsc-list-active text-vsc-list-active-fg" : "active:bg-vsc-list-active/50",
         statusBg,
       )}
-      style={{ paddingLeft: `${depth * INDENT_PX + 6}px`, height: ROW_HEIGHT }}
+      style={{ paddingLeft: `${depth * INDENT_PX + 4}px`, height: ROW_HEIGHT }}
       onClick={onClick}
       title={title}
       {...rest}
@@ -65,29 +68,29 @@ export const SidebarRow = memo(function SidebarRow({
       {chevron ? (
         <Icon
           name="chevron-right"
-          tokenSize="2xs"
+          size={10}
           className={cn(
             "shrink-0 transition-transform duration-normal text-vsc-text-tertiary",
             chevronOpen && "rotate-90",
           )}
         />
       ) : (
-        <span className="w-3 shrink-0" />
+        <span className="w-2.5 shrink-0" />
       )}
 
       {/* Icon */}
       {isFolder ? (
         <Icon
           name={chevronOpen ? "folder-opened" : "folder"}
-          size={14}
+          size={15}
           className="shrink-0 text-vsc-text-tertiary"
         />
       ) : (
-        <FileIcon name={label} size={14} />
+        <FileIcon name={label} size={15} />
       )}
 
       {/* Label */}
-      <span className={cn("truncate text-sm leading-none text-vsc-fg/90", statusColor)}>
+      <span className={cn("truncate text-[13px] leading-tight text-vsc-fg/90", statusColor)}>
         {label}
       </span>
 

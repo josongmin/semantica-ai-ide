@@ -2,19 +2,43 @@
 # Dependencies
 # -----------------------------------------------------------------------------
 node_modules/
+**/node_modules/
 .pnpm-store/
-.npm/
 .pnpm-debug.log*
+.npm/
+.npmrc
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
+.yarnrc.yml
+.yarnrc
+jspm_packages/
+bower_components/
+*.tgz
 
 # -----------------------------------------------------------------------------
 # Build & Output
 # -----------------------------------------------------------------------------
 dist/
+**/dist/
 dist-*/
 out/
+**/out/
 build/
+**/build/
 *.vsix
 *.tsbuildinfo
+*.d.ts.map
+*.min.js
+*.min.css
+.next/
+.nuxt/
+.output/
+.docusaurus/
+.expo/
+.vercel/
+.vuepress/dist/
 
 # Vite
 vite.config.js
@@ -23,19 +47,27 @@ vite.config.*.timestamp-*
 dist-ssr/
 
 # -----------------------------------------------------------------------------
-# Tauri / Rust (apps/desktop)
+# Tauri / Rust / Cargo
 # -----------------------------------------------------------------------------
+**/target/
 apps/desktop/src-tauri/target/
 apps/desktop/src-tauri/gen/
-**/target/
+**/gen/
+*.rs.bk
+debug/
+release/
 
 # -----------------------------------------------------------------------------
-# Environment
+# Environment & Secrets
 # -----------------------------------------------------------------------------
 .env
 .env.*
 !.env.example
 !.env*.example
+*.pem
+*.key
+secrets/
+.secrets/
 
 # -----------------------------------------------------------------------------
 # OS
@@ -43,70 +75,96 @@ apps/desktop/src-tauri/gen/
 .DS_Store
 .DS_Store?
 ._*
+.AppleDouble
+.LSOverride
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+*.lnk
 
 # -----------------------------------------------------------------------------
 # IDE & Editors
 # -----------------------------------------------------------------------------
 .idea/
+**/.idea/
 *.iml
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/launch.json
+.vscode-test/
 *.swp
 *.swo
 *~
 .project
 .classpath
 .settings/
+*.sublime-workspace
+*.sublime-project
 
 # -----------------------------------------------------------------------------
 # Logs & Debug
 # -----------------------------------------------------------------------------
 *.log
 logs/
+**/logs/
 *.cpuprofile
 *.heapsnapshot
-.node_repl_history
+*.pid
+*.seed
+debug/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .pnpm-debug.log*
-*.pid
-*.seed
-debug/
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
 
 # -----------------------------------------------------------------------------
 # Testing
 # -----------------------------------------------------------------------------
 coverage/
+**/coverage/
 .nyc_output/
 *.lcov
 test-results/
+**/test-results/
 playwright-report/
+**/playwright-report/
 blob-report/
+**/blob-report/
+.playwright/
+*.spec.js.snap
+*.test.js.snap
+__snapshots__/
 
 # Vitest
 .vitest/
 vitest.config.*.timestamp-*
 
+# Jest
+jest-cache/
+
 # -----------------------------------------------------------------------------
 # Cache & Temp
 # -----------------------------------------------------------------------------
 .cache/
+**/.cache/
 .temp/
 .tmp/
 *.local
-*.tgz
 .turbo/
 .eslintcache
 .stylelintcache
 .prettiercache
 .parcel-cache/
+.rollup.cache/
+.nx/cache
+.rush/
+.lerna/
+*.tsbuildinfo
 
 # -----------------------------------------------------------------------------
 # AI Assistants
@@ -119,6 +177,7 @@ vitest.config.*.timestamp-*
 .codexignore
 .serena/
 .aider*
+.mcp/
 
 # -----------------------------------------------------------------------------
 # Lock files (pnpm-only)
@@ -128,12 +187,23 @@ yarn.lock
 bun.lock
 
 # -----------------------------------------------------------------------------
+# Deploy & Infra
+# -----------------------------------------------------------------------------
+.serverless/
+.netlify/
+.vercel/
+.terraform/
+*.tfstate
+*.tfstate.*
+.helm/
+
+# -----------------------------------------------------------------------------
 # Misc
 # -----------------------------------------------------------------------------
 *.orig
 *.rej
 *.bak
 *.backup
-.serverless/
-.netlify/
-.vercel/
+*.dump
+*.sqlite
+*.sqlite3

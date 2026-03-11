@@ -1,6 +1,6 @@
 import type { FileChangeStatus } from "~shared/protocol";
 
-export const INDENT_PX = 16;
+export const INDENT_PX = 12;
 export const ROW_HEIGHT = 24;
 
 export const STATUS_COLOR: Readonly<Record<FileChangeStatus, string>> = {

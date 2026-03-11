@@ -1,11 +1,5 @@
-import { type Extension, RangeSetBuilder } from "@codemirror/state";
-import {
-  Decoration,
-  EditorView,
-  type DecorationSet,
-  ViewPlugin,
-  type ViewUpdate,
-} from "@codemirror/view";
+import type { Extension } from "@codemirror/state";
+import { type EditorView, ViewPlugin, type ViewUpdate } from "@codemirror/view";
 
 // ── Types ──────────────────────────────────────────────
 

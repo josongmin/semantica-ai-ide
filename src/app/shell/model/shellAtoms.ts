@@ -10,6 +10,11 @@ import { getViewById } from "./viewRegistry";
 export { activeSurfaceAtom };
 export type { SurfaceId };
 
+// ─── NavBar expand/collapse (Render-style sidebar) ───────
+// Collapsed: icon rail only. Expanded: full sidebar with labels, sections, footer.
+
+export const navBarExpandedAtom = atom(true);
+
 // ─── Sidebar State (dock-left) ──────────────────────────
 
 export const sidebarVisibleAtom = atom(true);
@@ -31,6 +36,7 @@ export const trayMaximizedAtom = atom(false);
 // ─── Layout Persistence (S1 layer — RFC-010) ───────────
 
 export interface ShellLayoutState {
+  readonly navBarExpanded: boolean;
   readonly sidebarWidth: number;
   readonly sidebarVisible: boolean;
   readonly agentPanelWidth: number;
@@ -43,6 +49,7 @@ export interface ShellLayoutState {
 }
 
 export const shellLayoutAtom = atom<ShellLayoutState>((get) => ({
+  navBarExpanded: get(navBarExpandedAtom),
   sidebarWidth: get(sidebarWidthAtom),
   sidebarVisible: get(sidebarVisibleAtom),
   agentPanelWidth: get(agentPanelWidthAtom),
@@ -246,6 +253,7 @@ export const zoomResetAtom = atom(null, (_get, set) => {
 
 /** Reset all shell layout state to defaults */
 export const resetShellLayoutAtom = atom(null, (_get, set) => {
+  set(navBarExpandedAtom, true);
   set(sidebarVisibleAtom, true);
   set(sidebarWidthAtom, 240);
   set(activeSidebarViewAtom, "file-tree");

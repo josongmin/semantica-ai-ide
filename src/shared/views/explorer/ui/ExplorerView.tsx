@@ -21,15 +21,18 @@ import { cn, Icon } from "~shared/ui";
 import { ROW_HEIGHT } from "./explorer/constants";
 import { EmptyState } from "./explorer/EmptyState";
 import { FileContextMenu, type FileContextTarget } from "./explorer/FileContextMenu";
-import { collectAllFolders, countTree, useAgentPresence } from "./explorer/helpers";
+import { collectAllFolders, useAgentPresence } from "./explorer/helpers";
 import { SidebarRow } from "./explorer/SidebarRow";
 import { type ViewMode, ViewModeSelector } from "./explorer/ViewModeSelector";
+
+import { activeTabAtom } from "~domains/editor/editorAtoms";
 
 const TEST_PATTERN = /\/__tests__\/|\.test\.|\.spec\.|\/tests?\//;
 
 export const ExplorerView = React.memo(function ExplorerView() {
   const projectFiles = useAtomValue(projectFilesAtom);
   const fileChanges = useAtomValue(allWorkspaceFileChangesAtom);
+  const activeTab = useAtomValue(activeTabAtom);
   const getTurnLabel = useAtomValue(fileTurnLabelAtom);
   const setFocusedTurnId = useSetAtom(focusedTurnIdAtom);
   const clearFocusedTurn = useSetAtom(clearFocusedTurnAtom);
@@ -88,8 +91,6 @@ export const ExplorerView = React.memo(function ExplorerView() {
 
   const tree = useMemo(() => buildFileTree(viewFilteredFiles), [viewFilteredFiles]);
 
-  const stats = useMemo(() => countTree(tree), [tree]);
-
   const filtered = useMemo(() => (search ? filterTree(tree, search) : tree), [tree, search]);
 
   const activeExpanded = useMemo(() => {
@@ -104,7 +105,6 @@ export const ExplorerView = React.memo(function ExplorerView() {
     [filtered, activeExpanded],
   );
 
-  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Virtual returns non-memoizable functions
   const virt = useVirtualizer({
     count: flat.length,
     getScrollElement: () => scrollRef.current,
@@ -167,7 +167,7 @@ export const ExplorerView = React.memo(function ExplorerView() {
             type="button"
             onClick={() => setTreeOpen((v) => !v)}
             className={cn(
-              "flex items-center w-full gap-1.5 pl-1.5 pr-3",
+              "flex items-center w-full gap-1 pl-1 pr-3",
               "bg-transparent border-none cursor-pointer text-left",
               "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
             )}
@@ -176,7 +176,7 @@ export const ExplorerView = React.memo(function ExplorerView() {
           >
             <Icon
               name="chevron-right"
-              tokenSize="2xs"
+              size={10}
               className={cn(
                 "shrink-0 transition-transform duration-normal text-vsc-text-tertiary",
                 treeOpen && "rotate-90",
@@ -187,7 +187,7 @@ export const ExplorerView = React.memo(function ExplorerView() {
               size={15}
               className="shrink-0 text-vsc-text-secondary"
             />
-            <span className="text-[13px] font-semibold text-vsc-fg truncate">
+            <span className="text-[13px] font-bold text-vsc-fg truncate">
               {workspaceName || "Project"}
             </span>
             <span className="text-[11px] text-vsc-text-ghost truncate ml-0.5">~/...</span>
@@ -259,6 +259,7 @@ export const ExplorerView = React.memo(function ExplorerView() {
                           title={node.path}
                           badge={turnLabel?.label}
                           onBadgeClick={turnLabel ? () => jumpToTurn(turnLabel.turnId) : undefined}
+                          isSelected={activeTab?.filePath === node.path}
                         />
                       )}
                     </div>
@@ -271,24 +272,6 @@ export const ExplorerView = React.memo(function ExplorerView() {
 
       {/* File context menu */}
       <FileContextMenu position={ctxPos} target={ctxTarget} onClose={closeCtxMenu} />
-
-      {/* Stats bar */}
-      {viewFilteredFiles.length > 0 && !search && (
-        <div className="flex items-center gap-3 h-[--height-row-sm] px-3 border-t border-vsc-border/30 shrink-0 bg-vsc-bg">
-          <span className="flex items-center gap-1 text-2xs text-vsc-text-ghost">
-            <Icon name="folder" tokenSize="2xs" className="opacity-60" /> {stats.folders}
-          </span>
-          <span className="flex items-center gap-1 text-2xs text-vsc-text-ghost">
-            <Icon name="file" tokenSize="2xs" className="opacity-60" /> {stats.files}
-          </span>
-          {fileChanges.length > 0 && (
-            <span className="flex items-center gap-1 text-2xs text-vsc-warning/80 ml-auto">
-              <span className="w-1.5 h-1.5 rounded-full bg-vsc-warning animate-pulse" />
-              {fileChanges.length} changed
-            </span>
-          )}
-        </div>
-      )}
     </div>
   );
 });

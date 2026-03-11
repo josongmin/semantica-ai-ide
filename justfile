@@ -28,6 +28,10 @@ test-watch:
 validate:
     npm run validate
 
+# Tauri 데스크톱 앱 dev
+tauri:
+    cd apps/desktop && CARGO_BUILD_INCREMENTAL=true cargo tauri dev
+
 # 기본: dev 실행
 default:
     just dev

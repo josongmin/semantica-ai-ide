@@ -6,15 +6,18 @@ import { cn } from "~shared/ui";
 
 import { AgentFrame } from "./frames/AgentFrame";
 import { FloatingLayer } from "./frames/FloatingLayer";
+import { NavBar } from "./frames/NavBar";
 import { SidebarFrame } from "./frames/SidebarFrame";
 import { TitleBar } from "./frames/TitleBar";
 import { TrayFrame } from "./frames/TrayFrame";
 import { KeyboardShortcutOverlay } from "./KeyboardShortcutOverlay";
+import { activeNavCategoryAtom } from "./model/navRegistry";
 import {
   activeSurfaceAtom,
   agentPanelVisibleAtom,
   agentPanelWidthAtom,
   focusModeAtom,
+  navBarExpandedAtom,
   sidebarVisibleAtom,
   sidebarWidthAtom,
   toggleFocusModeAtom,
@@ -26,36 +29,37 @@ import {
 import { ResizeHandle } from "./Resizable";
 import { ShellStatusBar } from "./ShellStatusBar";
 
+// ─── Constants ──────────────────────────────────────────
+const NAV_RAIL_W = 48;
+const NAV_EXPANDED_W = 190;
+
 // ─── Types ──────────────────────────────────────────────
 
 interface ShellLayoutProps {
-  /** IDE surfaces (editor, review, replay, graph, etc.) */
   children: React.ReactNode;
-  /** AI Agent chat panel content */
   agentContent?: React.ReactNode;
 }
 
 // ─── Component ──────────────────────────────────────────
 
 /**
- * 6-zone IDE Shell layout with focus mode:
+ * AI-Native Shell (RFC-017):
  *
- * +---------------------------------------------------+
- * | Top Bar (surface tabs + actions)                  |  ← hidden in focus mode
- * +-----------+---------------------+-----------------+
- * | Sidebar   | IDE Content Area    | AI Agent Panel  |
- * | (Explorer)|  (surfaces/split)   |  (chat)         |
- * |           |                     |                 |
- * |           +---------------------+                 |
- * |           | Bottom Panel (opt)  |                 |
- * +-----------+---------------------+-----------------+
- * | Status Bar                                        |
- * +---------------------------------------------------+
+ * +--[Nav]--+--[Sidebar]--+--[Canvas]--+--[Agent]--+
+ * | Icons   | File Tree   | Surfaces   | Chat      |
+ * | 48px    | resizable   |            | resizable |
+ * |         +-------------+------------+ (full h)  |
+ * |         |         Tray             |           |
+ * +---------+--------------------------+-----------+
+ * |              Status Bar                         |
+ * +-------------------------------------------------+
  */
 export const ShellLayout = React.memo(function ShellLayout({
   children,
   agentContent,
 }: ShellLayoutProps) {
+  const activeNavCategory = useAtomValue(activeNavCategoryAtom);
+  const navExpanded = useAtomValue(navBarExpandedAtom);
   const sidebarVisible = useAtomValue(sidebarVisibleAtom);
   const agentVisible = useAtomValue(agentPanelVisibleAtom);
   const trayVisible = useAtomValue(trayVisibleAtom);
@@ -72,9 +76,12 @@ export const ShellLayout = React.memo(function ShellLayout({
   const setAgentWidth = useSetAtom(agentPanelWidthAtom);
   const setTrayHeight = useSetAtom(trayHeightAtom);
 
+  const isIdeMode = activeNavCategory === "ide";
+  const showNavBar = !isZenMode && !isFocusMode;
+
   const handleSidebarResize = useCallback(
     (delta: number) => {
-      setSidebarWidth((prev) => Math.max(160, Math.min(480, prev + delta)));
+      setSidebarWidth((prev) => Math.max(160, Math.min(400, prev + delta)));
     },
     [setSidebarWidth],
   );
@@ -98,70 +105,86 @@ export const ShellLayout = React.memo(function ShellLayout({
       className="flex flex-col h-screen bg-vsc-bg text-vsc-fg overflow-hidden origin-top-left"
       style={zoomLevel !== 1 ? { zoom: zoomLevel } : undefined}
     >
-      {/* Zone 1: Custom Title Bar (hidden in focus mode) */}
+      {/* TitleBar — highest z */}
       {!isFocusMode && <TitleBar />}
 
-      {/* Main 3-column area */}
-      <div className="flex flex-1 min-h-0">
-        {/* Zone 2: Left Sidebar (Explorer) — slides in from left */}
-        {sidebarVisible && !isFocusMode && !isFullscreenSurface && (
-          <>
-            <div className="shrink-0" style={{ width: sidebarWidth }}>
-              <SidebarFrame width={sidebarWidth} />
-            </div>
-            <ResizeHandle direction="horizontal" onResize={handleSidebarResize} />
-          </>
-        )}
+      {/* Body: NavBar | Content */}
+      <div className="flex flex-1 min-h-0 min-w-0">
+        {showNavBar && <NavBar width={navExpanded ? NAV_EXPANDED_W : NAV_RAIL_W} />}
 
-        {/* Zone 3: IDE Center — Canvas (surfaces + tray) */}
-        <div role="main" data-keyboard-zone="canvas" className="flex flex-col flex-1 min-w-0">
-          <div
-            className={cn(
-              "flex-1 min-h-0 overflow-hidden relative",
-              isZenMode && "flex justify-center",
-            )}
-          >
-            <div className={cn("w-full h-full", isZenMode && "max-w-[800px]")}>{children}</div>
+        {/* Content row: Left section (Sidebar + Canvas + Tray) | Agent */}
+        <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-surface-1">
+          {/* Left section: Sidebar + Canvas + Tray */}
+          <div className="flex flex-col flex-1 min-w-0 gap-px">
+            {/* Main row: Sidebar | Canvas */}
+            <div className="flex flex-1 min-h-0 min-w-0 gap-px">
+              {isIdeMode && sidebarVisible && !isFocusMode && !isFullscreenSurface && (
+                <>
+                  <div className="shrink-0 h-full" style={{ width: sidebarWidth }}>
+                    <SidebarFrame width={sidebarWidth} />
+                  </div>
+                  <ResizeHandle direction="horizontal" onResize={handleSidebarResize} />
+                </>
+              )}
 
-            {/* Focus/Zen mode exit hint */}
-            {isFocusMode && (
-              <button
-                type="button"
-                onClick={() => toggleFocus()}
-                aria-label={isZenMode ? "Exit zen mode" : "Exit focus mode"}
-                className="absolute top-2 right-2 z-10 px-2 py-1 rounded-md text-2xs
-                           glass-panel text-vsc-text-ghost
-                           hover:text-vsc-fg
-                           opacity-0 hover:opacity-100 focus:opacity-100
-                           transition-opacity duration-slow cursor-pointer"
+              {/* Canvas */}
+              <div
+                role="main"
+                data-keyboard-zone="canvas"
+                className="flex flex-col flex-1 min-w-0 overflow-hidden bg-vsc-bg"
               >
-                {isZenMode
-                  ? `Exit Zen Mode (${IS_MAC ? "⌘" : "Ctrl+"}K Z)`
-                  : `Exit Focus Mode (${IS_MAC ? "⌘" : "Ctrl+"}\\)`}
-              </button>
+                <div
+                  className={cn(
+                    "flex-1 min-h-0 overflow-hidden relative",
+                    isZenMode && "flex justify-center",
+                  )}
+                >
+                  <div className={cn("w-full h-full", isZenMode && "max-w-[800px]")}>
+                    {children}
+                  </div>
+
+                  {isFocusMode && (
+                    <button
+                      type="button"
+                      onClick={() => toggleFocus()}
+                      aria-label={isZenMode ? "Exit zen mode" : "Exit focus mode"}
+                      className="absolute top-2 right-2 z-10 px-2 py-1 rounded-md text-2xs
+                                 glass-panel text-vsc-text-ghost
+                                 hover:text-vsc-fg
+                                 opacity-0 hover:opacity-100 focus:opacity-100
+                                 transition-opacity duration-slow cursor-pointer"
+                    >
+                      {isZenMode
+                        ? `Exit Zen Mode (${IS_MAC ? "⌘" : "Ctrl+"}K Z)`
+                        : `Exit Focus Mode (${IS_MAC ? "⌘" : "Ctrl+"}\\)`}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Tray — spans Sidebar + Canvas only, Agent is beside it */}
+            {isIdeMode && trayVisible && !isFocusMode && !isFullscreenSurface && (
+              <>
+                <ResizeHandle direction="vertical" onResize={handleTrayResize} />
+                <TrayFrame height={trayHeight} />
+              </>
             )}
           </div>
 
-          {trayVisible && !isFocusMode && !isFullscreenSurface && (
+          {/* Agent Panel — full height, beside left section */}
+          {agentVisible && !isFocusMode && !isFullscreenSurface && (
             <>
-              <ResizeHandle direction="vertical" onResize={handleTrayResize} />
-              <TrayFrame height={trayHeight} />
+              <ResizeHandle direction="horizontal" onResize={handleAgentResize} />
+              <div className="shrink-0 h-full" style={{ width: agentWidth }}>
+                <AgentFrame width={agentWidth}>{agentContent}</AgentFrame>
+              </div>
             </>
           )}
         </div>
-
-        {/* Zone 4: Right Agent Panel (chat) — slides in from right */}
-        {agentVisible && !isFocusMode && !isFullscreenSurface && (
-          <>
-            <ResizeHandle direction="horizontal" onResize={handleAgentResize} />
-            <div className="shrink-0 h-full" style={{ width: agentWidth }}>
-              <AgentFrame width={agentWidth}>{agentContent}</AgentFrame>
-            </div>
-          </>
-        )}
       </div>
 
-      {/* Zone 6: Status Bar (visible in focus mode, hidden in zen mode) */}
+      {/* Status Bar — full width, z-40 */}
       {!isZenMode && <ShellStatusBar />}
 
       {/* Global overlays */}

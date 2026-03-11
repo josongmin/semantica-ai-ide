@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
+import { type LucideIcon, PanelBottom, PanelLeft, PanelRight } from "lucide-react";
 
-import { cn, Icon } from "~shared/ui";
+import { cn } from "~shared/ui";
 
 import {
   agentPanelVisibleAtom,
@@ -28,42 +29,42 @@ export const LayoutToggleGroup = React.memo(function LayoutToggleGroup() {
   const handleToggleAgent = useCallback(() => toggleAgent(), [toggleAgent]);
 
   return (
-    <>
+    <div className="inline-flex items-center gap-0.5 p-0.5 rounded-lg bg-vsc-surface-2/30">
       <LayoutToggle
-        icon="layout-sidebar-left"
+        Icon={PanelLeft}
         label="Sidebar"
         shortcut={"\u2318B"}
         isOn={sidebarOn}
         onToggle={handleToggleSidebar}
       />
       <LayoutToggle
-        icon="layout-panel"
+        Icon={PanelBottom}
         label="Panel"
         shortcut={"\u2318J"}
         isOn={trayOn}
         onToggle={handleToggleBottom}
       />
       <LayoutToggle
-        icon="layout-sidebar-right"
+        Icon={PanelRight}
         label="Agent"
         shortcut={"\u2318K\u2318K"}
         isOn={agentOn}
         onToggle={handleToggleAgent}
       />
-    </>
+    </div>
   );
 });
 
 // ─── Individual toggle button ───────────────────────────
 
 const LayoutToggle = React.memo(function LayoutToggle({
-  icon,
+  Icon,
   label,
   shortcut,
   isOn,
   onToggle,
 }: {
-  icon: string;
+  Icon: LucideIcon;
   label: string;
   shortcut?: string;
   isOn: boolean;
@@ -84,7 +85,7 @@ const LayoutToggle = React.memo(function LayoutToggle({
       aria-label={`Toggle ${label}`}
       aria-pressed={isOn}
     >
-      <Icon name={icon} tokenSize="xs" className="min-w-[1em] min-h-[1em]" />
+      <Icon size={14} strokeWidth={1.75} />
     </button>
   );
 });

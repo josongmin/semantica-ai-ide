@@ -6,7 +6,7 @@
   "build": {
     "frontendDist": "../../dist",
     "devUrl": "http://localhost:1420",
-    "beforeDevCommand": "cd ../.. && npx vite --port 1420",
+    "beforeDevCommand": "cd ../.. && node node_modules/vite/bin/vite.js --port 1420 --strictPort",
     "beforeBuildCommand": "cd ../.. && npx vite build"
   },
   "app": {
@@ -22,7 +22,7 @@
         "decorations": true,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
-        "trafficLightPosition": { "x": 12, "y": 16 },
+        "trafficLightPosition": { "x": 12, "y": 18 },
         "transparent": false,
         "zoomHotkeysEnabled": true
       }

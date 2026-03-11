@@ -1,39 +1,16 @@
 import React from "react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 import { currentGitBranchAtom } from "~entities/git-history/model/atoms";
 import { cn, Icon } from "~shared/ui";
 
 import { notificationsAtom } from "../../features/notifications/model/notificationAtoms";
-import {
-  activeSurfaceAtom,
-  applyLayoutPresetAtom,
-  focusModeAtom,
-  type LayoutPreset,
-  splitDirectionAtom,
-  toggleFocusModeAtom,
-  toggleSplitAtom,
-} from "./model/shellAtoms";
 
-// ─── Layout Preset Definitions ──────────────────────────
+// ─── Status Bar (IntelliJ style footer) ─────────────────
 
-const PRESETS: { id: LayoutPreset; label: string; icon: string }[] = [
-  { id: "coding", label: "Coding", icon: "code" },
-  { id: "review", label: "Review", icon: "git-pull-request" },
-  { id: "debug", label: "Debug", icon: "debug-alt" },
-  { id: "agent-only", label: "Agent", icon: "hubot" },
-  { id: "presentation", label: "Present", icon: "screen-full" },
-];
-
-// ─── Status Bar ─────────────────────────────────────────
+const BAR_H = "h-[32px]";
 
 export const ShellStatusBar = React.memo(function ShellStatusBar() {
-  const surface = useAtomValue(activeSurfaceAtom);
-  const isFocusMode = useAtomValue(focusModeAtom);
-  const splitDir = useAtomValue(splitDirectionAtom);
-  const toggleFocus = useSetAtom(toggleFocusModeAtom);
-  const toggleSplit = useSetAtom(toggleSplitAtom);
-  const applyPreset = useSetAtom(applyLayoutPresetAtom);
   const currentBranch = useAtomValue(currentGitBranchAtom);
   const notifications = useAtomValue(notificationsAtom);
   const unreadCount = notifications.length;
@@ -41,116 +18,78 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
   return (
     <footer
       role="contentinfo"
-      className="flex items-center h-[--height-row-sm] bg-vsc-accent/8 border-t border-vsc-border/20
-                 text-2xs text-vsc-text-ghost select-none shrink-0 px-2 gap-3"
+      className={cn(
+        "relative z-40 flex items-center bg-vsc-surface-1 border-t border-vsc-border/20",
+        "text-[13px] text-vsc-text-ghost select-none shrink-0 px-1",
+        BAR_H,
+      )}
     >
-      {/* Left: Surface indicator + git branch */}
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        {/* Active surface */}
-        <span className="inline-flex items-center gap-1 text-vsc-accent font-medium">
-          <Icon name="circle-filled" tokenSize="2xs" />
-          {surface}
-        </span>
+      {/* Left: breadcrumb path */}
+      <div className="flex items-center min-w-0 flex-1">
+        <StatusItem>
+          <Icon name="folder" size={14} className="shrink-0 text-vsc-text-ghost" />
+          <span className="text-vsc-text-secondary">semantica</span>
+        </StatusItem>
+        <BreadcrumbSep />
+        <StatusItem>
+          <span>src</span>
+        </StatusItem>
+        <BreadcrumbSep />
+        <StatusItem>
+          <span>app</span>
+        </StatusItem>
+        <BreadcrumbSep />
+        <StatusItem>
+          <Icon name="file-code" size={14} className="shrink-0 text-vsc-text-ghost" />
+          <span>index.tsx</span>
+        </StatusItem>
+      </div>
 
-        {/* Git branch — derived from latest commit */}
-        <span className="inline-flex items-center gap-1">
-          <Icon name="git-branch" tokenSize="2xs" />
-          <span className="truncate max-w-[120px]" title={currentBranch}>
-            {currentBranch}
-          </span>
-        </span>
+      {/* Right: git + notifications */}
+      <div className="flex items-center">
+        {/* Git branch */}
+        <StatusItem>
+          <Icon name="git-branch" size={14} className="shrink-0" />
+          <span className="truncate max-w-[120px]">{currentBranch}</span>
+        </StatusItem>
 
-        {/* Focus mode indicator */}
-        {isFocusMode && (
-          <button
-            type="button"
-            onClick={() => toggleFocus()}
-            className="inline-flex items-center gap-1 px-1.5 rounded-sm
-                       bg-vsc-accent/15 text-vsc-accent cursor-pointer
-                       hover:bg-vsc-accent/25 transition-colors duration-fast"
-          >
-            <Icon name="eye-closed" tokenSize="2xs" />
-            Focus
-          </button>
+        {/* Notifications badge */}
+        {unreadCount > 0 && (
+          <>
+            <StatusSep />
+            <StatusItem highlight>
+              <Icon name="bell-dot" size={14} />
+              <span className="tabular-nums">{unreadCount}</span>
+            </StatusItem>
+          </>
         )}
-      </div>
-
-      {/* Center: Layout presets */}
-      <div className="flex items-center gap-px">
-        {PRESETS.map((preset) => (
-          <button
-            key={preset.id}
-            type="button"
-            onClick={() => applyPreset(preset.id)}
-            className={cn(
-              "inline-flex items-center justify-center w-5 h-[--height-row-xs] rounded-sm",
-              "cursor-pointer bg-transparent border-none transition-colors duration-fast",
-              "hover:text-vsc-fg hover:bg-vsc-surface-2/50",
-            )}
-            title={`${preset.label} layout`}
-            aria-label={`${preset.label} layout`}
-          >
-            <Icon name={preset.icon} tokenSize="2xs" />
-          </button>
-        ))}
-      </div>
-
-      {/* Right: Split controls + resource hints */}
-      <div className="flex items-center gap-2 justify-end">
-        {/* Split view controls */}
-        <div className="flex items-center gap-px">
-          <button
-            type="button"
-            onClick={() => toggleSplit("vertical")}
-            className={cn(
-              "inline-flex items-center justify-center w-5 h-[--height-row-xs] rounded-sm cursor-pointer transition-colors duration-fast",
-              splitDir === "vertical"
-                ? "text-vsc-accent bg-vsc-accent/15"
-                : "hover:text-vsc-fg hover:bg-vsc-surface-2/50",
-            )}
-            title="Split Vertical (⌘K \)"
-            aria-label="Split vertical"
-          >
-            <Icon name="split-horizontal" tokenSize="2xs" />
-          </button>
-          <button
-            type="button"
-            onClick={() => toggleSplit("horizontal")}
-            className={cn(
-              "inline-flex items-center justify-center w-5 h-[--height-row-xs] rounded-sm cursor-pointer transition-colors duration-fast",
-              splitDir === "horizontal"
-                ? "text-vsc-accent bg-vsc-accent/15"
-                : "hover:text-vsc-fg hover:bg-vsc-surface-2/50",
-            )}
-            title="Split Horizontal (⌘K -)"
-            aria-label="Split horizontal"
-          >
-            <Icon name="split-vertical" tokenSize="2xs" />
-          </button>
-        </div>
-
-        {/* Notifications — wired to notificationsAtom */}
-        <span
-          className={cn("inline-flex items-center gap-1", unreadCount > 0 && "text-vsc-accent")}
-        >
-          <Icon name="bell" tokenSize="2xs" />
-          <span className="tabular-nums">{unreadCount}</span>
-        </span>
-
-        {/* Keyboard shortcut hint */}
-        <span className="text-vsc-text-ghost/60 font-mono">? help</span>
-
-        {/* Zen shortcut hint */}
-        <button
-          type="button"
-          onClick={() => toggleFocus()}
-          className="hover:text-vsc-fg cursor-pointer transition-colors duration-fast"
-          title="Focus Mode (⌘\)"
-          aria-label="Toggle focus mode"
-        >
-          <Icon name={isFocusMode ? "eye-closed" : "eye"} tokenSize="2xs" />
-        </button>
       </div>
     </footer>
   );
 });
+
+// ─── Primitives ─────────────────────────────────────────
+
+function StatusItem({ children, highlight }: { children: React.ReactNode; highlight?: boolean }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2",
+        BAR_H,
+        "leading-none",
+        "hover:bg-white/8 cursor-default transition-colors duration-100",
+        highlight && "text-vsc-accent",
+      )}
+    >
+      {children}
+    </span>
+  );
+}
+
+function BreadcrumbSep() {
+  return <Icon name="chevron-right" size={12} className="text-vsc-text-ghost/40 shrink-0" />;
+}
+
+function StatusSep() {
+  return <span className="w-px h-4 bg-vsc-border/20 mx-0.5 shrink-0" />;
+}
