@@ -12,11 +12,14 @@
  * agent-rules, auto-context, speculative-edit, background-agent,
  * action-replay, multi-agent-debate.
  */
-import { removeBackgroundJobAtom,upsertBackgroundJobAtom } from "~shared/bootstrap/background-agent";
+import {
+  removeBackgroundJobAtom,
+  upsertBackgroundJobAtom,
+} from "~shared/bootstrap/background-agent";
 
 import { setReplaySessionAtom } from "../../../features/action-replay";
 // ── SOTA Features
-import { pushRuleViolationAtom,setAgentRulesAtom } from "../../../features/agent-rules";
+import { pushRuleViolationAtom, setAgentRulesAtom } from "../../../features/agent-rules";
 import { pushAgentSteerAtom } from "../../../features/agent-steer";
 import { setAgentMessagesAtom } from "../../../features/agent-team";
 import { setAgentWaveAtom } from "../../../features/agent-wave";
@@ -45,7 +48,10 @@ import { setMachineSnapshotsAtom } from "../../../features/machine-snapshots";
 import { setMcpRegistryAtom } from "../../../features/mcp-registry";
 import { setModeGalleryAtom } from "../../../features/mode-gallery";
 import { setModelRoutesAtom } from "../../../features/model-routing";
-import { setDebateSessionAtom, setDebateSessionForTurnAtom } from "../../../features/multi-agent-debate";
+import {
+  setDebateSessionAtom,
+  setDebateSessionForTurnAtom,
+} from "../../../features/multi-agent-debate";
 import { setMissionControlAgentsAtom } from "../../../features/parallel-agents";
 import { setPlaybookMarketAtom } from "../../../features/playbook-market";
 import { setPluginListAtom } from "../../../features/plugin-status";
@@ -363,9 +369,10 @@ registerHandler("SET_REPLAY_SESSION", (e: ServerEvent, s: Store) => {
 registerHandler("SET_DEBATE_SESSION", (e: ServerEvent, s: Store) => {
   if (e.t !== "SET_DEBATE_SESSION") return;
   s.set(setDebateSessionAtom, e.session);
-  if ((e as Record<string, unknown>).turn_id) {
+  const turnId = (e as Record<string, unknown>).turn_id;
+  if (turnId != null && typeof turnId === "string") {
     s.set(setDebateSessionForTurnAtom, {
-      turn_id: (e as Record<string, unknown>).turn_id as TurnId,
+      turn_id: turnId as TurnId,
       session: e.session,
     });
   }

@@ -46,8 +46,7 @@ export const FloatingLayer = React.memo(function FloatingLayer() {
             className="si-stagger-item"
             style={{ "--si-delay": `${index * 60}ms` } as React.CSSProperties}
           >
-          <FloatingFrame state={win} panel={view}>
-            {Comp ? (
+            <FloatingFrame state={win} panel={view}>
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center h-full w-full">
@@ -57,12 +56,7 @@ export const FloatingLayer = React.memo(function FloatingLayer() {
               >
                 <Comp />
               </Suspense>
-            ) : (
-              <div className="flex items-center justify-center h-full w-full text-vsc-text-ghost text-xs">
-                {view.title}
-              </div>
-            )}
-          </FloatingFrame>
+            </FloatingFrame>
           </div>
         );
       })}

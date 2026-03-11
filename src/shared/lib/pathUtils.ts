@@ -1,7 +1,7 @@
 /** Cross-platform: extract file name from path (handles both / and \) */
 export function extractFileName(path: string): string {
   const normalized = path.replace(/\\/g, "/");
-  return normalized.split("/").pop() || path;
+  return normalized.split("/").pop() ?? path;
 }
 
 /** Cross-platform: extract directory from path (handles both / and \) */

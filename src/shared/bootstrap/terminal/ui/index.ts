@@ -15,15 +15,16 @@ export {
 } from "./ParsedDecorations";
 export type { StickyCommandHeaderProps } from "./StickyCommandHeader";
 export { StickyCommandHeader } from "./StickyCommandHeader";
-export type { TerminalPanelProps,TerminalViewProps } from "./TerminalPanel";
-export { TerminalPanel,TerminalView } from "./TerminalPanel";
-export type { SearchOptions,TerminalSearchOverlayProps } from "./TerminalSearchOverlay";
+export type { TerminalViewProps } from "./TerminalPanel";
+export type { TerminalPanelProps } from "./TerminalPanel"; // eslint-disable-line @typescript-eslint/no-deprecated -- backward compat
+export { TerminalPanel, TerminalView } from "./TerminalPanel";
+export type { SearchOptions, TerminalSearchOverlayProps } from "./TerminalSearchOverlay";
 export { TerminalSearchOverlay } from "./TerminalSearchOverlay";
 export type { TerminalSessionTabsProps } from "./TerminalSessionTabs";
 export { TerminalSessionTabs } from "./TerminalSessionTabs";
 export type { TerminalSettingsValues } from "./TerminalSettings";
 export { TerminalSettings } from "./TerminalSettings";
-export type { TerminalViewportRawHandle,TerminalViewportRawProps } from "./TerminalViewportRaw";
+export type { TerminalViewportRawHandle, TerminalViewportRawProps } from "./TerminalViewportRaw";
 export { TerminalViewportRaw } from "./TerminalViewportRaw";
 
 // Phase B — Block Actions, Summary, Navigation, AI

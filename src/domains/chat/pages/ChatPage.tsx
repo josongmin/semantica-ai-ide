@@ -36,7 +36,7 @@ export const ChatPage = React.memo(function ChatPage() {
       <ErrorBoundary
         fallback={(err) => (
           <InlineBanner variant="error">
-            MessageList failed: {err?.message ?? "unknown error"}
+            MessageList failed: {err instanceof Error ? err.message : String(err)}
           </InlineBanner>
         )}
       >

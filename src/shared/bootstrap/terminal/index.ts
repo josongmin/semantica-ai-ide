@@ -124,7 +124,7 @@ export {
 export { useTerminalBootstrap } from "./lib";
 
 // Lib — Phase B (cross-surface intents, block navigation, AI)
-export type { BlockNavigationActions,BlockNavigationState } from "./lib";
+export type { BlockNavigationActions, BlockNavigationState } from "./lib";
 export {
   blockToMarkdown,
   buildSummaryText,
@@ -140,8 +140,20 @@ export {
 } from "./lib";
 
 // Lib — Phase C (block export, problems panel sync, FE parsers, workflows)
-export { exportBlockAsJSON, exportBlockAsMarkdown, syncDiagnosticsToProblems, useTerminalProblemsSync } from "./lib";
-export { BUILTIN_WORKFLOWS, createExecution, interpolateTemplate, resolveSteps, useFEParserFallback, validateParams } from "./lib";
+export {
+  exportBlockAsJSON,
+  exportBlockAsMarkdown,
+  syncDiagnosticsToProblems,
+  useTerminalProblemsSync,
+} from "./lib";
+export {
+  BUILTIN_WORKFLOWS,
+  createExecution,
+  interpolateTemplate,
+  resolveSteps,
+  useFEParserFallback,
+  validateParams,
+} from "./lib";
 export { detectParser, parseBlock, parseLine } from "./lib";
 
 // Model — Phase C (workflow atoms, types)
@@ -175,10 +187,7 @@ export {
 } from "./model/workflowAtoms";
 
 // Model — Phase B (intent types, AI atoms)
-export {
-  dismissAgentAttachmentAtom,
-  terminalAgentAttachmentAtom,
-} from "./model/agentBridgeAtoms";
+export { dismissAgentAttachmentAtom, terminalAgentAttachmentAtom } from "./model/agentBridgeAtoms";
 export type {
   AICommandInputState,
   ExplainState,
@@ -207,10 +216,11 @@ export type {
 } from "./model/intentTypes";
 
 // UI — Phase A
-export type { TerminalSessionTabsProps,TerminalViewportRawProps } from "./ui";
-export { TerminalSessionTabs,TerminalViewportRaw } from "./ui";
+export type { TerminalSessionTabsProps, TerminalViewportRawProps } from "./ui";
+export { TerminalSessionTabs, TerminalViewportRaw } from "./ui";
 
 // UI — Phase B
+/* eslint-disable @typescript-eslint/no-deprecated -- TerminalPanelProps kept for backward compat */
 export type {
   AICommandInputProps,
   AIExplainPopoverProps,
@@ -251,11 +261,7 @@ export {
   TestResultChip,
   UrlChip,
 } from "./ui";
-export {
-  AICommandInput,
-  AIExplainPopover,
-  AIGhostText,
-} from "./ui";
+export { AICommandInput, AIExplainPopover, AIGhostText } from "./ui";
 
 // UI — Phase C (workflow panel)
 export type { WorkflowPanelProps } from "./ui";

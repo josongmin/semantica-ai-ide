@@ -31,7 +31,7 @@ export function useElapsedTime(active: boolean, startMs?: number): string {
 
   useEffect(() => {
     if (!active) {
-       
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset on deactivate, sync with external active flag
       setElapsed("");
       return;
     }

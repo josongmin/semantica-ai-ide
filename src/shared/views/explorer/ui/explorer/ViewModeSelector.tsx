@@ -86,10 +86,8 @@ export const ViewModeSelector = memo(function ViewModeSelector({
       <div className="flex items-center gap-0.5 ml-auto">
         <HeaderAction icon="new-file" title="New File" />
         <HeaderAction icon="target" title="Locate File" />
-        <HeaderAction icon="fold" title="Collapse All" />
         <HeaderAction icon="close" title="Close" />
         <HeaderAction icon="ellipsis" title="More Actions" />
-        <HeaderAction icon="chrome-minimize" title="Minimize" />
       </div>
     </div>
   );

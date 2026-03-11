@@ -58,8 +58,9 @@ export function useTerminalBootstrap(): void {
       initTerminalBridge(tauri.core.invoke);
       initTerminalEventListener(tauri.event.listen);
 
-      // State updates in useEffect are safe during initial mount
-      setReady(true);  
+      // State updates in useEffect: bridge init is async external sync, safe on mount
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Tauri bridge init, not derived state
+      setReady(true);
       setBridgeReady(true);
       logger.info("[Terminal] Bridge + event listener initialized via __TAURI__ global");
     } catch (err) {

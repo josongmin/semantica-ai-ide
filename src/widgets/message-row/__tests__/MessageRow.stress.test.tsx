@@ -15,8 +15,8 @@ import { act, fireEvent, screen } from "@testing-library/react";
 import { messageAtomFamily } from "~entities/message/core";
 
 import { renderWithAtoms } from "../../../../tests/utils";
+import { type SendMessageAdapter, sendMessageAdapterAtom } from "../../../shared/lib/atoms";
 import { createMessage, resetIdCounter } from "../../../shared/lib/mocks";
-import { sendMessageAdapterAtom, type SendMessageAdapter } from "../../../shared/lib/atoms";
 import type { MessageId } from "../../../shared/protocol";
 import { MessageRow } from "../MessageRow";
 

@@ -6,7 +6,6 @@ import {
   completionKeymap,
 } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
-import { classHighlighter } from "@lezer/highlight";
 import { css } from "@codemirror/lang-css";
 import { go } from "@codemirror/lang-go";
 import { html } from "@codemirror/lang-html";
@@ -39,6 +38,7 @@ import {
   lineNumbers,
   rectangularSelection,
 } from "@codemirror/view";
+import { classHighlighter } from "@lezer/highlight";
 
 import { changeOverviewRuler } from "./changeOverviewRuler";
 import { useCodeMirrorTheme } from "./useCodeMirrorTheme";

@@ -14,12 +14,12 @@
   --color-vsc-input-bg: var(--vscode-input-background, #ffffff);
   --color-vsc-input-fg: var(--vscode-input-foreground, #1f2328);
   --color-vsc-input-border: var(--vscode-input-border, #d1d9e0);
-  --color-vsc-button: var(--vscode-button-background, #1f883d);
+  --color-vsc-button: var(--vscode-button-background, #818cf8);
   --color-vsc-button-fg: var(--vscode-button-foreground, #ffffff);
-  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #1a7f37);
+  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #6366f1);
   --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #ebecf0);
   --color-vsc-button-secondary-fg: var(--vscode-button-secondaryForeground, #1f2328);
-  --color-vsc-badge-bg: var(--vscode-badge-background, #0969da);
+  --color-vsc-badge-bg: var(--vscode-badge-background, #818cf8);
   --color-vsc-badge-fg: var(--vscode-badge-foreground, #ffffff);
   --color-vsc-success: var(--vscode-terminal-ansiGreen, #1a7f37);
   --color-vsc-warning: var(--vscode-editorWarning-foreground, #9a6700);
@@ -30,7 +30,7 @@
   --color-vsc-sidebar: var(--vscode-sideBar-background, #f6f8fa);
   --color-vsc-list-hover: var(--vscode-list-hoverBackground, #eaeef2);
   --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #ddf4ff);
-  --color-vsc-focus: var(--vscode-focusBorder, #0969da);
+  --color-vsc-focus: var(--vscode-focusBorder, #818cf8);
   --color-vsc-diff-insert: var(--vscode-diffEditor-insertedTextBackground, rgba(26, 127, 55, 0.15));
   --color-vsc-diff-delete: var(--vscode-diffEditor-removedTextBackground, rgba(209, 36, 47, 0.15));
   --color-vsc-diff-insert-line: var(
@@ -52,7 +52,7 @@
   --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #f0f3f6);
   --color-vsc-surface-3: var(--vscode-input-background, var(--vscode-editor-background, #eaeef2));
 
-  --color-vsc-accent: var(--vscode-focusBorder, #0969da);
+  --color-vsc-accent: var(--vscode-focusBorder, #818cf8);
 
   /* ── Risk-level colors (System Lens) ── */
   --color-risk-none: #656d76;
@@ -101,7 +101,7 @@
   --color-vsc-badge: var(--vscode-badge-background, #0969da);
   --color-vsc-desc: var(--vscode-descriptionForeground, #656d76);
   --color-vsc-panel-border: var(--vscode-panel-border, #d1d9e0);
-  --color-vsc-focusBorder: var(--vscode-focusBorder, #0969da);
+  --color-vsc-focusBorder: var(--vscode-focusBorder, #818cf8);
   --color-vsc-list-active-fg: var(--vscode-list-activeSelectionForeground, #1f2328);
   --color-vsc-text: var(--vscode-editor-foreground, #1f2328);
 
@@ -188,7 +188,7 @@
 
 /* ── Color scheme: enables light-dark() CSS function ── */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* ── P0 GNB Brand Gradient (plain CSS vars, not Tailwind theme) ── */
   --color-gnb-from: #1e1e2e;

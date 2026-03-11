@@ -4,7 +4,7 @@ import { toolCallAtomFamily, upsertToolCallAtom } from "~entities/tool-call";
 
 import { renderWithAtoms } from "../../../../tests/utils/render";
 import { dangerousApprovalToolCallIdAtom } from "../../../shared/lib";
-import { approvalGateAdapterAtom, type ApprovalGateAdapter } from "../../../shared/lib/atoms";
+import { type ApprovalGateAdapter, approvalGateAdapterAtom } from "../../../shared/lib/atoms";
 import { toastStackAtom } from "../../../shared/lib/atoms/toastAtoms";
 import { DangerousApprovalGate } from "../DangerousApprovalGate";
 
@@ -22,9 +22,12 @@ function createMockApprovalAdapter(): ApprovalGateAdapter {
   return {
     mode: "auto",
     changeMode: vi.fn(),
-    grantApproval: (actionId: string) => mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId }),
-    grantApprovalInSandbox: (actionId: string) => mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId, sandbox: true }),
-    denyApproval: (actionId: string) => mockPostMessage({ type: "DENY_APPROVAL", action_id: actionId }),
+    grantApproval: (actionId: string) =>
+      mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId }),
+    grantApprovalInSandbox: (actionId: string) =>
+      mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId, sandbox: true }),
+    denyApproval: (actionId: string) =>
+      mockPostMessage({ type: "DENY_APPROVAL", action_id: actionId }),
     stopTool: vi.fn(),
     retryTool: vi.fn(),
   };
@@ -73,7 +76,10 @@ describe("DangerousApprovalGate", () => {
   it("approve sends GRANT_APPROVAL, pushes toast, and resets atom", async () => {
     const tc = makeDangerousToolCall("tc-1");
     const { store, user } = renderWithAtoms(<DangerousApprovalGate />, {
-      initialValues: [[dangerousApprovalToolCallIdAtom, "tc-1"], [approvalGateAdapterAtom, createMockApprovalAdapter()]],
+      initialValues: [
+        [dangerousApprovalToolCallIdAtom, "tc-1"],
+        [approvalGateAdapterAtom, createMockApprovalAdapter()],
+      ],
     });
     store.set(upsertToolCallAtom, tc);
 
@@ -95,7 +101,10 @@ describe("DangerousApprovalGate", () => {
   it("deny sends DENY_APPROVAL, pushes toast, and resets atom", async () => {
     const tc = makeDangerousToolCall("tc-2");
     const { store, user } = renderWithAtoms(<DangerousApprovalGate />, {
-      initialValues: [[dangerousApprovalToolCallIdAtom, "tc-2"], [approvalGateAdapterAtom, createMockApprovalAdapter()]],
+      initialValues: [
+        [dangerousApprovalToolCallIdAtom, "tc-2"],
+        [approvalGateAdapterAtom, createMockApprovalAdapter()],
+      ],
     });
     store.set(upsertToolCallAtom, tc);
 

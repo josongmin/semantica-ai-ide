@@ -11,6 +11,7 @@ export { useClickOutside } from "./hooks/useClickOutside";
 export { useControllable } from "./hooks/useControllable";
 export { useElapsedTime } from "./hooks/useElapsedTime";
 export { useEscapeDismiss } from "./hooks/useEscapeDismiss";
+/* eslint-disable @typescript-eslint/no-deprecated -- computeFloatingPosition, FloatingPosition, FloatingPositionConfig kept for backward compat */
 export {
   type Alignment,
   type AnchorRef,

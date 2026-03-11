@@ -378,7 +378,7 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
         const nextIdx = e.shiftKey
           ? (curIdx - 1 + modeIds.length) % modeIds.length
           : (curIdx + 1) % modeIds.length;
-        setMode(modeIds[nextIdx]!);
+        setMode(modeIds[nextIdx] ?? modeIds[0]);
         setQuery("");
         setSelectedIdx(0);
       }
@@ -427,7 +427,7 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
 
   if (!open) return null;
 
-  const currentMode = MODES.find((m) => m.id === mode) ?? MODES[0]!;
+  const currentMode = MODES.find((m) => m.id === mode) ?? MODES[0];
 
   return createPortal(
     <div

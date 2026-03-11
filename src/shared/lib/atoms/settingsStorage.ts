@@ -16,7 +16,7 @@ export interface UserSettings {
 }
 
 const DEFAULTS: UserSettings = {
-  themeId: "tokyo-night",
+  themeId: "github-light",
   chatFont: "system",
   voiceStyle: "buttery",
 };

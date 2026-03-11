@@ -4,7 +4,7 @@ import { pendingApprovalCountAtom, upsertToolCallAtom } from "~entities/tool-cal
 
 import { renderWithAtoms } from "../../../../tests/utils/render";
 import { dangerousApprovalToolCallIdAtom } from "../../../shared/lib";
-import { approvalGateAdapterAtom, type ApprovalGateAdapter } from "../../../shared/lib/atoms";
+import { type ApprovalGateAdapter, approvalGateAdapterAtom } from "../../../shared/lib/atoms";
 import { toastStackAtom } from "../../../shared/lib/atoms/toastAtoms";
 import { ApprovalBanner } from "../ApprovalBanner";
 
@@ -22,9 +22,11 @@ function createMockApprovalAdapter(): ApprovalGateAdapter {
   return {
     mode: "auto",
     changeMode: vi.fn(),
-    grantApproval: (actionId: string) => mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId }),
+    grantApproval: (actionId: string) =>
+      mockPostMessage({ type: "GRANT_APPROVAL", action_id: actionId }),
     grantApprovalInSandbox: vi.fn(),
-    denyApproval: (actionId: string) => mockPostMessage({ type: "DENY_APPROVAL", action_id: actionId }),
+    denyApproval: (actionId: string) =>
+      mockPostMessage({ type: "DENY_APPROVAL", action_id: actionId }),
     stopTool: vi.fn(),
     retryTool: vi.fn(),
   };
@@ -49,12 +51,16 @@ describe("ApprovalBanner", () => {
   });
 
   it("renders nothing when no pending approvals", () => {
-    const { container } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { container } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
     expect(container.querySelector("[data-testid='approval-banner']")).toBeNull();
   });
 
   it("shows banner with count when approvals are pending", () => {
-    const {store} = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     // Insert tool calls that are awaiting approval
     store.set(upsertToolCallAtom, makeToolCall("tc-1"));
@@ -66,7 +72,9 @@ describe("ApprovalBanner", () => {
   });
 
   it("Approve All sends GRANT_APPROVAL for non-dangerous tool calls", async () => {
-    const { store, user } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store, user } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("tc-1", { risk_level: "moderate" }));
     store.set(upsertToolCallAtom, makeToolCall("tc-2", { risk_level: "safe" }));
@@ -87,7 +95,9 @@ describe("ApprovalBanner", () => {
   });
 
   it("Deny All sends DENY_APPROVAL for all tool calls", async () => {
-    const { store, user } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store, user } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("tc-1"));
     store.set(upsertToolCallAtom, makeToolCall("tc-2"));
@@ -107,7 +117,9 @@ describe("ApprovalBanner", () => {
 
   // ── Edge cases: all-dangerous ──────────────────────────
   it("all-dangerous: Approve sets first dangerous for dialog review", async () => {
-    const { store, user } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store, user } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("d-1", { risk_level: "dangerous" }));
     store.set(upsertToolCallAtom, makeToolCall("d-2", { risk_level: "dangerous" }));
@@ -122,7 +134,9 @@ describe("ApprovalBanner", () => {
   });
 
   it("mixed: shows 'Approve Safe' label when dangerous are present", async () => {
-    const { store } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("safe-1", { risk_level: "moderate" }));
     store.set(upsertToolCallAtom, makeToolCall("d-1", { risk_level: "dangerous" }));
@@ -132,7 +146,9 @@ describe("ApprovalBanner", () => {
   });
 
   it("mixed: Approve Safe approves non-dangerous and opens dialog for dangerous", async () => {
-    const { store, user } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store, user } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("safe-1", { risk_level: "safe" }));
     store.set(upsertToolCallAtom, makeToolCall("d-1", { risk_level: "dangerous" }));
@@ -154,7 +170,9 @@ describe("ApprovalBanner", () => {
   });
 
   it("shows dangerous count indicator", async () => {
-    const { store } = renderWithAtoms(<ApprovalBanner />, { initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]] });
+    const { store } = renderWithAtoms(<ApprovalBanner />, {
+      initialValues: [[approvalGateAdapterAtom, createMockApprovalAdapter()]],
+    });
 
     store.set(upsertToolCallAtom, makeToolCall("d-1", { risk_level: "dangerous" }));
 

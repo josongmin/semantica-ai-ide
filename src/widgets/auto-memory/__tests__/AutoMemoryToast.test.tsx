@@ -4,7 +4,10 @@ import { createStore } from "jotai";
 import { renderWithAtoms } from "../../../../tests/utils";
 import { dispatchServerEvent } from "../../../app/event-dispatch";
 import { memoryRulesAtom } from "../../../entities/memory-rule";
-import { autoMemorySuggestionsAtom, autoMemorySuggestionsFamily } from "../../../features/auto-memory";
+import {
+  autoMemorySuggestionsAtom,
+  autoMemorySuggestionsFamily,
+} from "../../../features/auto-memory";
 import type { AutoMemorySuggestion, TurnId } from "../../../shared/protocol";
 import { AutoMemoryToast } from "../AutoMemoryToast";
 
@@ -118,7 +121,8 @@ describe("AutoMemoryToast", () => {
 describe("Auto-Memory – serverEvent dispatch integration", () => {
   it("SUGGEST_AUTO_MEMORY adds suggestion to store", () => {
     const store = createStore();
-    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) => dispatchServerEvent(store, serverEvent);
+    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) =>
+      dispatchServerEvent(store, serverEvent);
 
     const suggestion = createSuggestion();
     dispatch({ t: "SUGGEST_AUTO_MEMORY", suggestion });
@@ -130,7 +134,8 @@ describe("Auto-Memory – serverEvent dispatch integration", () => {
 
   it("SUGGEST_AUTO_MEMORY deduplicates by id", () => {
     const store = createStore();
-    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) => dispatchServerEvent(store, serverEvent);
+    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) =>
+      dispatchServerEvent(store, serverEvent);
 
     const suggestion = createSuggestion({ id: "sug_dup" });
     dispatch({ t: "SUGGEST_AUTO_MEMORY", suggestion });
@@ -141,11 +146,15 @@ describe("Auto-Memory – serverEvent dispatch integration", () => {
 
   it("DISMISS_AUTO_MEMORY removes suggestion from per-turn store", () => {
     const store = createStore();
-    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) => dispatchServerEvent(store, serverEvent);
+    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) =>
+      dispatchServerEvent(store, serverEvent);
 
     // Seed via SUGGEST_AUTO_MEMORY (per-turn path)
     dispatch({ t: "SUGGEST_AUTO_MEMORY", suggestion: createSuggestion({ id: "sug_1" }) });
-    dispatch({ t: "SUGGEST_AUTO_MEMORY", suggestion: createSuggestion({ id: "sug_2", title: "Other" }) });
+    dispatch({
+      t: "SUGGEST_AUTO_MEMORY",
+      suggestion: createSuggestion({ id: "sug_2", title: "Other" }),
+    });
     expect(store.get(autoMemorySuggestionsFamily(TURN_ID))).toHaveLength(2);
 
     dispatch({ t: "DISMISS_AUTO_MEMORY", id: "sug_1", turn_id: TURN_ID } as any);
@@ -156,9 +165,10 @@ describe("Auto-Memory – serverEvent dispatch integration", () => {
 
   it("RESET_STORES clears auto-memory suggestions", () => {
     const store = createStore();
-    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) => dispatchServerEvent(store, serverEvent);
+    const dispatch = (serverEvent: Parameters<typeof dispatchServerEvent>[1]) =>
+      dispatchServerEvent(store, serverEvent);
 
-    // Seed global atom (reset clears it)
+    /* eslint-disable @typescript-eslint/no-deprecated -- testing RESET_STORES with legacy atom for migration coverage */
     store.set(autoMemorySuggestionsAtom, [createSuggestion()]);
     expect(store.get(autoMemorySuggestionsAtom)).toHaveLength(1);
 

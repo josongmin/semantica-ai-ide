@@ -4,8 +4,8 @@ import { approvalModeAtom } from "~entities/session/settings";
 import { sessionMetaAtom } from "~entities/session/state";
 
 import { renderWithAtoms } from "../../../../tests/utils/render";
+import { type SendMessageAdapter, sendMessageAdapterAtom } from "../../../shared/lib/atoms";
 import { createSessionMeta } from "../../../shared/lib/mocks";
-import { sendMessageAdapterAtom, type SendMessageAdapter } from "../../../shared/lib/atoms";
 import { PromptBox } from "../PromptBox";
 
 // ─── Mocks ─────────────────────────────────────────────────

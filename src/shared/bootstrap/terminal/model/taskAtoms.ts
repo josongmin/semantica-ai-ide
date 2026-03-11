@@ -23,35 +23,28 @@ export const terminalTaskAtomFamily = atomFamily(
   (_id: string) => atom<TerminalAgentAction | null>(null),
   (a: string, b: string) => a === b,
 );
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- debugLabel is not in the public type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access -- debugLabel is not in the public type
 (terminalTaskAtomFamily as any).debugLabel = "terminalTaskAtomFamily";
 
 // ─── Task Writers ──────────────────────────────────────────
 
 /** Write-only: upsert an agent terminal action */
-export const upsertTerminalTaskAtom = atom(
-  null,
-  (get, set, action: TerminalAgentAction) => {
-    set(terminalTaskAtomFamily(action.id), action);
+export const upsertTerminalTaskAtom = atom(null, (get, set, action: TerminalAgentAction) => {
+  set(terminalTaskAtomFamily(action.id), action);
 
-    const idSet = get(terminalTaskIdSetAtom);
-    if (!idSet.has(action.id)) {
-      const nextSet = new Set(idSet);
-      nextSet.add(action.id);
-      set(terminalTaskIdSetAtom, nextSet);
-      set(terminalTaskOrderAtom, [...get(terminalTaskOrderAtom), action.id]);
-    }
-  },
-);
+  const idSet = get(terminalTaskIdSetAtom);
+  if (!idSet.has(action.id)) {
+    const nextSet = new Set(idSet);
+    nextSet.add(action.id);
+    set(terminalTaskIdSetAtom, nextSet);
+    set(terminalTaskOrderAtom, [...get(terminalTaskOrderAtom), action.id]);
+  }
+});
 
 /** Write-only: update the status of an agent terminal action */
 export const setTerminalTaskStatusAtom = atom(
   null,
-  (
-    get,
-    set,
-    payload: { id: string; status: TerminalAgentAction["status"] },
-  ) => {
+  (get, set, payload: { id: string; status: TerminalAgentAction["status"] }) => {
     const action = get(terminalTaskAtomFamily(payload.id));
     if (!action) return;
     set(terminalTaskAtomFamily(payload.id), {

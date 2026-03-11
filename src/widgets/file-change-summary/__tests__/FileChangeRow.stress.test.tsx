@@ -15,7 +15,7 @@ import { createStore, Provider } from "jotai";
 
 import { upsertFileChangeAtom } from "~entities/diff";
 
-import { diffReviewAdapterAtom, type DiffReviewAdapter } from "../../../shared/lib/atoms";
+import { type DiffReviewAdapter, diffReviewAdapterAtom } from "../../../shared/lib/atoms";
 import { createFileChange, resetIdCounter } from "../../../shared/lib/mocks";
 import type { FileChange, FileChangeStatus, TurnId } from "../../../shared/protocol";
 import { FileChangeRow } from "../FileChangeRow";
@@ -42,8 +42,7 @@ function createMockDiffReviewAdapter(): DiffReviewAdapter {
       mockPostMessage({ type: "DIFF_APPROVE_ALL", turn_id: turnId, file_paths: filePaths }),
     rejectAll: (turnId: string, filePaths: string[]) =>
       mockPostMessage({ type: "DIFF_REJECT_ALL", turn_id: turnId, file_paths: filePaths }),
-    openInEditor: (filePath: string) =>
-      mockPostMessage({ type: "OPEN_FILE", file_path: filePath }),
+    openInEditor: (filePath: string) => mockPostMessage({ type: "OPEN_FILE", file_path: filePath }),
     setApprovalStatus: vi.fn(),
   };
 }

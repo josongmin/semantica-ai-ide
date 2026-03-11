@@ -92,7 +92,7 @@ export const PromptBox = React.memo(function PromptBox() {
       <div
         ref={dropRef}
         className={cn(
-          "relative rounded-2xl overflow-hidden border border-vsc-border bg-vsc-surface-1",
+          "relative rounded-xl overflow-hidden border border-vsc-border bg-vsc-surface-1",
           isDragging && "ring-2 ring-inset ring-vsc-focus ring-dashed",
         )}
         data-testid="prompt-box"
@@ -102,7 +102,7 @@ export const PromptBox = React.memo(function PromptBox() {
       >
         {/* Drag overlay */}
         {isDragging && (
-          <div className="absolute inset-0 z-[--z-overlay] flex items-center justify-center bg-vsc-surface-1/80 backdrop-blur-sm pointer-events-none rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 z-[--z-overlay] flex items-center justify-center bg-vsc-surface-1/80 backdrop-blur-sm pointer-events-none rounded-xl overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-vsc-focus/10 border border-vsc-focus/30">
               <Icon name="cloud-upload" tokenSize="sm" className="text-vsc-focus" />
               <Text size="sm" weight="medium" tone="primary">

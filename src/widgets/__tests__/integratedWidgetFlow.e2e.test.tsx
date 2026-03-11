@@ -34,7 +34,7 @@ vi.mock("../turn-container/TurnPhaseSection", () => ({
 // Mock diffReviewAdapterAtom (widget reads from atom, not hook)
 const mockApproveAll = vi.fn();
 
-import { diffReviewAdapterAtom, type DiffReviewAdapter } from "../../shared/lib/atoms";
+import { type DiffReviewAdapter, diffReviewAdapterAtom } from "../../shared/lib/atoms";
 
 function createMockDiffReviewAdapter(): DiffReviewAdapter {
   return {
@@ -252,7 +252,6 @@ describe("Integrated widget flow – E2E", () => {
         }),
       ];
 
-       
       const initialValues: [any, any][] = turns.map((t) => [turnAtomFamily(t.id), t]);
 
       renderWithAtoms(

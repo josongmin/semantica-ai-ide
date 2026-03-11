@@ -4,8 +4,8 @@ import { approvalModeAtom } from "~entities/session/settings";
 import { sessionMetaAtom } from "~entities/session/state";
 
 import { renderWithAtoms } from "../../../../tests/utils/render";
+import { type SendMessageAdapter, sendMessageAdapterAtom } from "../../../shared/lib/atoms";
 import { createSessionMeta } from "../../../shared/lib/mocks";
-import { sendMessageAdapterAtom, type SendMessageAdapter } from "../../../shared/lib/atoms";
 import { PromptBox } from "../PromptBox";
 
 // ─── Mocks ─────────────────────────────────────────────────
@@ -13,7 +13,9 @@ let mockApprovalMode = "auto" as "auto" | "turbo";
 vi.mock("../../../features/approval-gate", () => ({
   useApprovalGate: () => ({
     mode: mockApprovalMode,
-    changeMode: vi.fn((m: string) => { mockApprovalMode = m as typeof mockApprovalMode; }),
+    changeMode: vi.fn((m: string) => {
+      mockApprovalMode = m as typeof mockApprovalMode;
+    }),
   }),
 }));
 
@@ -139,7 +141,10 @@ describe("PromptBox", () => {
   it("running state: placeholder changes to working message", () => {
     renderRunning();
     const textarea = screen.getByLabelText("Message input");
-    expect(textarea).toHaveAttribute("placeholder", "Agent is working\u2026 (Enter to queue, Esc to stop)");
+    expect(textarea).toHaveAttribute(
+      "placeholder",
+      "Agent is working\u2026 (Enter to queue, Esc to stop)",
+    );
   });
 
   it("clicking stop button calls stopAgent", async () => {

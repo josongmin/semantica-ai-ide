@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   Lightbulb,
   type LucideIcon,
+  MoreHorizontal,
   Play,
   Search,
   Settings,
@@ -28,13 +29,9 @@ import {
 import { cn } from "~shared/ui";
 
 import { conversationSearchOpenAtom } from "../../../shared/lib/atoms/dialogAtoms";
-import { detachToFloatingAtom } from "../model/floatingAtoms";
-import {
-  activeNavCategoryAtom,
-  type NavCategoryId,
-  type NavToolId,
-} from "../model/navRegistry";
 import { Separator } from "../components/TopBarPrimitives";
+import { detachToFloatingAtom } from "../model/floatingAtoms";
+import { activeNavCategoryAtom, type NavCategoryId, type NavToolId } from "../model/navRegistry";
 import { activeSurfaceAtom } from "../model/shellAtoms";
 
 // ─── GNB CSS variable helpers ────────────────────────────
@@ -70,7 +67,11 @@ const NAV_ICON_MAP: Record<string, LucideIcon> = {
   settings: Settings,
 };
 
-type NavItem = { id: NavCategoryId; label: string; isTool?: boolean };
+interface NavItem {
+  id: NavCategoryId;
+  label: string;
+  isTool?: boolean;
+}
 
 const NAV_ITEMS: readonly NavItem[] = [
   { id: "ide", label: "IDE" },
@@ -138,8 +139,12 @@ export const TitleBar = React.memo(function TitleBar() {
           className="inline-flex items-center gap-1.5 px-2 h-7 rounded-md text-[12px] font-medium
                      cursor-pointer border-none focus-ring transition-colors duration-150"
           style={{ color: gnb.text }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = gnb.hover; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = gnb.hover;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+          }}
         >
           <span
             className="inline-flex items-center justify-center w-5 h-5 rounded text-[11px] font-bold shrink-0"
@@ -209,7 +214,9 @@ export const TitleBar = React.memo(function TitleBar() {
         >
           <Search size={15} className="shrink-0" />
           <span className="flex-1 text-left">Search...</span>
-          <kbd className="text-[10px] font-mono shrink-0" style={{ color: gnb.textGhost }}>⌘K</kbd>
+          <kbd className="text-[10px] font-mono shrink-0" style={{ color: gnb.textGhost }}>
+            ⌘K
+          </kbd>
         </button>
 
         <Separator />
