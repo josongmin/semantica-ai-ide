@@ -30,7 +30,7 @@ export const SidebarFrame = React.memo(function SidebarFrame({ width }: SidebarF
       role="complementary"
       aria-label="Explorer"
       data-keyboard-zone="sidebar"
-      className="flex flex-col h-full shrink-0 overflow-hidden bg-vsc-surface-1"
+      className="flex flex-col h-full shrink-0 overflow-hidden bg-vsc-surface-0"
       style={{ width }}
     >
       {ViewComponent ? (

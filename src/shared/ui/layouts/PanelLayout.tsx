@@ -32,7 +32,7 @@ export const PanelLayout = React.memo(function PanelLayout({
   className,
 }: PanelLayoutProps) {
   return (
-    <div className={cn("relative flex flex-col h-full overflow-hidden bg-vsc-bg", className)}>
+    <div className={cn("relative flex flex-col h-full overflow-hidden bg-white", className)}>
       {header}
       {subheader}
       <main className="flex flex-col flex-1 min-h-0 overflow-hidden relative border-t border-vsc-border/60">

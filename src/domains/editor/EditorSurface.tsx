@@ -106,10 +106,10 @@ export function EditorSurface() {
   );
 }
 
-// ─── Breadcrumb (reserved) ────────────────────────────────
+// ─── Breadcrumb (reserved for future use) ─────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
-function Breadcrumb({ filePath }: { filePath: string }) {
+/** @internal Reserved for future breadcrumb UI */
+function BreadcrumbReserved({ filePath }: { filePath: string }) {
   const rawSegments = filePath.split("/");
   const displaySegments =
     rawSegments.length > 5
@@ -143,10 +143,10 @@ function Breadcrumb({ filePath }: { filePath: string }) {
   );
 }
 
-// ─── Status Bar (reserved) ───────────────────────────────
+// ─── Status Bar (reserved for future use) ──────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
-function StatusBar({
+/** @internal Reserved for future status bar UI */
+function StatusBarReserved({
   activeTab,
   language,
   lineCount,
@@ -290,3 +290,6 @@ function ShortcutHint({ keys, label }: { keys: string[]; label: string }) {
     </div>
   );
 }
+
+/** @internal Reserved for future use */
+export { BreadcrumbReserved, StatusBarReserved };

@@ -6,7 +6,6 @@ import { cn } from "~shared/ui";
 
 import { AgentFrame } from "./frames/AgentFrame";
 import { FloatingLayer } from "./frames/FloatingLayer";
-import { NavBar } from "./frames/NavBar";
 import { SidebarFrame } from "./frames/SidebarFrame";
 import { TitleBar } from "./frames/TitleBar";
 import { TrayFrame } from "./frames/TrayFrame";
@@ -17,7 +16,6 @@ import {
   agentPanelVisibleAtom,
   agentPanelWidthAtom,
   focusModeAtom,
-  navBarExpandedAtom,
   sidebarVisibleAtom,
   sidebarWidthAtom,
   toggleFocusModeAtom,
@@ -28,10 +26,6 @@ import {
 } from "./model/shellAtoms";
 import { ResizeHandle } from "./Resizable";
 import { ShellStatusBar } from "./ShellStatusBar";
-
-// ─── Constants ──────────────────────────────────────────
-const NAV_RAIL_W = 48;
-const NAV_EXPANDED_W = 190;
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -59,7 +53,6 @@ export const ShellLayout = React.memo(function ShellLayout({
   agentContent,
 }: ShellLayoutProps) {
   const activeNavCategory = useAtomValue(activeNavCategoryAtom);
-  const navExpanded = useAtomValue(navBarExpandedAtom);
   const sidebarVisible = useAtomValue(sidebarVisibleAtom);
   const agentVisible = useAtomValue(agentPanelVisibleAtom);
   const trayVisible = useAtomValue(trayVisibleAtom);
@@ -77,7 +70,6 @@ export const ShellLayout = React.memo(function ShellLayout({
   const setTrayHeight = useSetAtom(trayHeightAtom);
 
   const isIdeMode = activeNavCategory === "ide";
-  const showNavBar = !isZenMode && !isFocusMode;
 
   const handleSidebarResize = useCallback(
     (delta: number) => {
@@ -108,10 +100,8 @@ export const ShellLayout = React.memo(function ShellLayout({
       {/* TitleBar — highest z */}
       {!isFocusMode && <TitleBar />}
 
-      {/* Body: NavBar | Content */}
+      {/* Body: Content */}
       <div className="flex flex-1 min-h-0 min-w-0">
-        {showNavBar && <NavBar width={navExpanded ? NAV_EXPANDED_W : NAV_RAIL_W} />}
-
         {/* Content row: Left section (Sidebar + Canvas + Tray) | Agent */}
         <div className="flex flex-1 min-h-0 min-w-0 gap-px bg-vsc-border/15">
           {/* Left section: Sidebar + Canvas + Tray */}

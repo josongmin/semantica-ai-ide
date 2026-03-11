@@ -96,7 +96,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
 
   return (
     <nav
-      className="flex flex-col h-full shrink-0 bg-vsc-surface-1 border-r border-vsc-border/20 overflow-hidden transition-[width] duration-200 ease-out"
+      className="flex flex-col h-full shrink-0 bg-vsc-surface-0 border-r border-vsc-border/20 overflow-hidden transition-[width] duration-200 ease-out"
       style={{ width }}
       aria-label="Main navigation"
     >

@@ -111,7 +111,7 @@ impl PtyHandle for PortablePtyHandle {
     }
 
     fn kill(&self) -> Result<(), String> {
-        self.shutdown.store(true, Ordering::SeqCst);
+        self.shutdown.store(true, Ordering::Release);
         let _ = self.child.lock().map_err(|e| e.to_string())?.kill();
         Ok(())
     }
@@ -146,7 +146,7 @@ impl PtyHandle for PortablePtyHandle {
             let exit_code;
 
             loop {
-                if shutdown.load(Ordering::SeqCst) {
+                if shutdown.load(Ordering::Acquire) {
                     exit_code = None;
                     break;
                 }
@@ -161,7 +161,7 @@ impl PtyHandle for PortablePtyHandle {
                 }
             }
 
-            if !shutdown.load(Ordering::SeqCst) {
+            if !shutdown.load(Ordering::Acquire) {
                 on_exit(exit_code);
             }
         });
@@ -170,6 +170,6 @@ impl PtyHandle for PortablePtyHandle {
     }
 
     fn stop_reader(&self) {
-        self.shutdown.store(true, Ordering::SeqCst);
+        self.shutdown.store(true, Ordering::Release);
     }
 }

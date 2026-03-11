@@ -39,12 +39,12 @@ export const AgentFrame = React.memo(function AgentFrame({ width, children }: Ag
   return (
     <aside
       data-keyboard-zone="agent-panel"
-      className="flex flex-col h-full shrink-0 overflow-hidden bg-vsc-bg ai-breathe"
+      className="flex flex-col h-full shrink-0 overflow-hidden bg-white ai-breathe"
       style={{ width }}
     >
       {/* History | New Chat 헤더 (children 있을 때만) */}
       {Boolean(children) && (
-        <div className="flex items-center gap-4 px-3 py-2 border-b border-vsc-border/20 shrink-0 bg-vsc-surface-1/50">
+        <div className="flex items-center gap-4 px-3 h-[36px] border-b border-vsc-border/20 shrink-0 bg-white">
           <button
             type="button"
             onClick={handleHistory}

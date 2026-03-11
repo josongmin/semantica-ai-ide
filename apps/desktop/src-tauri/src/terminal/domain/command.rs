@@ -100,7 +100,8 @@ impl CommandTracker {
     }
 
     pub fn all_commands(&self) -> Vec<TerminalCommand> {
-        let mut all = self.history.clone();
+        let mut all = Vec::with_capacity(self.history.len() + usize::from(self.active.is_some()));
+        all.extend_from_slice(&self.history);
         if let Some(ref active) = self.active {
             all.push(active.clone());
         }

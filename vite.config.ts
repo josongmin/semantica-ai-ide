@@ -7,6 +7,34 @@ import { ptyDevServer } from "./dev/vite-plugin-pty";
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), ptyDevServer()],
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "jotai",
+      "codemirror",
+      "@codemirror/view",
+      "@codemirror/state",
+      "@codemirror/language",
+      "react-markdown",
+      "remark-gfm",
+      "rehype-highlight",
+      "highlight.js",
+      "mermaid",
+      "@xterm/xterm",
+      "@xterm/addon-fit",
+      "@xterm/addon-search",
+    ],
+    exclude: ["node-pty", "ws"],
+  },
+  server: {
+    watch: {
+      ignored: ["**/node_modules/**", "**/dist/**", "**/src-tauri/**", "**/.git/**"],
+    },
+    warmup: {
+      clientFiles: ["./index.html", "./src/main.tsx", "./src/app/App.tsx"],
+    },
+  },
   resolve: {
     alias: {
       "@vscode/codicons": path.resolve(

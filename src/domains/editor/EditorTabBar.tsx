@@ -54,7 +54,7 @@ export const EditorTabBar = React.memo(function EditorTabBar() {
 
   if (tabs.length === 0) {
     return (
-      <div className="flex items-center h-[30px] px-4 bg-white text-xs text-vsc-text-ghost shrink-0">
+      <div className="flex items-center h-[36px] px-4 bg-white text-xs text-vsc-text-ghost shrink-0">
         <Icon name="files" tokenSize="2xs" className="mr-1.5 opacity-30" />
         No files open
       </div>
@@ -64,7 +64,7 @@ export const EditorTabBar = React.memo(function EditorTabBar() {
   return (
     <div
       className={cn(
-        "flex items-stretch h-[30px] bg-white overflow-x-auto shrink-0",
+        "flex items-stretch h-[36px] bg-white overflow-x-auto shrink-0",
         "scrollbar-none",
       )}
       role="tablist"

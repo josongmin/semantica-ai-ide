@@ -4,119 +4,119 @@
 @import "@xterm/xterm/css/xterm.css";
 
 /* ═══════════════════════════════════════════════════════════════
-   IntelliJ Light — 클린 웜 라이트 테마
+   P0 Theme — GitHub Light 기반 쿨 뉴트럴 라이트
    ═══════════════════════════════════════════════════════════════ */
 @theme {
-  /* ── Core Colors (IntelliJ Light) ── */
+  /* ── Core Colors (GitHub Light) ── */
   --color-vsc-bg: var(--vscode-editor-background, #ffffff);
-  --color-vsc-fg: var(--vscode-editor-foreground, #1e1e1e);
-  --color-vsc-border: var(--vscode-panel-border, #c8c4bf);
+  --color-vsc-fg: var(--vscode-editor-foreground, #1f2328);
+  --color-vsc-border: var(--vscode-panel-border, #d1d9e0);
   --color-vsc-input-bg: var(--vscode-input-background, #ffffff);
-  --color-vsc-input-fg: var(--vscode-input-foreground, #1e1e1e);
-  --color-vsc-input-border: var(--vscode-input-border, #c8c4bf);
-  --color-vsc-button: var(--vscode-button-background, #2675bf);
+  --color-vsc-input-fg: var(--vscode-input-foreground, #1f2328);
+  --color-vsc-input-border: var(--vscode-input-border, #d1d9e0);
+  --color-vsc-button: var(--vscode-button-background, #1f883d);
   --color-vsc-button-fg: var(--vscode-button-foreground, #ffffff);
-  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #1a5da0);
-  --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #e0ddd8);
-  --color-vsc-button-secondary-fg: var(--vscode-button-secondaryForeground, #1e1e1e);
-  --color-vsc-badge-bg: var(--vscode-badge-background, #2675bf);
+  --color-vsc-button-hover: var(--vscode-button-hoverBackground, #1a7f37);
+  --color-vsc-button-secondary: var(--vscode-button-secondaryBackground, #ebecf0);
+  --color-vsc-button-secondary-fg: var(--vscode-button-secondaryForeground, #1f2328);
+  --color-vsc-badge-bg: var(--vscode-badge-background, #0969da);
   --color-vsc-badge-fg: var(--vscode-badge-foreground, #ffffff);
-  --color-vsc-success: var(--vscode-terminal-ansiGreen, #59a869);
-  --color-vsc-warning: var(--vscode-editorWarning-foreground, #be8800);
-  --color-vsc-error: var(--vscode-editorError-foreground, #cf5b56);
-  --color-vsc-info: var(--vscode-editorInfo-foreground, #2675bf);
-  --color-vsc-link: var(--vscode-textLink-foreground, #2675bf);
-  --color-vsc-selection: var(--vscode-editor-selectionBackground, #b6d6fd);
-  --color-vsc-sidebar: var(--vscode-sideBar-background, #f5f1ed);
-  --color-vsc-list-hover: var(--vscode-list-hoverBackground, #ebe8e4);
-  --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #cfe0f7);
-  --color-vsc-focus: var(--vscode-focusBorder, #2675bf);
-  --color-vsc-diff-insert: var(--vscode-diffEditor-insertedTextBackground, rgba(89, 168, 105, 0.2));
-  --color-vsc-diff-delete: var(--vscode-diffEditor-removedTextBackground, rgba(207, 91, 86, 0.2));
+  --color-vsc-success: var(--vscode-terminal-ansiGreen, #1a7f37);
+  --color-vsc-warning: var(--vscode-editorWarning-foreground, #9a6700);
+  --color-vsc-error: var(--vscode-editorError-foreground, #d1242f);
+  --color-vsc-info: var(--vscode-editorInfo-foreground, #0969da);
+  --color-vsc-link: var(--vscode-textLink-foreground, #0969da);
+  --color-vsc-selection: var(--vscode-editor-selectionBackground, #add6ff);
+  --color-vsc-sidebar: var(--vscode-sideBar-background, #f6f8fa);
+  --color-vsc-list-hover: var(--vscode-list-hoverBackground, #eaeef2);
+  --color-vsc-list-active: var(--vscode-list-activeSelectionBackground, #ddf4ff);
+  --color-vsc-focus: var(--vscode-focusBorder, #0969da);
+  --color-vsc-diff-insert: var(--vscode-diffEditor-insertedTextBackground, rgba(26, 127, 55, 0.15));
+  --color-vsc-diff-delete: var(--vscode-diffEditor-removedTextBackground, rgba(209, 36, 47, 0.15));
   --color-vsc-diff-insert-line: var(
     --vscode-diffEditor-insertedLineBackground,
-    rgba(89, 168, 105, 0.08)
+    rgba(26, 127, 55, 0.07)
   );
   --color-vsc-diff-delete-line: var(
     --vscode-diffEditor-removedLineBackground,
-    rgba(207, 91, 86, 0.08)
+    rgba(209, 36, 47, 0.07)
   );
   --color-vsc-code-bg: var(
     --vscode-textCodeBlock-background,
-    var(--vscode-editor-background, #f5f1ed)
+    var(--vscode-editor-background, #f6f8fa)
   );
-  --color-vsc-toolbar: var(--vscode-toolbar-hoverBackground, #e5e2de);
+  --color-vsc-toolbar: var(--vscode-toolbar-hoverBackground, #eaeef2);
 
   --color-vsc-surface-0: var(--vscode-editor-background, #ffffff);
-  --color-vsc-surface-1: var(--vscode-sideBar-background, #f5f1ed);
-  --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #eceae6);
-  --color-vsc-surface-3: var(--vscode-input-background, var(--vscode-editor-background, #e5e2de));
+  --color-vsc-surface-1: var(--vscode-sideBar-background, #f6f8fa);
+  --color-vsc-surface-2: var(--vscode-textCodeBlock-background, #f0f3f6);
+  --color-vsc-surface-3: var(--vscode-input-background, var(--vscode-editor-background, #eaeef2));
 
-  --color-vsc-accent: var(--vscode-focusBorder, #2675bf);
+  --color-vsc-accent: var(--vscode-focusBorder, #0969da);
 
   /* ── Risk-level colors (System Lens) ── */
-  --color-risk-none: #565f89;
-  --color-risk-low: #9ece6a;
-  --color-risk-medium: #e0af68;
-  --color-risk-high: #ff9e64;
-  --color-risk-critical: #f7768e;
+  --color-risk-none: #656d76;
+  --color-risk-low: #1a7f37;
+  --color-risk-medium: #9a6700;
+  --color-risk-high: #cf222e;
+  --color-risk-critical: #a40e26;
 
   /* ── Lens symbol-kind fills (System Lens mini-graph) ── */
-  --color-lens-function: #7aa2f7;
-  --color-lens-class: #bb9af7;
-  --color-lens-hook: #9ece6a;
-  --color-lens-method: #7dcfff;
-  --color-lens-interface: #c0caf5;
-  --color-lens-variable: #e0af68;
-  --color-lens-module: #ff9e64;
-  --color-lens-type: #c0caf5;
-  --color-lens-enum: #e0af68;
-  --color-lens-namespace: #ff9e64;
-  --color-lens-runtime: #7dcfff;
+  --color-lens-function: #0969da;
+  --color-lens-class: #8250df;
+  --color-lens-hook: #1a7f37;
+  --color-lens-method: #0550ae;
+  --color-lens-interface: #6639ba;
+  --color-lens-variable: #953800;
+  --color-lens-module: #bf3989;
+  --color-lens-type: #6639ba;
+  --color-lens-enum: #953800;
+  --color-lens-namespace: #bf3989;
+  --color-lens-runtime: #0550ae;
 
   /* ── Language color accents (editor tab bar) ── */
-  --color-lang-typescript: #7dcfff;
-  --color-lang-javascript: #e0af68;
-  --color-lang-python: #9ece6a;
-  --color-lang-rust: #ff9e64;
-  --color-lang-go: #2ac3de;
-  --color-lang-json: #e0af68;
-  --color-lang-markdown: #565f89;
-  --color-lang-css: #f7768e;
-  --color-lang-html: #ff9e64;
-  --color-lang-shell: #73daca;
+  --color-lang-typescript: #0969da;
+  --color-lang-javascript: #9a6700;
+  --color-lang-python: #1a7f37;
+  --color-lang-rust: #953800;
+  --color-lang-go: #0550ae;
+  --color-lang-json: #9a6700;
+  --color-lang-markdown: #656d76;
+  --color-lang-css: #bf3989;
+  --color-lang-html: #953800;
+  --color-lang-shell: #1a7f37;
 
   /* ── Tab bar tokens ── */
   --color-vsc-tab-active: var(--vscode-tab-activeBackground, #ffffff);
-  --color-vsc-tab-inactive: var(--vscode-tab-inactiveBackground, #f5f1ed);
-  --color-vsc-tab-border: var(--vscode-tab-border, #c8c4bf);
+  --color-vsc-tab-inactive: var(--vscode-tab-inactiveBackground, #f6f8fa);
+  --color-vsc-tab-border: var(--vscode-tab-border, #d1d9e0);
   --color-vsc-dropdown: var(--vscode-dropdown-background, #ffffff);
 
   /* ── Compat aliases (used across ~25 widgets) ── */
-  --color-vsc-bg-secondary: var(--vscode-sideBar-background, #f5f1ed);
-  --color-vsc-bg-tertiary: var(--vscode-textCodeBlock-background, #eceae6);
+  --color-vsc-bg-secondary: var(--vscode-sideBar-background, #f6f8fa);
+  --color-vsc-bg-tertiary: var(--vscode-textCodeBlock-background, #f0f3f6);
   --color-vsc-editor-bg: var(--vscode-editor-background, #ffffff);
   --color-vsc-panel-bg: var(--vscode-panel-background, #ffffff);
   --color-vsc-input: var(--vscode-input-background, #ffffff);
-  --color-vsc-badge: var(--vscode-badge-background, #2675bf);
-  --color-vsc-desc: var(--vscode-descriptionForeground, #787878);
-  --color-vsc-panel-border: var(--vscode-panel-border, #c8c4bf);
-  --color-vsc-focusBorder: var(--vscode-focusBorder, #2675bf);
-  --color-vsc-list-active-fg: var(--vscode-list-activeSelectionForeground, #1e1e1e);
-  --color-vsc-text: var(--vscode-editor-foreground, #1e1e1e);
+  --color-vsc-badge: var(--vscode-badge-background, #0969da);
+  --color-vsc-desc: var(--vscode-descriptionForeground, #656d76);
+  --color-vsc-panel-border: var(--vscode-panel-border, #d1d9e0);
+  --color-vsc-focusBorder: var(--vscode-focusBorder, #0969da);
+  --color-vsc-list-active-fg: var(--vscode-list-activeSelectionForeground, #1f2328);
+  --color-vsc-text: var(--vscode-editor-foreground, #1f2328);
 
   /* ── Syntax highlighting tokens (diff-viewer) ── */
-  --color-vsc-keyword: var(--vscode-debugTokenExpression-name, #0033b3);
-  --color-vsc-string: var(--vscode-debugTokenExpression-string, #067d17);
-  --color-vsc-comment: color-mix(in srgb, #8c8c8c 80%, transparent);
-  --color-vsc-number: var(--vscode-debugTokenExpression-number, #1750eb);
-  --color-vsc-builtin: var(--vscode-debugTokenExpression-name, #267f99);
-  --color-vsc-operator: var(--vscode-editor-foreground, #1e1e1e);
+  --color-vsc-keyword: var(--vscode-debugTokenExpression-name, #cf222e);
+  --color-vsc-string: var(--vscode-debugTokenExpression-string, #0a3069);
+  --color-vsc-comment: color-mix(in srgb, #656d76 80%, transparent);
+  --color-vsc-number: var(--vscode-debugTokenExpression-number, #0550ae);
+  --color-vsc-builtin: var(--vscode-debugTokenExpression-name, #8250df);
+  --color-vsc-operator: var(--vscode-editor-foreground, #1f2328);
 
-  --color-vsc-text-primary: var(--vscode-editor-foreground, #1e1e1e);
-  --color-vsc-text-secondary: color-mix(in srgb, #1e1e1e 80%, transparent);
-  --color-vsc-text-tertiary: color-mix(in srgb, #1e1e1e 55%, transparent);
-  --color-vsc-text-ghost: color-mix(in srgb, #1e1e1e 35%, transparent);
+  --color-vsc-text-primary: var(--vscode-editor-foreground, #1f2328);
+  --color-vsc-text-secondary: color-mix(in srgb, #1f2328 75%, transparent);
+  --color-vsc-text-tertiary: color-mix(in srgb, #1f2328 50%, transparent);
+  --color-vsc-text-ghost: color-mix(in srgb, #1f2328 30%, transparent);
 
   --font-size-2xs: 10px;
   --font-size-3xs: 9px;
@@ -173,10 +173,10 @@
   --shadow-sheet: 0 -4px 16px rgba(0, 0, 0, 0.1);
   --shadow-panel: 0 4px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
   --shadow-modal: 0 16px 48px -8px rgba(0, 0, 0, 0.2);
-  --shadow-glow-error: 0 0 8px rgba(207, 91, 86, 0.3);
-  --shadow-glow-error-hover: 0 0 14px rgba(207, 91, 86, 0.45);
-  --shadow-glow-accent: 0 0 4px rgba(38, 117, 191, 0.15);
-  --shadow-glow-warning: 0 0 8px rgba(190, 136, 0, 0.15);
+  --shadow-glow-error: 0 0 8px rgba(209, 36, 47, 0.25);
+  --shadow-glow-error-hover: 0 0 14px rgba(209, 36, 47, 0.4);
+  --shadow-glow-accent: 0 0 4px rgba(9, 105, 218, 0.15);
+  --shadow-glow-warning: 0 0 8px rgba(154, 103, 0, 0.15);
 
   /* Panel scroll-area constraints */
   --panel-max-h-xs: min(160px, 30vh);
@@ -189,6 +189,22 @@
 /* ── Color scheme: enables light-dark() CSS function ── */
 :root {
   color-scheme: light dark;
+
+  /* ── P0 GNB Brand Gradient (plain CSS vars, not Tailwind theme) ── */
+  --color-gnb-from: #1e1e2e;
+  --color-gnb-via: #2d2b55;
+  --color-gnb-to: #1a1b2e;
+  --color-gnb-text: #e2e4f0;
+  --color-gnb-text-dim: rgba(226, 228, 240, 0.55);
+  --color-gnb-text-ghost: rgba(226, 228, 240, 0.35);
+  --color-gnb-active-from: rgba(99, 102, 241, 0.25);
+  --color-gnb-active-to: rgba(168, 85, 247, 0.18);
+  --color-gnb-hover: rgba(255, 255, 255, 0.08);
+  --color-gnb-border: rgba(255, 255, 255, 0.08);
+  --color-gnb-pill-bg: rgba(255, 255, 255, 0.06);
+  --color-gnb-accent: #818cf8;
+  --color-gnb-accent-secondary: #a78bfa;
+  --color-gnb-glow: rgba(129, 140, 248, 0.15);
 }
 
 /* ── Focus Ring Utility (blue glow) ── */
@@ -196,7 +212,7 @@
   &:focus-visible {
     outline: 2px solid var(--color-vsc-focus);
     outline-offset: -1px;
-    box-shadow: 0 0 0 1px rgba(38, 117, 191, 0.15);
+    box-shadow: 0 0 0 1px rgba(9, 105, 218, 0.15);
     animation: focus-ring-in 100ms ease-out;
   }
 }
@@ -670,13 +686,13 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 0 rgba(38, 117, 191, 0),
-      inset 0 0 0 1px rgba(38, 117, 191, 0.08);
+      0 0 0 0 rgba(9, 105, 218, 0),
+      inset 0 0 0 1px rgba(9, 105, 218, 0.08);
   }
   50% {
     box-shadow:
-      0 0 20px 0 rgba(38, 117, 191, 0.06),
-      inset 0 0 0 1px rgba(38, 117, 191, 0.15);
+      0 0 20px 0 rgba(9, 105, 218, 0.06),
+      inset 0 0 0 1px rgba(9, 105, 218, 0.15);
   }
 }
 
@@ -700,7 +716,7 @@ body {
     box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 8px rgba(38, 117, 191, 0.3);
+    box-shadow: 0 0 8px rgba(9, 105, 218, 0.3);
   }
 }
 
@@ -791,11 +807,11 @@ body {
 @keyframes focus-ring-in {
   from {
     outline-width: 0px;
-    box-shadow: 0 0 0 0 rgba(38, 117, 191, 0);
+    box-shadow: 0 0 0 0 rgba(9, 105, 218, 0);
   }
   to {
     outline-width: 2px;
-    box-shadow: 0 0 0 1px rgba(38, 117, 191, 0.15);
+    box-shadow: 0 0 0 1px rgba(9, 105, 218, 0.15);
   }
 }
 
@@ -874,10 +890,10 @@ body {
 @keyframes toc-running-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(38, 117, 191, 0.2);
+    box-shadow: 0 0 0 0 rgba(9, 105, 218, 0.2);
   }
   50% {
-    box-shadow: 0 0 0 4px rgba(38, 117, 191, 0.08);
+    box-shadow: 0 0 0 4px rgba(9, 105, 218, 0.08);
   }
 }
 
@@ -886,12 +902,12 @@ body {
   0%,
   100% {
     box-shadow:
-      0 0 0 0 rgba(38, 117, 191, 0.15),
+      0 0 0 0 rgba(9, 105, 218, 0.15),
       0 2px 8px rgba(0, 0, 0, 0.15);
   }
   50% {
     box-shadow:
-      0 0 0 3px rgba(38, 117, 191, 0.12),
+      0 0 0 3px rgba(9, 105, 218, 0.12),
       0 2px 12px rgba(0, 0, 0, 0.12);
   }
 }
@@ -1058,42 +1074,41 @@ body {
 
 /* ══════════════════════════════════════════════════════════════
    Syntax highlighting — VSCode theme-aware
-   Uses VSCode CSS variables with light-dark() fallbacks matching
-   VS Code Default Light+ / Tokyo Night Dark.
+   Light fallbacks: GitHub Light  /  Dark fallbacks: GitHub Dark
    ══════════════════════════════════════════════════════════════ */
 .hljs {
-  color: var(--vscode-editor-foreground, light-dark(#1e1e1e, #a9b1d6));
+  color: var(--vscode-editor-foreground, light-dark(#1f2328, #e6edf3));
   background: transparent;
 }
 
 /* Keywords: if, const, return, class, import, export … */
 .hljs-keyword,
 .hljs-selector-tag {
-  color: var(--vscode-debugTokenExpression-name, light-dark(#0000ff, #bb9af7));
+  color: var(--vscode-debugTokenExpression-name, light-dark(#cf222e, #ff7b72));
 }
 
 /* Strings & regex */
 .hljs-string,
 .hljs-regexp {
-  color: var(--vscode-debugTokenExpression-string, light-dark(#a31515, #9ece6a));
+  color: var(--vscode-debugTokenExpression-string, light-dark(#0a3069, #a5d6ff));
 }
 
 /* Numbers & literals */
 .hljs-number,
 .hljs-literal {
-  color: var(--vscode-debugTokenExpression-number, light-dark(#098658, #ff9e64));
+  color: var(--vscode-debugTokenExpression-number, light-dark(#0550ae, #79c0ff));
 }
 
 /* Built-in types */
 .hljs-built_in,
 .hljs-type {
-  color: light-dark(#267f99, #2ac3de);
+  color: light-dark(#8250df, #d2a8ff);
 }
 
 /* Comments */
 .hljs-comment,
 .hljs-quote {
-  color: var(--vscode-descriptionForeground, light-dark(#008000, #565f89));
+  color: var(--vscode-descriptionForeground, light-dark(#6e7781, #8b949e));
   font-style: italic;
 }
 
@@ -1101,58 +1116,58 @@ body {
 .hljs-title,
 .hljs-title\.function,
 .hljs-section {
-  color: var(--vscode-symbolIcon-functionForeground, light-dark(#795e26, #7aa2f7));
+  color: var(--vscode-symbolIcon-functionForeground, light-dark(#8250df, #d2a8ff));
 }
 
 /* Variables, params */
 .hljs-variable,
 .hljs-params {
-  color: var(--vscode-editor-foreground, light-dark(#001080, #a9b1d6));
+  color: var(--vscode-editor-foreground, light-dark(#24292f, #e6edf3));
 }
 
 /* Class / type names */
 .hljs-title\.class,
 .hljs-title\.class\.inherited {
-  color: var(--vscode-symbolIcon-classForeground, light-dark(#267f99, #2ac3de));
+  color: var(--vscode-symbolIcon-classForeground, light-dark(#953800, #ffa657));
 }
 
 /* Tags (HTML/XML) */
 .hljs-tag,
 .hljs-name {
-  color: light-dark(#800000, #f7768e);
+  color: light-dark(#116329, #7ee787);
 }
 
 /* Attributes in tags & object keys */
 .hljs-attr,
 .hljs-attribute {
-  color: light-dark(#e50000, #bb9af7);
+  color: light-dark(#0550ae, #79c0ff);
 }
 
 /* Diff addition / deletion */
 .hljs-addition {
-  color: light-dark(#098658, #9ece6a);
+  color: light-dark(#116329, #aff5b4);
 }
 .hljs-deletion {
-  color: light-dark(#a31515, #f7768e);
+  color: light-dark(#82071e, #ffdcd7);
 }
 
 /* Meta / preprocessor */
 .hljs-meta,
 .hljs-meta .hljs-keyword,
 .hljs-meta .hljs-string {
-  color: var(--vscode-descriptionForeground, light-dark(#808080, #565f89));
+  color: var(--vscode-descriptionForeground, light-dark(#6e7781, #8b949e));
 }
 
 /* Punctuation & operators */
 .hljs-punctuation,
 .hljs-operator {
-  color: var(--vscode-editor-foreground, light-dark(#1e1e1e, #89ddff));
+  color: var(--vscode-editor-foreground, light-dark(#1f2328, #e6edf3));
 }
 
 /* Template variable / interpolation */
 .hljs-template-variable,
 .hljs-subst {
-  color: light-dark(#267f99, #7dcfff);
+  color: light-dark(#953800, #ffa657);
 }
 
 .hljs-emphasis {

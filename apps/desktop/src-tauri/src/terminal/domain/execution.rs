@@ -3,6 +3,7 @@
 //! Tracks the full lifecycle: Pending → Executing → Completed/Failed/TimedOut/Cancelled
 //! Pure state transitions, no I/O.
 
+use std::collections::VecDeque;
 use super::types::{AgentTerminalExecRequest, ExecutionState, DiagnosticEvent, AgentTerminalExecutionResult};
 
 // ─── Constants ──────────────────────────────────────────
@@ -24,7 +25,7 @@ pub struct ExecutionRecord {
     pub started_at: Option<u64>,
     pub completed_at: Option<u64>,
     pub timeout_ms: Option<u64>,
-    pub tail_output: Vec<String>,
+    pub tail_output: VecDeque<String>,
     pub parsed_diagnostics: Vec<DiagnosticEvent>,
     pub output_line_count: u32,
     pub exit_code: Option<i32>,
@@ -50,7 +51,7 @@ impl ExecutionRecord {
             started_at: None,
             completed_at: None,
             timeout_ms,
-            tail_output: Vec::new(),
+            tail_output: VecDeque::new(),
             parsed_diagnostics: Vec::new(),
             output_line_count: 0,
             exit_code: None,
@@ -117,9 +118,9 @@ impl ExecutionRecord {
     /// Append an output line, maintaining the tail buffer cap.
     pub fn append_output_line(&mut self, line: String) {
         self.output_line_count += 1;
-        self.tail_output.push(line);
+        self.tail_output.push_back(line);
         if self.tail_output.len() > MAX_TAIL_LINES {
-            self.tail_output.remove(0);
+            self.tail_output.pop_front();
         }
     }
 
@@ -166,7 +167,8 @@ impl ExecutionRecord {
         let output_preview = if self.tail_output.is_empty() {
             None
         } else {
-            Some(self.tail_output.join("\n"))
+            let parts: Vec<&str> = self.tail_output.iter().map(String::as_str).collect();
+            Some(parts.join("\n"))
         };
 
         let parsed_errors = if self.parsed_diagnostics.is_empty() {

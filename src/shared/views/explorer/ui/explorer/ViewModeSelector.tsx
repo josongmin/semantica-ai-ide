@@ -60,26 +60,57 @@ export const ViewModeSelector = memo(function ViewModeSelector({
   );
 
   return (
-    <DropdownMenu
-      items={items}
-      onSelect={handleSelect}
-      className="w-full"
-      trigger={
-        <button
-          type="button"
-          className={cn(
-            "flex items-center gap-1.5 w-full px-2.5 h-[26px]",
-            "bg-transparent border-none cursor-pointer text-left",
-            "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
-          )}
-        >
-          <Icon name="root-folder" size={13} className="text-vsc-text-tertiary shrink-0" />
-          <span className="text-[13px] font-medium text-vsc-fg truncate">
-            {VIEW_MODE_LABEL[value]}
-          </span>
-          <Icon name="chevron-down" size={10} className="text-vsc-text-ghost shrink-0 ml-auto" />
-        </button>
-      }
-    />
+    <div className="flex items-center h-[36px] px-2 bg-white shrink-0 border-b border-vsc-border/10">
+      {/* Left: view mode dropdown */}
+      <DropdownMenu
+        items={items}
+        onSelect={handleSelect}
+        trigger={
+          <button
+            type="button"
+            className={cn(
+              "flex items-center gap-1 px-1 h-[28px] rounded",
+              "bg-transparent border-none cursor-pointer text-left",
+              "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
+            )}
+          >
+            <span className="text-[13px] font-medium text-vsc-fg truncate">
+              {VIEW_MODE_LABEL[value]}
+            </span>
+            <Icon name="chevron-down" size={9} className="text-vsc-text-ghost shrink-0" />
+          </button>
+        }
+      />
+
+      {/* Right: action icons */}
+      <div className="flex items-center gap-0.5 ml-auto">
+        <HeaderAction icon="new-file" title="New File" />
+        <HeaderAction icon="target" title="Locate File" />
+        <HeaderAction icon="fold" title="Collapse All" />
+        <HeaderAction icon="close" title="Close" />
+        <HeaderAction icon="ellipsis" title="More Actions" />
+        <HeaderAction icon="chrome-minimize" title="Minimize" />
+      </div>
+    </div>
   );
 });
+
+// ─── Header action button ────────────────────────────────
+
+function HeaderAction({ icon, title }: { icon: string; title: string }) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      className={cn(
+        "flex items-center justify-center w-[22px] h-[22px] rounded",
+        "bg-transparent border-none cursor-pointer",
+        "text-vsc-text-tertiary hover:text-vsc-text-primary hover:bg-vsc-surface-2/60",
+        "transition-colors duration-fast focus-ring",
+      )}
+    >
+      <Icon name={icon} size={14} />
+    </button>
+  );
+}

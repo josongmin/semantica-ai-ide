@@ -1,7 +1,7 @@
 import type { FileChangeStatus } from "~shared/protocol";
 
 export const INDENT_PX = 12;
-export const ROW_HEIGHT = 24;
+export const ROW_HEIGHT = 26;
 
 export const STATUS_COLOR: Readonly<Record<FileChangeStatus, string>> = {
   added: "text-vsc-success",

@@ -237,23 +237,18 @@ impl OutputPipeline {
 
     /// Drain complete lines from the line buffer, leaving any partial last line.
     fn drain_complete_lines(&mut self) -> Vec<String> {
-        let mut lines = Vec::new();
+        let Some(last_newline) = self.line_buffer.rfind('\n') else {
+            return Vec::new();
+        };
 
-        // Find the last newline position
-        if let Some(last_newline) = self.line_buffer.rfind('\n') {
-            let complete = self.line_buffer[..=last_newline].to_string();
-            let remainder = self.line_buffer[last_newline + 1..].to_string();
+        // Take ownership of buffer, split in-place — avoids 2 extra allocations
+        let mut complete = std::mem::take(&mut self.line_buffer);
+        self.line_buffer = complete.split_off(last_newline + 1);
 
-            for line in complete.lines() {
-                if !line.is_empty() {
-                    lines.push(line.to_string());
-                }
-            }
-
-            self.line_buffer = remainder;
-        }
-
-        lines
+        complete.lines()
+            .filter(|l| !l.is_empty())
+            .map(|l| l.to_string())
+            .collect()
     }
 
     /// Get all tracked commands for this session.

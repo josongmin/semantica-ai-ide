@@ -193,15 +193,15 @@ impl SessionService {
 
     /// Get tracked commands for a session.
     pub fn get_commands(&self, session_id: &str) -> Result<Vec<TerminalCommand>, String> {
-        let sessions = self.sessions.lock().map_err(|e| e.to_string())?;
-        let session = sessions
-            .get(session_id)
-            .ok_or_else(|| format!("Session not found: {session_id}"))?;
-        let pipeline = session.pipeline.lock().map_err(|e| e.to_string())?;
-        let commands = pipeline.get_commands();
-        drop(pipeline);
-        drop(sessions);
-        Ok(commands)
+        let pipeline = {
+            let sessions = self.sessions.lock().map_err(|e| e.to_string())?;
+            let session = sessions
+                .get(session_id)
+                .ok_or_else(|| format!("Session not found: {session_id}"))?;
+            session.pipeline.clone() // Arc clone — release sessions lock first
+        };
+        let pipeline = pipeline.lock().map_err(|e| e.to_string())?;
+        Ok(pipeline.get_commands())
     }
 
     /// Execute a command in a session (used by `ExecService`).

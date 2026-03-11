@@ -4,7 +4,7 @@ import { cn, Icon } from "~shared/ui";
 // ─── Shared primitives for the top bar ──────────────────
 
 export function Separator() {
-  return <span className="w-px h-3 bg-vsc-border/20 mx-1" />;
+  return <span className="w-px h-3 mx-1" style={{ backgroundColor: "var(--color-gnb-border)" }} />;
 }
 
 export function ActionButton({ icon, label }: { icon: string; label: string }) {
