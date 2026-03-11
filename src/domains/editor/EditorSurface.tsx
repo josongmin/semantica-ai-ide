@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useMemo, useState } from "react";
+import React, { Suspense, useCallback, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
 import { cn, Icon } from "~shared/ui";
@@ -50,8 +50,6 @@ export function EditorSurface() {
     },
     [activeTab, updateContent],
   );
-
-  const lineCount = useMemo(() => (content !== "" ? content.split("\n").length : 0), [content]);
 
   // Context menu state
   const [ctxMenu, setCtxMenu] = useState<{
@@ -107,9 +105,6 @@ export function EditorSurface() {
           selectedText={ctxMenu?.selectedText ?? ""}
         />
       )}
-
-      {/* Status bar */}
-      <StatusBar activeTab={!!activeTab} language={language} lineCount={lineCount} />
     </div>
   );
 }
@@ -150,8 +145,9 @@ function Breadcrumb({ filePath }: { filePath: string }) {
   );
 }
 
-// ─── Status Bar ─────────────────────────────────────────
+// ─── Status Bar (reserved) ───────────────────────────────
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- reserved for future use
 function StatusBar({
   activeTab,
   language,

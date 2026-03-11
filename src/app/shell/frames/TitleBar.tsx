@@ -34,7 +34,7 @@ export const TitleBar = React.memo(function TitleBar() {
   return (
     <header
       role="banner"
-      className="relative flex items-center h-11 bg-vsc-surface-1 border-b border-vsc-border/20 shrink-0 select-none"
+      className="relative flex items-center h-11 bg-vsc-surface-2 border-b border-vsc-border/20 shrink-0 select-none"
       onMouseDown={startTauriDrag}
       onDoubleClick={toggleTauriMaximize}
     >

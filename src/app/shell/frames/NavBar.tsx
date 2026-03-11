@@ -96,7 +96,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
 
   return (
     <nav
-      className="flex flex-col h-full shrink-0 bg-vsc-surface-1 overflow-hidden transition-[width] duration-200 ease-out"
+      className="flex flex-col h-full shrink-0 bg-vsc-surface-1 border-r border-vsc-border/60 overflow-hidden transition-[width] duration-200 ease-out"
       style={{ width }}
       aria-label="Main navigation"
     >
@@ -144,7 +144,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                           strokeWidth={1.75}
                           className={cn(
                             "shrink-0",
-                            isActive ? "text-vsc-accent" : "text-vsc-text-ghost",
+                            isActive ? "text-vsc-fg" : "text-vsc-text-tertiary",
                           )}
                         />
                         <span className="text-[13px] truncate">{cat.label}</span>
@@ -165,7 +165,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                         <LucideIcon
                           size={20}
                           strokeWidth={1.75}
-                          className="shrink-0 text-vsc-text-ghost"
+                          className="shrink-0 text-vsc-text-tertiary"
                         />
                         <span className="text-[13px] truncate">{tool.label}</span>
                       </button>
@@ -187,52 +187,58 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                          cursor-pointer border-none focus-ring transition-colors duration-150
                          text-vsc-text-secondary hover:text-vsc-fg hover:bg-vsc-surface-3/30"
             >
-              <Settings size={20} strokeWidth={1.75} className="shrink-0 text-vsc-text-ghost" />
+              <Settings size={20} strokeWidth={1.75} className="shrink-0 text-vsc-text-tertiary" />
               <span className="text-[13px]">Settings</span>
             </button>
           </div>
         </div>
       ) : (
-        /* ── Collapsed: icon rail ── */
-        <div className="flex flex-col items-center py-3 gap-0.5" style={{ width: RAIL_W }}>
-          {/* Logo */}
-          <div className="flex items-center justify-center w-full h-8 mb-3 shrink-0">
-            <NavLogo />
-          </div>
+        /* ── Collapsed: icon rail (mirrors expanded section layout) ── */
+        <div className="flex flex-col items-center py-2" style={{ width: RAIL_W }}>
+          {NAV_SECTIONS.map((section) => {
+            const categories = section.categoryIds
+              .map((id) => NAV_CATEGORIES.find((c) => c.id === id))
+              .filter(Boolean) as (typeof NAV_CATEGORIES)[number][];
+            const tools = section.toolIds
+              ? (section.toolIds
+                  .map((id) => NAV_TOOLS.find((t) => t.id === id))
+                  .filter(Boolean) as (typeof NAV_TOOLS)[number][])
+              : [];
 
-          {/* Main nav icons */}
-          <div className="flex flex-col items-center w-full gap-0.5">
-            {NAV_CATEGORIES.map((cat) => (
-              <NavIcon
-                key={cat.id}
-                icon={cat.icon}
-                label={cat.label}
-                isActive={activeCategory === cat.id}
-                onClick={() => handleCategoryClick(cat.id)}
-              />
-            ))}
-          </div>
+            return (
+              <div key={section.id} className="mb-2 last:mb-0 w-full">
+                {/* Match expanded section label height exactly */}
+                {section.label && (
+                  <div className="px-4 py-1.5">
+                    <span className="text-[10px] leading-normal invisible">&nbsp;</span>
+                  </div>
+                )}
+                <div className="flex flex-col items-center gap-0.5">
+                  {categories.map((cat) => (
+                    <NavIcon
+                      key={cat.id}
+                      icon={cat.icon}
+                      label={cat.label}
+                      isActive={activeCategory === cat.id}
+                      onClick={() => handleCategoryClick(cat.id)}
+                    />
+                  ))}
+                  {tools.map((tool) => (
+                    <NavIcon
+                      key={tool.id}
+                      icon={tool.icon}
+                      label={tool.label}
+                      isActive={false}
+                      onClick={() => handleToolClick(tool.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
 
-          {/* Divider */}
-          <div className="w-5 h-px bg-vsc-border/30 my-2 shrink-0" />
-
-          {/* Tool icons */}
-          <div className="flex flex-col items-center w-full gap-0.5">
-            {NAV_TOOLS.map((tool) => (
-              <NavIcon
-                key={tool.id}
-                icon={tool.icon}
-                label={tool.label}
-                isActive={false}
-                onClick={() => handleToolClick(tool.id)}
-              />
-            ))}
-          </div>
-
-          {/* Spacer */}
           <div className="flex-1" />
 
-          {/* Settings */}
           <NavIcon
             icon="gear"
             label="Settings"
@@ -264,39 +270,15 @@ const NavIcon = React.memo(function NavIcon({ icon, label, isActive, onClick }: 
       aria-label={label}
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "flex items-center justify-center w-9 h-9 shrink-0",
+        "flex items-center justify-center w-9 h-8 shrink-0",
         "cursor-pointer border-none focus-ring transition-colors duration-150",
         "rounded-[8px]",
         isActive
           ? "text-vsc-fg bg-vsc-surface-3/60"
-          : "text-vsc-text-ghost hover:text-vsc-fg hover:bg-vsc-surface-3/30",
+          : "text-vsc-text-tertiary hover:text-vsc-fg hover:bg-vsc-surface-3/30",
       )}
     >
-      <LucideIcon size={22} strokeWidth={1.75} />
+      <LucideIcon size={20} strokeWidth={1.75} />
     </button>
-  );
-});
-
-// ─── Logo ────────────────────────────────────────────────
-
-const NavLogo = React.memo(function NavLogo() {
-  return (
-    <svg
-      width={20}
-      height={20}
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="text-vsc-text-secondary"
-      aria-hidden
-    >
-      <path
-        d="M4 14l3-6 3 6M10 10l2.5-4L15 10M14 8l2-3 2 3"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 });
