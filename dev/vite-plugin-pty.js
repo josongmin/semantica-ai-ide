@@ -1,23 +1,21 @@
 /**
  * Vite Plugin: WebSocket PTY Server
  *
- * Starts a standalone WebSocket server (port 7681) alongside Vite's dev server.
- * Browser dev mode connects to this for real PTY access via node-pty.
+ * Piggybacks on Vite's own HTTP server — no separate port needed.
+ * Browser dev mode connects to ws://<vite-host>/__pty for real PTY access.
  *
  * Protocol:
- *   ws://localhost:7681?cols=80&rows=24  → spawns a PTY, streams I/O
+ *   ws://localhost:5173/__pty?cols=80&rows=24  → spawns a PTY, streams I/O
  *   Client → Server: stdin text, or JSON { type: "resize", cols, rows }
  *   Server → Client: stdout text
  */
 import { createRequire } from "node:module";
-var PTY_WS_PORT = 7681;
+export var PTY_WS_PATH = "/__pty";
 export function ptyDevServer() {
     return {
         name: "vite-plugin-pty",
         apply: "serve",
-        configureServer: function () {
-            // Use createRequire for native addons — dynamic import() fails
-            // inside Vite's module resolution for native .node binaries
+        configureServer: function (server) {
             var require = createRequire(import.meta.url);
             var pty;
             var WebSocketServer;
@@ -31,11 +29,11 @@ export function ptyDevServer() {
                 return;
             }
             var defaultShell = process.env.SHELL || (process.platform === "win32" ? "powershell.exe" : "/bin/zsh");
-            var wss = new WebSocketServer({ port: PTY_WS_PORT });
-            console.log("\u001B[36m[pty-plugin]\u001B[0m WebSocket PTY server on ws://localhost:".concat(PTY_WS_PORT));
+            var wss = new WebSocketServer({ noServer: true });
+            console.log("\u001B[36m[pty-plugin]\u001B[0m PTY WebSocket attached at " + PTY_WS_PATH);
             wss.on("connection", function (socket, req) {
                 var _a;
-                var url = new URL((_a = req.url) !== null && _a !== void 0 ? _a : "/", "http://localhost:".concat(PTY_WS_PORT));
+                var url = new URL((_a = req.url) !== null && _a !== void 0 ? _a : "/", "http://localhost");
                 var cols = parseInt(url.searchParams.get("cols") || "80", 10);
                 var rows = parseInt(url.searchParams.get("rows") || "24", 10);
                 var ptyProcess = pty.spawn(defaultShell, [], {
@@ -46,7 +44,6 @@ export function ptyDevServer() {
                     env: process.env,
                 });
                 console.log("\u001B[36m[pty-plugin]\u001B[0m PTY spawned (pid=".concat(ptyProcess.pid, ", ").concat(cols, "x").concat(rows, ")"));
-                // PTY stdout → WebSocket
                 ptyProcess.onData(function (data) {
                     if (socket.readyState === socket.OPEN) {
                         socket.send(data);
@@ -62,10 +59,8 @@ export function ptyDevServer() {
                         /* already closed */
                     }
                 });
-                // WebSocket → PTY stdin (or JSON control messages)
                 socket.on("message", function (raw) {
                     var text = typeof raw === "string" ? raw : Buffer.from(raw).toString("utf-8");
-                    // JSON control message: { type: "resize", cols, rows }
                     if (text.startsWith("{")) {
                         try {
                             var msg = JSON.parse(text);
@@ -84,24 +79,27 @@ export function ptyDevServer() {
                     try {
                         ptyProcess.kill();
                     }
-                    catch ( /* already dead */_a) { /* already dead */ }
+                    catch (_a) { /* already dead */ }
                 });
                 socket.on("error", function () {
                     try {
                         ptyProcess.kill();
                     }
-                    catch ( /* already dead */_a) { /* already dead */ }
+                    catch (_a) { /* already dead */ }
                 });
             });
-            wss.on("error", function (err) {
-                if (err.code === "EADDRINUSE") {
-                    console.warn("\u001B[33m[pty-plugin]\u001B[0m Port ".concat(PTY_WS_PORT, " in use \u2014 PTY server skipped"));
-                }
-                else {
-                    console.error("\u001B[31m[pty-plugin]\u001B[0m Server error:", err);
-                }
-            });
+            // Intercept HTTP upgrade requests on /__pty path
+            var httpServer = server.httpServer;
+            if (httpServer) {
+                httpServer.on("upgrade", function (req, socket, head) {
+                    var pathname = new URL(req.url || "/", "http://localhost").pathname;
+                    if (pathname === PTY_WS_PATH) {
+                        wss.handleUpgrade(req, socket, head, function (ws) {
+                            wss.emit("connection", ws, req);
+                        });
+                    }
+                });
+            }
         },
     };
 }
-export { PTY_WS_PORT };

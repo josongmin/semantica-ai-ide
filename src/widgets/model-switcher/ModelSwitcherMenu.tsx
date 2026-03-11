@@ -37,7 +37,7 @@ export const ModelSwitcherMenu = React.memo(function ModelSwitcherMenu({
 
   if (models.length === 0) {
     return (
-      <Text size="2xs" tone="tertiary" className={className}>
+      <Text size="3xs" tone="tertiary" className={className}>
         {currentLabel}
       </Text>
     );
@@ -56,9 +56,9 @@ export const ModelSwitcherMenu = React.memo(function ModelSwitcherMenu({
           className="gap-0.5 text-vsc-text-secondary min-w-0"
           data-testid="model-switcher-trigger"
         >
-          <Icon name="chip" tokenSize="2xs" />
-          <Text size="2xs">{currentLabel}</Text>
-          <Icon name="chevron-down" tokenSize="2xs" className="opacity-60" />
+          <Icon name="chip" tokenSize="3xs" />
+          <Text size="3xs">{currentLabel}</Text>
+          <Icon name="chevron-down" tokenSize="3xs" className="opacity-60" />
         </Button>
       }
     />

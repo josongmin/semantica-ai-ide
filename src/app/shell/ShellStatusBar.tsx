@@ -81,26 +81,20 @@ function TrayToggleButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1 px-2 rounded-[5px] border-none cursor-pointer transition-all duration-150",
-        "text-[11.5px] tracking-[0.01em]",
+        "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
+        "text-[11.25px] tracking-[0.01em]",
         isActive
-          ? "text-vsc-accent font-medium bg-vsc-accent/12"
+          ? "text-vsc-accent bg-vsc-accent/15"
           : "text-vsc-text-ghost bg-transparent hover:text-vsc-text-secondary hover:bg-vsc-surface-2/50",
       )}
-      style={{
-        height: BAR_H - 6,
-        ...(isActive && {
-          boxShadow:
-            "0 0 8px color-mix(in srgb, var(--color-vsc-accent) 35%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--color-vsc-accent) 20%, transparent)",
-        }),
-      }}
+      style={{ height: BAR_H - 7 }}
       title={label}
       aria-pressed={isActive}
     >
       <Icon
         name={icon}
-        size={13}
-        className={cn("shrink-0", isActive ? "opacity-100" : "opacity-60")}
+        size={12}
+        className={cn("shrink-0", isActive ? "text-vsc-accent" : "opacity-60")}
       />
       <span>{label}</span>
     </button>

@@ -68,14 +68,14 @@ export const AgentRequestModeSelector = React.memo(function AgentRequestModeSele
         <button
           type="button"
           className={cn(
-            "inline-flex items-center gap-0.5 px-0.5 py-0 rounded text-2xs min-h-5",
+            "inline-flex items-center gap-0.5 px-0.5 py-0 rounded text-3xs min-h-5",
             "text-vsc-text-secondary hover:bg-vsc-toolbar transition-colors duration-fast cursor-pointer focus-ring",
           )}
           data-testid="request-mode-trigger"
         >
-          <Icon name={current.icon} tokenSize="2xs" />
+          <Icon name={current.icon} tokenSize="3xs" />
           <span>{current.label}</span>
-          <Icon name="chevron-down" tokenSize="2xs" className="opacity-60" />
+          <Icon name="chevron-down" tokenSize="3xs" className="opacity-60" />
         </button>
       }
     />

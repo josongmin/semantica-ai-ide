@@ -3,6 +3,7 @@ import React from "react";
 import { cn } from "../variants";
 
 const sizeClasses = {
+  "3xs": "text-3xs",
   "2xs": "text-2xs",
   xs: "text-xs",
   sm: "text-sm",
@@ -28,7 +29,8 @@ export const Icon = React.memo(
     { name, className, tokenSize, size, title, "aria-label": ariaLabel },
     ref,
   ) {
-    const hasLabel = (title !== undefined && title !== "") || (ariaLabel !== undefined && ariaLabel !== "");
+    const hasLabel =
+      (title !== undefined && title !== "") || (ariaLabel !== undefined && ariaLabel !== "");
     return (
       <i
         ref={ref}

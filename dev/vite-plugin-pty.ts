@@ -1,11 +1,11 @@
 /**
  * Vite Plugin: WebSocket PTY Server
  *
- * Starts a standalone WebSocket server (port 7681) alongside Vite's dev server.
- * Browser dev mode connects to this for real PTY access via node-pty.
+ * Piggybacks on Vite's own HTTP server — no separate port needed.
+ * Browser dev mode connects to ws://<vite-host>/__pty for real PTY access.
  *
  * Protocol:
- *   ws://localhost:7681?cols=80&rows=24  → spawns a PTY, streams I/O
+ *   ws://localhost:5173/__pty?cols=80&rows=24  → spawns a PTY, streams I/O
  *   Client → Server: stdin text, or JSON { type: "resize", cols, rows }
  *   Server → Client: stdout text
  */
@@ -13,16 +13,15 @@
 import { createRequire } from "node:module";
 import type { Plugin } from "vite";
 
-const PTY_WS_PORT = 7681;
+/** Path that the client connects to for PTY WebSocket upgrade */
+export const PTY_WS_PATH = "/__pty";
 
 export function ptyDevServer(): Plugin {
   return {
     name: "vite-plugin-pty",
     apply: "serve",
 
-    configureServer() {
-      // Use createRequire for native addons — dynamic import() fails
-      // inside Vite's module resolution for native .node binaries
+    configureServer(server) {
       const require = createRequire(import.meta.url);
 
       let pty: typeof import("node-pty");
@@ -43,14 +42,15 @@ export function ptyDevServer(): Plugin {
       const defaultShell =
         process.env.SHELL || (process.platform === "win32" ? "powershell.exe" : "/bin/zsh");
 
-      const wss = new WebSocketServer({ port: PTY_WS_PORT });
+      // noServer mode — we handle upgrade manually
+      const wss = new WebSocketServer({ noServer: true });
 
       console.log(
-        `\x1b[36m[pty-plugin]\x1b[0m WebSocket PTY server on ws://localhost:${PTY_WS_PORT}`,
+        `\x1b[36m[pty-plugin]\x1b[0m PTY WebSocket attached at ${PTY_WS_PATH}`,
       );
 
       wss.on("connection", (socket, req) => {
-        const url = new URL(req.url ?? "/", `http://localhost:${PTY_WS_PORT}`);
+        const url = new URL(req.url ?? "/", "http://localhost");
         const cols = parseInt(url.searchParams.get("cols") || "80", 10);
         const rows = parseInt(url.searchParams.get("rows") || "24", 10);
 
@@ -66,7 +66,6 @@ export function ptyDevServer(): Plugin {
           `\x1b[36m[pty-plugin]\x1b[0m PTY spawned (pid=${ptyProcess.pid}, ${cols}x${rows})`,
         );
 
-        // PTY stdout → WebSocket
         ptyProcess.onData((data: string) => {
           if (socket.readyState === socket.OPEN) {
             socket.send(data);
@@ -82,11 +81,9 @@ export function ptyDevServer(): Plugin {
           }
         });
 
-        // WebSocket → PTY stdin (or JSON control messages)
         socket.on("message", (raw) => {
           const text = typeof raw === "string" ? raw : Buffer.from(raw as ArrayBuffer).toString("utf-8");
 
-          // JSON control message: { type: "resize", cols, rows }
           if (text.startsWith("{")) {
             try {
               const msg = JSON.parse(text) as { type: string; cols?: number; rows?: number };
@@ -111,17 +108,15 @@ export function ptyDevServer(): Plugin {
         });
       });
 
-      wss.on("error", (err) => {
-        if ((err as NodeJS.ErrnoException).code === "EADDRINUSE") {
-          console.warn(
-            `\x1b[33m[pty-plugin]\x1b[0m Port ${PTY_WS_PORT} in use — PTY server skipped`,
-          );
-        } else {
-          console.error(`\x1b[31m[pty-plugin]\x1b[0m Server error:`, err);
+      // Intercept HTTP upgrade requests on /__pty path
+      server.httpServer?.on("upgrade", (req, socket, head) => {
+        const pathname = new URL(req.url ?? "/", "http://localhost").pathname;
+        if (pathname === PTY_WS_PATH) {
+          wss.handleUpgrade(req, socket, head, (ws) => {
+            wss.emit("connection", ws, req);
+          });
         }
       });
     },
   };
 }
-
-export { PTY_WS_PORT };

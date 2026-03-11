@@ -206,7 +206,7 @@ export const TerminalViewportRaw = memo(
                 const dims = fitAddon.proposeDimensions();
                 const cols = dims?.cols ?? 80;
                 const rows = dims?.rows ?? 24;
-                const wsUrl = `ws://${window.location.hostname}:7681?cols=${cols}&rows=${rows}`;
+                const wsUrl = `ws://${window.location.host}/__pty?cols=${cols}&rows=${rows}`;
                 mockWs = new WebSocket(wsUrl);
 
                 mockWs.onmessage = (ev: MessageEvent) => {

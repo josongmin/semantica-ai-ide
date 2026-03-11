@@ -35,10 +35,10 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
   const showStop = isRunning && !canSend;
 
   return (
-    <div className="flex items-center gap-0.5 px-2.5 pb-0.5 pt-0.5 min-h-6 text-2xs [&_button]:text-2xs flex-wrap">
+    <div className="flex items-center gap-0.5 px-2.5 pb-0.5 pt-0.5 min-h-6 text-3xs [&_button]:text-3xs flex-wrap">
       {/* Model + ASK mode */}
-      <ModelSwitcherMenu className="text-2xs shrink-0" />
-      <AgentRequestModeSelector className="text-2xs shrink-0" />
+      <ModelSwitcherMenu className="text-3xs shrink-0" />
+      <AgentRequestModeSelector className="text-3xs shrink-0" />
 
       {/* Attached files (images excluded — shown as thumbnails above) */}
       {attachments.filter((a) => a.type !== "image").length > 0 && (
@@ -94,7 +94,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
             size="icon"
             onClick={onStop}
             aria-label="Stop agent"
-            className="w-[18px] h-[18px] rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
+            className="w-4 h-4 rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
             title="Stop (Esc)"
           >
             <Icon name="primitive-square" tokenSize="2xs" className="text-[9px]" />
@@ -106,7 +106,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
             onClick={canSend ? onSend : undefined}
             disabled={!canSend}
             aria-label={isRunning ? "Queue message" : "Send message"}
-            className="w-[18px] h-[18px] rounded-md disabled:opacity-30 transition-none p-0"
+            className="w-4 h-4 rounded-md disabled:opacity-30 transition-none p-0"
             style={{ backgroundColor: "var(--color-gnb-accent, #8b5cf6)" }}
             title={isRunning ? "Queue (Enter)" : "Send (Enter)"}
           >

@@ -1,12 +1,16 @@
-import React, { Suspense, useCallback, useState } from "react";
+import React, { Suspense, useCallback, useMemo, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
+import { currentGitBranchAtom } from "~shared/entities/git-history/model/atoms";
 import { cn, Icon } from "~shared/ui";
 
+import type { CursorInfo } from "./CodeMirrorEditor";
 import {
   activeFileContentAtom,
   activeFileLanguageAtom,
   activeTabAtom,
+  editorCursorAtom,
+  type EditorCursorState,
   editorTabsAtom,
   updateFileContentAtom,
 } from "./editorAtoms";
@@ -43,12 +47,24 @@ export function EditorSurface() {
   const content = useAtomValue(activeFileContentAtom);
   const language = useAtomValue(activeFileLanguageAtom);
   const updateContent = useSetAtom(updateFileContentAtom);
+  const setCursor = useSetAtom(editorCursorAtom);
+  const cursor = useAtomValue(editorCursorAtom);
+  const gitBranch = useAtomValue(currentGitBranchAtom);
+
+  const lineCount = useMemo(() => content.split("\n").length, [content]);
 
   const handleChange = useCallback(
     (val: string) => {
       if (activeTab) updateContent(activeTab.filePath, val);
     },
     [activeTab, updateContent],
+  );
+
+  const handleCursorChange = useCallback(
+    (info: CursorInfo) => {
+      setCursor(info);
+    },
+    [setCursor],
   );
 
   // Context menu state
@@ -83,6 +99,7 @@ export function EditorSurface() {
               language={language}
               filePath={activeTab.filePath}
               onChange={handleChange}
+              onCursorChange={handleCursorChange}
               onContextMenu={handleContextMenu}
             />
           </Suspense>
@@ -90,6 +107,18 @@ export function EditorSurface() {
           <WelcomeScreen hasFiles={tabs.length > 0} />
         )}
       </div>
+
+      {/* Editor Status Bar */}
+      {activeTab && (
+        <EditorStatusBar
+          cursor={cursor}
+          language={language}
+          lineCount={lineCount}
+          gitBranch={gitBranch}
+          encoding="UTF-8"
+          indent="Spaces: 2"
+        />
+      )}
 
       {/* Context menu */}
       {activeTab && (
@@ -143,53 +172,65 @@ function BreadcrumbReserved({ filePath }: { filePath: string }) {
   );
 }
 
-// ─── Status Bar (reserved for future use) ──────────────────
+// ─── Editor Status Bar ──────────────────────────────────
 
-/** @internal Reserved for future status bar UI */
-function StatusBarReserved({
-  activeTab,
+const STATUS_BAR_H = 26;
+
+function EditorStatusBar({
+  cursor,
   language,
   lineCount,
+  gitBranch,
+  encoding,
+  indent,
 }: {
-  activeTab: boolean;
+  cursor: EditorCursorState;
   language: string;
   lineCount: number;
+  gitBranch: string;
+  encoding: string;
+  indent: string;
 }) {
   const langLabel = LANG_LABELS[language] ?? language;
 
+  // Cursor position label
+  const posLabel =
+    cursor.selectedChars > 0
+      ? `Ln ${cursor.line}, Col ${cursor.col} (${cursor.selectedChars} selected)`
+      : `Ln ${cursor.line}, Col ${cursor.col}`;
+
   return (
-    <div className="flex items-center h-6 px-2 bg-vsc-surface-1 border-t border-vsc-border/40 text-xs text-vsc-text-tertiary shrink-0 select-none">
-      {/* Left section */}
-      <div className="flex items-center gap-1">
-        <StatusItem icon="source-control" label="main" accent />
-        <StatusDivider />
-        <StatusItem icon="error" label="0" />
-        <StatusItem icon="warning" label="0" />
+    <div
+      className="flex items-center px-1.5 bg-vsc-surface-1 border-t border-vsc-border/20 text-[11px] text-vsc-text-tertiary shrink-0 select-none gap-px"
+      style={{ height: STATUS_BAR_H }}
+    >
+      {/* ── Left ── */}
+      <div className="flex items-center gap-px">
+        <StatusChip icon="git-branch" label={gitBranch || "main"} accent />
+        <StatusSep />
+        <StatusChip icon="error" label="0" />
+        <StatusChip icon="warning" label="0" />
       </div>
 
-      {/* Right section */}
-      <div className="ml-auto flex items-center gap-1">
-        {activeTab && (
-          <>
-            <StatusItem label={`Ln 1, Col 1`} />
-            <StatusDivider />
-            <StatusItem label="Spaces: 2" />
-            <StatusDivider />
-            <StatusItem label="UTF-8" />
-            <StatusDivider />
-            <StatusItem icon="symbol-namespace" label={langLabel} highlight />
-            <StatusDivider />
-            <StatusItem label={`${lineCount} lines`} />
-            <StatusDivider />
-          </>
-        )}
-        <StatusItem icon="check" label="Prettier" accent />
+      {/* ── Right ── */}
+      <div className="ml-auto flex items-center gap-px">
+        <StatusChip label={posLabel} />
+        <StatusSep />
+        <StatusChip label={indent} />
+        <StatusSep />
+        <StatusChip label={encoding} />
+        <StatusSep />
+        <StatusChip icon="symbol-namespace" label={langLabel} highlight />
+        <StatusSep />
+        <StatusChip label={`${lineCount} lines`} />
+        <StatusSep />
+        <StatusChip icon="check" label="Prettier" accent />
       </div>
     </div>
   );
 }
 
-const StatusItem = React.memo(function StatusItem({
+const StatusChip = React.memo(function StatusChip({
   icon,
   label,
   accent,
@@ -204,7 +245,8 @@ const StatusItem = React.memo(function StatusItem({
     <button
       type="button"
       className={cn(
-        "flex items-center gap-1 px-1.5 h-5 rounded-sm",
+        "inline-flex items-center gap-1 px-1.5 rounded-sm",
+        "text-[11px] leading-none tracking-[0.01em]",
         "transition-colors duration-fast cursor-pointer border-none bg-transparent focus-ring",
         accent && "text-vsc-accent hover:bg-vsc-accent/10",
         !accent && highlight && "text-vsc-text-secondary hover:bg-vsc-list-hover",
@@ -212,15 +254,16 @@ const StatusItem = React.memo(function StatusItem({
           !highlight &&
           "text-vsc-text-tertiary hover:bg-vsc-list-hover hover:text-vsc-text-secondary",
       )}
+      style={{ height: STATUS_BAR_H - 6 }}
     >
-      {icon && <Icon name={icon} tokenSize="2xs" />}
-      <span>{label}</span>
+      {icon && <Icon name={icon} size={12} className="shrink-0" />}
+      <span className="whitespace-nowrap">{label}</span>
     </button>
   );
 });
 
-function StatusDivider() {
-  return <span className="w-px h-3 bg-vsc-border/30 mx-0.5" />;
+function StatusSep() {
+  return <span className="w-px h-3 bg-vsc-border/25 mx-0.5" />;
 }
 
 // ─── Loading & Welcome ──────────────────────────────────
@@ -292,4 +335,4 @@ function ShortcutHint({ keys, label }: { keys: string[]; label: string }) {
 }
 
 /** @internal Reserved for future use */
-export { BreadcrumbReserved, StatusBarReserved };
+export { BreadcrumbReserved };

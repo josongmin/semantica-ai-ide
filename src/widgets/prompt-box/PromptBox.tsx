@@ -93,7 +93,7 @@ export const PromptBox = React.memo(function PromptBox() {
       <div
         ref={dropRef}
         className={cn(
-          "relative rounded-xl overflow-hidden border border-vsc-border bg-vsc-surface-1",
+          "relative rounded-lg overflow-hidden border border-vsc-border bg-vsc-surface-1",
           isDragging && "ring-2 ring-inset ring-vsc-focus ring-dashed",
         )}
         data-testid="prompt-box"
@@ -158,7 +158,7 @@ export const PromptBox = React.memo(function PromptBox() {
             aria-activedescendant={activeDescendant}
             rows={1}
             className="w-full resize-none bg-transparent text-vsc-input-fg border-none
-                       py-1.5 text-sm leading-normal
+                       py-1.5 text-xs leading-normal
                        placeholder:text-vsc-text-ghost focus:outline-none
                        disabled:opacity-50 disabled:cursor-not-allowed"
           />

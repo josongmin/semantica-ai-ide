@@ -45,11 +45,19 @@ import { useCodeMirrorTheme } from "./useCodeMirrorTheme";
 
 // ─── Types ──────────────────────────────────────────────
 
+export interface CursorInfo {
+  line: number;
+  col: number;
+  selections: number;
+  selectedChars: number;
+}
+
 export interface CodeMirrorEditorProps {
   readonly value: string;
   readonly language: string;
   readonly filePath: string;
   readonly onChange?: (value: string) => void;
+  readonly onCursorChange?: (info: CursorInfo) => void;
   readonly onContextMenu?: (info: {
     x: number;
     y: number;
@@ -112,15 +120,18 @@ export const CodeMirrorEditor = React.memo(function CodeMirrorEditor({
   language,
   filePath,
   onChange,
+  onCursorChange,
   onContextMenu,
   readOnly = false,
 }: CodeMirrorEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const onChangeRef = useRef(onChange);
+  const onCursorChangeRef = useRef(onCursorChange);
   const onContextMenuRef = useRef(onContextMenu);
   useLayoutEffect(() => {
     onChangeRef.current = onChange;
+    onCursorChangeRef.current = onCursorChange;
     onContextMenuRef.current = onContextMenu;
   });
 
@@ -145,6 +156,17 @@ export const CodeMirrorEditor = React.memo(function CodeMirrorEditor({
     const updateListener = EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         onChangeRef.current?.(update.state.doc.toString());
+      }
+      if (update.selectionSet || update.docChanged) {
+        const { main } = update.state.selection;
+        const line = update.state.doc.lineAt(main.head);
+        const col = main.head - line.from + 1;
+        const selections = update.state.selection.ranges.length;
+        let selectedChars = 0;
+        for (const r of update.state.selection.ranges) {
+          selectedChars += r.to - r.from;
+        }
+        onCursorChangeRef.current?.({ line: line.number, col, selections, selectedChars });
       }
     });
 

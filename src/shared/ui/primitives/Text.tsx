@@ -6,7 +6,7 @@ import { cn } from "../variants";
 const textVariants = cva("", {
   variants: {
     size: {
-      "3xs": "text-2xs",
+      "3xs": "text-3xs",
       "2xs": "text-2xs",
       xs: "text-xs",
       sm: "text-sm",
