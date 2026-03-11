@@ -35,7 +35,7 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
   return (
     <footer
       role="contentinfo"
-      className="relative z-40 flex items-center justify-between bg-vsc-surface-0 select-none shrink-0"
+      className="relative z-40 flex items-center justify-between bg-vsc-surface-1 border-t border-vsc-border/20 select-none shrink-0"
       style={{ height: BAR_H }}
     >
       {/* Left: tray panel buttons */}
@@ -101,15 +101,26 @@ function MetaChip({ icon, label, accent }: { icon: string; label: string; accent
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 px-2 rounded-[5px]",
-        "text-[11.5px] tracking-[0.01em] cursor-default",
-        "hover:bg-vsc-surface-1 transition-colors duration-100",
-        accent ? "text-vsc-accent" : "text-vsc-text-ghost",
+        "inline-flex items-center gap-1 rounded-full cursor-default transition-colors duration-100",
+        accent
+          ? "px-2 bg-linear-to-r from-rose-500/15 to-orange-400/10 text-rose-500 hover:from-rose-500/25 hover:to-orange-400/18"
+          : "px-2 text-vsc-text-ghost hover:bg-vsc-surface-2/60",
       )}
       style={{ height: BAR_H - 6 }}
     >
-      <Icon name={icon} size={13} className="shrink-0 opacity-70" />
-      <span className="truncate max-w-[100px]">{label}</span>
+      <Icon
+        name={icon}
+        size={13}
+        className={cn("shrink-0", accent ? "text-rose-500 animate-pulse" : "opacity-70")}
+      />
+      {accent && (
+        <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-bold leading-none">
+          {label}
+        </span>
+      )}
+      {!accent && (
+        <span className="truncate max-w-[100px] text-[11.5px] tracking-[0.01em]">{label}</span>
+      )}
     </span>
   );
 }
