@@ -4,7 +4,7 @@ import { useSetAtom } from "jotai";
 import { currentPageAtom, newTabAtom } from "~shared/lib";
 import { Icon } from "~shared/ui";
 
-import { activeSurfaceAtom } from "../model/shellAtoms";
+import { navigateAtom } from "../model/surfaceLifecycleAtoms";
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -21,20 +21,20 @@ interface AgentFrameProps {
  * Cube Cloud 스타일: History | New Chat 헤더.
  */
 export const AgentFrame = React.memo(function AgentFrame({ width, children }: AgentFrameProps) {
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
   const setCurrentPage = useSetAtom(currentPageAtom);
   const newTab = useSetAtom(newTabAtom);
 
   const handleHistory = useCallback(() => {
-    setActiveSurface("chat");
+    navigate({ surfaceId: "chat" });
     setCurrentPage("sessions");
-  }, [setActiveSurface, setCurrentPage]);
+  }, [navigate, setCurrentPage]);
 
   const handleNewChat = useCallback(() => {
-    setActiveSurface("chat");
+    navigate({ surfaceId: "chat" });
     setCurrentPage("chat");
     newTab();
-  }, [setActiveSurface, setCurrentPage, newTab]);
+  }, [navigate, setCurrentPage, newTab]);
 
   return (
     <aside

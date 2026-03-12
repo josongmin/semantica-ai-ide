@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { atom, useSetAtom } from "jotai";
 
-import { activeSurfaceAtom } from "../atoms/surfaceAtoms";
+import { navigateAtom } from "../../../app/shell/model/surfaceLifecycleAtoms";
 
 import { openFileInEditorAtom } from "~domains/editor/editorAtoms";
 
@@ -24,15 +24,15 @@ export const pendingScrollLineAtom = atom<number | null>(null);
  */
 export function useNavigateToFile() {
   const openFile = useSetAtom(openFileInEditorAtom);
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
   const setPendingLine = useSetAtom(pendingScrollLineAtom);
 
   return useCallback(
     (filePath: string, line?: number) => {
       openFile(filePath);
-      setActiveSurface("code");
+      navigate({ surfaceId: "code" });
       setPendingLine(line ?? null);
     },
-    [openFile, setActiveSurface, setPendingLine],
+    [openFile, navigate, setPendingLine],
   );
 }

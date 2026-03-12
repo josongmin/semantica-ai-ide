@@ -48,6 +48,7 @@ Agent UX 플러그인 설계 문서. 아키텍처와 구현 결정을 SSOT로 �
       ├── 007 (에러)  008 (플러그인)  009 (로컬 개발)
       ├── 010 (FSD)    013 (IR v2)  016 (SOTA++ 업그레이드)
       ├── 017 (Monorepo, 패키지 경계)  020 (3채널 잠금)
+      ├── 021 (Surface Lifecycle & Layout)
       └── backend: 011 (Quanta) 012 (Model) 014~015 018~019
 ```
 
@@ -125,6 +126,7 @@ Agent UX 플러그인 설계 문서. 아키텍처와 구현 결정을 SSOT로 �
 | Binary, queue, blob 포맷 | [RFC-016](016.md) |
 | Monorepo 구조, 패키지 경계, Adapter 전략 | [RFC-017](017.md) |
 | **3채널 잠금: VSCode/IntelliJ/Web, Protocol First, Gate 세트** | [RFC-020](020.md) |
+| **Surface Lifecycle, Per-Surface Layout, Eviction, Guard** | [RFC-021](021.md) |
 | analysis.*, Model, Trajectory, Runtime, 수렴 | [backend/](backend/README.md) (011, 012, 014, 015, 018, 019) |
 
 ---
@@ -148,6 +150,7 @@ Agent UX 플러그인 설계 문서. 아키텍처와 구현 결정을 SSOT로 �
 | [016](016.md) | SOTA++ 업그레이드 잠금 | Draft |
 | [017](017.md) | Monorepo 아키텍처 및 패키지 경계 잠금 | Draft |
 | [020](020.md) | 3채널 아키텍처 잠금 | Accepted |
+| [021](021.md) | Surface Lifecycle & Per-Surface Layout | Draft |
 | [2025-03-10-도메인-우선-FSD-하위-구조-전환](2025-03-10-도메인-우선-FSD-하위-구조-전환.md) | 도메인 우선 + FSD 하위 구조 전환 | Draft |
 | [011](backend/011.md) ~ [019](backend/019.md) | 뒷단 RFC | [backend/](backend/README.md) |
 

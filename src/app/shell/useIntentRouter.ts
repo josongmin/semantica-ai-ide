@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
 import {
-  activeSurfaceAtom,
   activeTrayViewAtom,
   agentPanelVisibleAtom,
   type SurfaceId,
   trayVisibleAtom,
 } from "./model/shellAtoms";
+import { navigateAtom } from "./model/surfaceLifecycleAtoms";
 
 // ─── Intent-Driven Surface Routing ──────────────────────
 //
@@ -89,7 +89,7 @@ export const clearIntentAtom = atom(null, (_get, set) => {
  */
 export function useIntentRouter() {
   const intent = useAtomValue(activeIntentAtom);
-  const setSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
   const setTrayView = useSetAtom(activeTrayViewAtom);
   const setTrayVisible = useSetAtom(trayVisibleAtom);
   const setAgentPanelVisible = useSetAtom(agentPanelVisibleAtom);
@@ -99,9 +99,10 @@ export function useIntentRouter() {
 
     const config = INTENT_MAP[intent];
 
-    setSurface(config.surface);
+    // RFC-021 §4: Surface switch via coordinator
+    navigate({ surfaceId: config.surface });
     if (config.trayView) setTrayView(config.trayView);
     if (config.trayVisible !== undefined) setTrayVisible(config.trayVisible);
     if (config.agentVisible !== undefined) setAgentPanelVisible(config.agentVisible);
-  }, [intent, setSurface, setTrayView, setTrayVisible, setAgentPanelVisible]);
+  }, [intent, navigate, setTrayView, setTrayVisible, setAgentPanelVisible]);
 }

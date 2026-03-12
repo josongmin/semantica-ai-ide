@@ -1,11 +1,9 @@
 import { useRef } from "react";
 import { useSetAtom } from "jotai";
 
-import { goBackAtom, goForwardAtom } from "../../shared/lib/atoms/navigationHistoryAtoms";
 import { useKeyboardScope } from "../../shared/lib/keyboard";
 import { shortcutOverlayVisibleAtom } from "./KeyboardShortcutOverlay";
 import {
-  activeSurfaceAtom,
   activeTrayViewAtom,
   toggleAgentPanelAtom,
   toggleFocusModeAtom,
@@ -18,6 +16,7 @@ import {
   zoomOutAtom,
   zoomResetAtom,
 } from "./model/shellAtoms";
+import { navigateAtom, navigateBackAtom, navigateForwardAtom } from "./model/surfaceLifecycleAtoms";
 
 // ─── Shell Keyboard Shortcuts ────────────────────────────
 //
@@ -27,7 +26,7 @@ import {
 // mode", then a second key triggers the action.
 
 export function useShellKeyboard() {
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
   const setTrayView = useSetAtom(activeTrayViewAtom);
   const setTrayVisible = useSetAtom(trayVisibleAtom);
   const toggleSidebar = useSetAtom(toggleSidebarAtom);
@@ -37,8 +36,8 @@ export function useShellKeyboard() {
   const toggleZen = useSetAtom(toggleZenModeAtom);
   const toggleSplit = useSetAtom(toggleSplitAtom);
   const setShortcutOverlay = useSetAtom(shortcutOverlayVisibleAtom);
-  const goBack = useSetAtom(goBackAtom);
-  const goForward = useSetAtom(goForwardAtom);
+  const goBack = useSetAtom(navigateBackAtom);
+  const goForward = useSetAtom(navigateForwardAtom);
   const zoomIn = useSetAtom(zoomInAtom);
   const zoomOut = useSetAtom(zoomOutAtom);
   const zoomReset = useSetAtom(zoomResetAtom);
@@ -149,17 +148,17 @@ export function useShellKeyboard() {
           setTrayView("problems");
           setTrayVisible(true);
         },
-        // Surface switch (1-9+)
-        "1": () => setActiveSurface("chat"),
-        "2": () => setActiveSurface("editor"),
-        "3": () => setActiveSurface("review"),
-        "4": () => setActiveSurface("replay"),
-        "5": () => setActiveSurface("agent"),
-        "6": () => setActiveSurface("graph"),
-        "7": () => setActiveSurface("orchestrator"),
-        "8": () => setActiveSurface("code"),
-        "9": () => setActiveSurface("overview"),
-        "0": () => setActiveSurface("tasks"),
+        // Surface switch (1-9+) — via coordinator (RFC-021 §4)
+        "1": () => navigate({ surfaceId: "chat" }),
+        "2": () => navigate({ surfaceId: "editor" }),
+        "3": () => navigate({ surfaceId: "review" }),
+        "4": () => navigate({ surfaceId: "replay" }),
+        "5": () => navigate({ surfaceId: "agent" }),
+        "6": () => navigate({ surfaceId: "graph" }),
+        "7": () => navigate({ surfaceId: "orchestrator" }),
+        "8": () => navigate({ surfaceId: "code" }),
+        "9": () => navigate({ surfaceId: "overview" }),
+        "0": () => navigate({ surfaceId: "tasks" }),
       };
 
       const action = chordActions[key];

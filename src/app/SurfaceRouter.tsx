@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
-import { pushSurfaceHistoryAtom } from "../shared/lib/atoms/navigationHistoryAtoms";
 import { activeSurfaceAtom } from "../shared/lib/atoms/surfaceAtoms";
 import type { SurfaceId } from "../shared/protocol/types/ui";
 import { SurfaceSkeleton } from "../surfaces/SurfaceSkeleton";
@@ -12,10 +11,11 @@ import { getAllSurfaces } from "./surfaceRegistry";
  * No entrance animation — instant switching between surfaces.
  *
  * RFC-016 §4.2: Reads from surfaceRegistry instead of a hardcoded SURFACE_MAP.
+ * RFC-021 §4: Navigation history is managed by the SurfaceLifecycleCoordinator.
+ * This component only manages the React rendering concern (visited set + display:none).
  */
 export function SurfaceRouter() {
   const surface = useAtomValue(activeSurfaceAtom);
-  const pushHistory = useSetAtom(pushSurfaceHistoryAtom);
   const [visited, setVisited] = useState<ReadonlySet<SurfaceId>>(() => new Set([surface]));
 
   const surfaceMap = useMemo(() => {
@@ -26,9 +26,8 @@ export function SurfaceRouter() {
     return map;
   }, []);
 
-  // Add newly-activated surface to the visited set & track navigation history
+  // Add newly-activated surface to the visited set (rendering concern only)
   useEffect(() => {
-    pushHistory(surface);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- visited set must be updated synchronously for keep-alive routing
     setVisited((prev) => {
       if (prev.has(surface)) return prev;
@@ -36,7 +35,7 @@ export function SurfaceRouter() {
       next.add(surface);
       return next;
     });
-  }, [surface, pushHistory]);
+  }, [surface]);
 
   // Ensure the current surface is always rendered even on first mount
   // before the effect fires (visited is initialised with the first surface).

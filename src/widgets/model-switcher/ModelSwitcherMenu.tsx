@@ -53,7 +53,7 @@ export const ModelSwitcherMenu = React.memo(function ModelSwitcherMenu({
         <Button
           variant="ghost"
           size="xs"
-          className="gap-0.5 text-vsc-text-secondary min-w-0"
+          className="gap-0.5 text-vsc-text-tertiary hover:text-vsc-text-secondary min-w-0"
           data-testid="model-switcher-trigger"
         >
           <Icon name="chip" tokenSize="3xs" />

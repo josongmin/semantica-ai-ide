@@ -4,7 +4,7 @@ import { useAtom, useSetAtom } from "jotai";
 import type { SurfaceId } from "../../../shared/protocol/types/ui";
 import { detachToFloatingAtom } from "../model/floatingAtoms";
 import { activeNavCategoryAtom, type NavCategoryId, type NavToolId } from "../model/navRegistry";
-import { activeSurfaceAtom, restoreFrameStateAtom, saveFrameStateAtom } from "../model/shellAtoms";
+import { navigateAtom } from "../model/surfaceLifecycleAtoms";
 
 /** Maps nav categories to their default surface. */
 const CATEGORY_SURFACE: Partial<Record<NavCategoryId, SurfaceId>> = {
@@ -15,25 +15,19 @@ const CATEGORY_SURFACE: Partial<Record<NavCategoryId, SurfaceId>> = {
 
 export function useNavCategoryActions() {
   const [activeCategory, setActiveCategory] = useAtom(activeNavCategoryAtom);
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
   const detachToFloating = useSetAtom(detachToFloatingAtom);
-  const saveFrameState = useSetAtom(saveFrameStateAtom);
-  const restoreFrameState = useSetAtom(restoreFrameStateAtom);
 
   const handleCategoryClick = useCallback(
     (id: NavCategoryId) => {
-      // Save current surface's frame state before switching
-      saveFrameState();
-
       setActiveCategory(id);
       const surfaceId = CATEGORY_SURFACE[id];
       if (surfaceId) {
-        setActiveSurface(surfaceId);
-        // Restore the target surface's saved frame state (layout-constrained)
-        restoreFrameState(surfaceId);
+        // RFC-021 §4: Coordinator handles save/restore/lifecycle
+        navigate({ surfaceId });
       }
     },
-    [setActiveCategory, setActiveSurface, saveFrameState, restoreFrameState],
+    [setActiveCategory, navigate],
   );
 
   const handleToolClick = useCallback(
@@ -41,11 +35,10 @@ export function useNavCategoryActions() {
       if (id === "terminal") {
         detachToFloating("terminal");
       } else if (id === "settings") {
-        saveFrameState();
-        setActiveSurface("settings");
+        navigate({ surfaceId: "settings" });
       }
     },
-    [setActiveSurface, detachToFloating, saveFrameState],
+    [navigate, detachToFloating],
   );
 
   return { activeCategory, handleCategoryClick, handleToolClick } as const;

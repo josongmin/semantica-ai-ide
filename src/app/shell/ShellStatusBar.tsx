@@ -15,7 +15,7 @@ import { getViewsForFrame } from "./model/viewRegistry";
 
 // ─── Constants ──────────────────────────────────────────
 
-const BAR_H = 28;
+const BAR_H = 32;
 
 // ─── Helpers ────────────────────────────────────────────
 
@@ -119,13 +119,18 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
   } = useStatusBarData();
 
   return (
-    <footer
-      role="contentinfo"
-      className="relative z-40 flex items-center border-t border-vsc-border/20 select-none shrink-0"
-      style={{ height: BAR_H }}
-    >
-      {/* ─── Tray Buttons Zone ─── */}
-      <div className="flex items-center gap-px pl-1 pr-1 self-stretch bg-vsc-surface-2/60">
+    <div className="relative shrink-0 select-none" style={{ height: BAR_H }}>
+      {/* ─── Floating Tray Tab Bar ─── */}
+      <div
+        className={cn(
+          "absolute left-1.5 z-10",
+          "inline-flex items-center gap-0.5 px-1 rounded-md",
+          "bg-vsc-surface-2/80 backdrop-blur-sm",
+          "border border-vsc-border/15",
+          "shadow-sm",
+        )}
+        style={{ top: -12, height: 24 }}
+      >
         {trayViews.map((view) => {
           const isActive = trayVisible && activeView === view.id;
           return (
@@ -140,10 +145,12 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
         })}
       </div>
 
-      {/* ─── Meta Info Zone ─── */}
-      <div className="flex-1 flex items-center justify-between bg-vsc-surface-1 self-stretch">
-        {/* Left: empty spacer */}
-        <div />
+      {/* ─── Status Bar ─── */}
+      <footer
+        role="contentinfo"
+        className="absolute inset-0 flex items-center border-t border-vsc-border/20 bg-vsc-surface-1"
+      >
+        <div className="flex-1" />
 
         {/* Right: AI status + diagnostics + git + notifications */}
         <div className="flex items-center gap-px pr-1">
@@ -164,8 +171,8 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
             <MetaChip icon="bell" label="0" />
           )}
         </div>
-      </div>
-    </footer>
+      </footer>
+    </div>
   );
 });
 
@@ -273,22 +280,22 @@ const TrayToggleButton = React.memo(function TrayToggleButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
-        "text-xs tracking-[0.01em]",
+        "inline-flex items-center gap-0.5 px-1.5 rounded border-none cursor-pointer",
+        "text-2xs tracking-[0.01em] transition-colors duration-fast",
         isActive
-          ? "text-vsc-fg font-medium bg-vsc-surface-3/60 rounded-md"
-          : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
+          ? "text-vsc-fg font-medium bg-vsc-surface-3/50"
+          : "text-vsc-text-tertiary bg-transparent hover:text-vsc-text-secondary hover:bg-vsc-surface-3/30",
       )}
-      style={{ height: BAR_H - 7 }}
+      style={{ height: 18 }}
       title={label}
       aria-pressed={isActive}
     >
       <Icon
         name={icon}
-        size={12}
-        className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-70")}
+        size={11}
+        className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-60")}
       />
-      <span>{label}</span>
+      <span className="leading-none">{label}</span>
     </button>
   );
 });

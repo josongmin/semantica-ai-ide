@@ -199,7 +199,7 @@ export const TerminalViewportRaw = memo(
           terminalRef.current?.write(data);
         },
       }),
-      [],
+      [fontSize],
     );
 
     // ─── xterm lifecycle ───────────────────────────────────
@@ -255,11 +255,56 @@ export const TerminalViewportRaw = memo(
               /* container may have zero dimensions */
             }
 
-            // Intercept "/" key to open slash command palette
+            // Intercept special keys at DOM level (before xterm processes them)
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-              // Skip during IME composition (한글 등)
-              if (e.isComposing) return true;
+              // Skip during IME composition (한글/中文/日本語 등)
+              // WebKit (Tauri WKWebView) doesn't always set isComposing correctly —
+              // keyCode 229 is the universal "IME is processing this key" signal.
+              // "Dead" key is used for European dead-key sequences (é, ñ, ü etc.)
+              if (e.isComposing || e.key === "Dead") return true;
+              if (e.key === "Unidentified") return true; // IME composition (keyCode 229)
 
+              // Shift+Enter → send literal newline to PTY (multi-line input)
+              // Skip in alt-screen apps (vim, less, etc.) where Shift+Enter has different meaning
+              if (
+                e.key === "Enter" &&
+                e.type === "keydown" &&
+                e.shiftKey &&
+                !e.ctrlKey &&
+                !e.altKey &&
+                !e.metaKey
+              ) {
+                const altScreen = terminal.buffer.active === terminal.buffer.alternate;
+                if (!altScreen) {
+                  const isMockSession = sessionId.startsWith("mock_");
+                  if (isMockSession && ws?.readyState === WebSocket.OPEN) {
+                    ws.send("\n");
+                  } else if (sessionId && isTerminalBridgeReady()) {
+                    void writeToPty(sessionId, "\n").catch(() => {
+                      /* swallow */
+                    });
+                  }
+                  if (onInput) onInput("\n");
+                  return false; // Suppress default xterm Enter handling
+                }
+              }
+
+              // ##ai Enter interception — DOM level (most reliable)
+              if (
+                e.key === "Enter" &&
+                e.type === "keydown" &&
+                !e.ctrlKey &&
+                !e.altKey &&
+                !e.metaKey &&
+                !e.shiftKey
+              ) {
+                if (onBeforeInputRef.current?.("\r")) {
+                  onInput?.("\r");
+                  return false; // Suppress Enter at DOM level
+                }
+              }
+
+              // "/" slash command palette
               if (
                 e.key === "/" &&
                 e.type === "keydown" &&

@@ -1,56 +1,77 @@
 /**
- * TerminalAIInline — ##ai inline mode badge
+ * TerminalAIInline — ##ai inline mode pill badge
  *
- * Tiny floating "✦ AI" label near cursor when ##ai prefix is detected.
- * No popup/widget — Enter just sends the query to the backend.
- *
- * Flow:
- *   user types: ##ai find big files here
- *                ↑ AIModeBadge appears
- *   presses Enter → intercepted, query sent to backend
+ * Tiny floating pill that tracks the xterm cursor position via rAF polling.
+ * View-only — no event handling.
  */
 
-import { memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { Icon } from "~shared/ui/primitives/Icon";
 import { cn } from "~shared/ui/variants";
 
-// ─── AI Mode Badge ──────────────────────────────────────────
-// Tiny floating badge that shows when user is typing ##ai prefix
+import type { TerminalViewportRawHandle } from "./TerminalViewportRaw";
 
 export interface AIModeBadgeProps {
-  /** Whether ##ai prefix is detected in current input */
   visible: boolean;
-  /** Which ##ai variant */
   intent: "ask" | "fix" | "explain";
-  /** Pixel position near the cursor */
-  position: { x: number; y: number } | null;
+  /** Ref to the terminal viewport — used to poll cursor position */
+  viewportRef: React.RefObject<TerminalViewportRawHandle | null>;
 }
+
+const INTENT_CFG = {
+  ask: { label: "AI", icon: "hubot" },
+  fix: { label: "FIX", icon: "hubot" },
+  explain: { label: "EXPLAIN", icon: "hubot" },
+} as const;
 
 export const AIModeBadge = memo(function AIModeBadge({
   visible,
   intent,
-  position,
+  viewportRef,
 }: AIModeBadgeProps) {
-  if (!visible || !position) return null;
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    if (!visible) return;
+
+    // Poll xterm cursor position via rAF — syncs with actual cursor, not key events
+    // Skip polling when tab is hidden to save battery/CPU
+    const tick = () => {
+      if (!document.hidden) {
+        const p = viewportRef.current?.getCursorPixelPosition() ?? null;
+        if (p) setPos((prev) => (prev?.x === p.x && prev.y === p.y ? prev : p));
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [visible, viewportRef]);
+
+  if (!visible || !pos) return null;
+
+  const cfg = INTENT_CFG[intent];
 
   return (
     <div
       className={cn(
         "fixed z-[--z-overlay] pointer-events-none",
-        "flex items-center gap-1 px-1.5 py-0.5 rounded-full",
-        "bg-vsc-accent/15 border border-vsc-accent/30",
+        "inline-flex items-center gap-0.5 h-4 px-1.5 rounded-full",
+        "border border-white/10",
         "animate-in fade-in zoom-in-95 duration-fast",
-        "select-none",
+        "select-none backdrop-blur-sm shadow-sm",
       )}
       style={{
-        left: position.x,
-        top: position.y - 22,
+        left: pos.x + 4,
+        top: pos.y - 20,
+        background: "var(--color-gnb-via)",
       }}
     >
-      <Icon name="sparkle" size={9} className="text-vsc-accent" />
-      <span className="text-3xs font-medium text-vsc-accent tracking-wide">
-        {{ ask: "AI", fix: "FIX", explain: "EXPLAIN" }[intent]}
+      <Icon name={cfg.icon} size={10} className="text-white/70" />
+      <span className="text-4xs font-medium text-white/80 tracking-wider uppercase leading-none">
+        {cfg.label}
       </span>
     </div>
   );

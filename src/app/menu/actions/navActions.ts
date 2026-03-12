@@ -6,18 +6,22 @@
  */
 import { turnOrderSortedAtom } from "~entities/message";
 
-import { bookmarkDrawerOpenAtom, clearFocusedTurnAtom, focusedTurnIdAtom } from "../../../shared/lib";
-import { conversationSearchOpenAtom } from "../../../shared/lib/atoms/dialogAtoms";
 import {
-  goBackAtom,
-  goForwardAtom,
-} from "../../../shared/lib/atoms/navigationHistoryAtoms";
+  bookmarkDrawerOpenAtom,
+  clearFocusedTurnAtom,
+  focusedTurnIdAtom,
+} from "../../../shared/lib";
+import { conversationSearchOpenAtom } from "../../../shared/lib/atoms/dialogAtoms";
+import { navigateBackAtom, navigateForwardAtom } from "../../shell/model/surfaceLifecycleAtoms";
 import { registerMenuAction } from "../actionRegistry";
 import { ACTION_IDS } from "../types";
 
 // ── Turn Navigation (prev / next) ──
 
-function navigateTurn(store: Parameters<Parameters<typeof registerMenuAction>[1]>[0], delta: -1 | 1) {
+function navigateTurn(
+  store: Parameters<Parameters<typeof registerMenuAction>[1]>[0],
+  delta: -1 | 1,
+) {
   const turns = store.get(turnOrderSortedAtom);
   if (turns.length === 0) return;
 
@@ -77,11 +81,11 @@ registerMenuAction(ACTION_IDS.NAV_SEARCH_SYMBOLS, async (store) => {
   store.set(symbolPanelVisibleAtom, true);
 });
 
-// ── Surface History (back / forward) ──
+// ── Surface History (back / forward) — via coordinator (RFC-021 §4) ──
 registerMenuAction(ACTION_IDS.NAV_BACK, (store) => {
-  store.set(goBackAtom);
+  store.set(navigateBackAtom);
 });
 
 registerMenuAction(ACTION_IDS.NAV_FORWARD, (store) => {
-  store.set(goForwardAtom);
+  store.set(navigateForwardAtom);
 });

@@ -252,6 +252,9 @@ export const applyLayoutPresetAtom = atom(null, (_get, set, preset: LayoutPreset
       set(activeTrayViewAtom, config.trayView);
     }
   }
+  // NOTE: Presets intentionally bypass the coordinator (RFC-021 §4) because they
+  // set frame state directly, overriding saved per-surface state. The coordinator's
+  // save/restore cycle would conflict with the preset's explicit frame configuration.
   if (config.surface) set(activeSurfaceAtom, config.surface);
   set(focusModeAtom, false);
 });

@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
+import { navigateAtom } from "~app/shell/model/surfaceLifecycleAtoms";
 import { useNavigateToFile } from "~shared/lib";
-import { activeSurfaceAtom } from "~shared/lib/atoms/surfaceAtoms";
 import { IS_MAC } from "~shared/lib/hooks/usePlatform";
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { type BreadcrumbItem, Breadcrumbs, Button, Icon, Kbd, Text } from "~shared/ui";
@@ -144,7 +144,7 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
   const summary = useAtomValue(impactSummaryAtom);
   const close = useSetAtom(closeImpactRadarAtom);
   const clear = useSetAtom(clearImpactResultAtom);
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
+  const navigate = useSetAtom(navigateAtom);
 
   const navigateToFile = useNavigateToFile();
 
@@ -171,8 +171,8 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
 
   const handleShowGraph = useCallback(() => {
     // Switch to graph surface to visualize impact
-    setActiveSurface("graph");
-  }, [setActiveSurface]);
+    navigate({ surfaceId: "graph" });
+  }, [navigate]);
 
   // ─── Loading ──────────────────────────────────
   if (loading) {

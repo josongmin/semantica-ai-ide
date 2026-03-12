@@ -10,11 +10,10 @@ import {
   agentPanelVisibleAtom,
   applyLayoutPresetAtom,
   type LayoutPreset,
-  restoreFrameStateAtom,
-  saveFrameStateAtom,
   sidebarVisibleAtom,
   trayVisibleAtom,
 } from "./shellAtoms";
+import { navigateAtom } from "./surfaceLifecycleAtoms";
 import { type FrameSlot, getViewById } from "./viewRegistry";
 
 // ─── Intent Router (RFC-016 §7.5) ─────────────────────────────
@@ -54,10 +53,8 @@ export const dispatchIntentAtom = atom(null, (get, set, intent: IntentAction) =>
       break;
     }
     case "show-surface": {
-      // Save current surface frame state, switch, then restore target's state
-      set(saveFrameStateAtom);
-      set(activeSurfaceAtom, intent.surfaceId);
-      set(restoreFrameStateAtom, intent.surfaceId);
+      // RFC-021 §4: All navigation goes through the coordinator
+      set(navigateAtom, { surfaceId: intent.surfaceId, params: intent.params });
       break;
     }
     case "toggle-frame": {

@@ -69,7 +69,7 @@ export const AgentRequestModeSelector = React.memo(function AgentRequestModeSele
           type="button"
           className={cn(
             "inline-flex items-center gap-0.5 px-0.5 py-0 rounded text-3xs min-h-5",
-            "text-vsc-text-secondary hover:bg-vsc-toolbar transition-colors duration-fast cursor-pointer focus-ring",
+            "text-vsc-text-tertiary hover:text-vsc-text-secondary hover:bg-vsc-toolbar transition-colors duration-fast cursor-pointer focus-ring",
           )}
           data-testid="request-mode-trigger"
         >

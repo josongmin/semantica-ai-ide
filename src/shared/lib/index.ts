@@ -39,6 +39,9 @@ export {
 export { PortalContainerProvider, usePortalContainer } from "./hooks/usePortalContainer";
 export { type ResizeEntry, useResizeObserver } from "./hooks/useResizeObserver";
 export { useScrollbarOverlay } from "./hooks/useScrollbarOverlay";
+export { useSurfaceActive } from "./hooks/useSurfaceActive";
+export { useSurfaceFocusEffect } from "./hooks/useSurfaceFocusEffect";
+export { useSurfaceLifecycle } from "./hooks/useSurfaceLifecycle";
 export { useXtermTerminal } from "./hooks/useXtermTerminal";
 export { useKeyboardScope, useKeyboardScopeSync } from "./keyboard";
 export { logger } from "./logger";

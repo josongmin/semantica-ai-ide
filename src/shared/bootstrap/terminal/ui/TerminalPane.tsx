@@ -76,28 +76,61 @@ export const TerminalPane = memo(function TerminalPane({
   // ─── Ghost text (history-based completion) ──────────────
   const ghostText = useGhostText();
   const inputBufferRef = useRef("");
-  const [aiModeBadge, setAiModeBadge] = useState<{
-    intent: AIInlineIntent;
-    position: { x: number; y: number };
-  } | null>(null);
+  const [aiModeIntent, setAiModeIntent] = useState<AIInlineIntent | null>(null);
 
   const handleTerminalInput = useCallback(
     (data: string) => {
+      // ─── Reset on line-terminating / line-editing control chars ────
+      // Enter, newline, Ctrl+C
       if (data === "\r" || data === "\n" || data === "\x03") {
         inputBufferRef.current = "";
         ghostText.clearGhostText();
-        setAiModeBadge(null);
+        setAiModeIntent(null);
         return;
       }
+
+      // Readline operations that desync our buffer with the shell's actual state:
+      // Ctrl+U (kill-line), Ctrl+W (kill-word), Ctrl+K (kill-to-end),
+      // Ctrl+A/E (home/end), Ctrl+L (clear), Tab (completion)
+      const cc = data.charCodeAt(0);
+      if (
+        data.length === 1 &&
+        (cc === 0x15 ||
+          cc === 0x17 ||
+          cc === 0x0b || // Ctrl+U, Ctrl+W, Ctrl+K
+          cc === 0x01 ||
+          cc === 0x05 ||
+          cc === 0x0c || // Ctrl+A, Ctrl+E, Ctrl+L
+          cc === 0x09) // Tab
+      ) {
+        inputBufferRef.current = "";
+        ghostText.clearGhostText();
+        setAiModeIntent(null);
+        return;
+      }
+
+      // Ignore escape sequences (arrow keys \x1b[A, Home/End, etc.)
+      // These modify cursor position in ways we can't track — reset to avoid desync
+      if (data.startsWith("\x1b")) {
+        inputBufferRef.current = "";
+        ghostText.clearGhostText();
+        setAiModeIntent(null);
+        return;
+      }
+
+      // Backspace / Delete — grapheme-aware to handle emoji & combining marks
       if (data === "\x7f" || data === "\b") {
-        inputBufferRef.current = inputBufferRef.current.slice(0, -1);
-      } else if (data.length === 1 && data >= " ") {
+        const segments = Array.from(inputBufferRef.current); // codepoint-aware (handles surrogate pairs)
+        segments.pop();
+        inputBufferRef.current = segments.join("");
+      } else if (data.charCodeAt(0) >= 0x20) {
+        // Printable text — single char, multi-char paste, emoji, CJK all accepted
         inputBufferRef.current += data;
       }
+
       ghostText.updateGhostText(inputBufferRef.current);
 
-      // Detect ##ai prefix for floating AI mode badge
-      // Check longest prefixes first so ##ai-fix matches before ##ai
+      // ─── Detect ##ai prefix for AI mode badge ────
       const buf = inputBufferRef.current;
       let detectedIntent: AIInlineIntent | null = null;
       const sortedPrefixes = Object.entries(AI_INLINE_PREFIX).sort(
@@ -109,12 +142,7 @@ export const TerminalPane = memo(function TerminalPane({
           break;
         }
       }
-      if (detectedIntent) {
-        const pos = viewportRef.current?.getCursorPixelPosition() ?? null;
-        if (pos) setAiModeBadge({ intent: detectedIntent, position: pos });
-      } else {
-        setAiModeBadge(null);
-      }
+      setAiModeIntent(detectedIntent);
     },
     [ghostText],
   );
@@ -172,8 +200,7 @@ export const TerminalPane = memo(function TerminalPane({
       const prefix = AI_INLINE_PREFIX[intent];
       void writeToPty(sessionId, `${prefix} `);
       inputBufferRef.current = `${prefix} `;
-      const pos = viewportRef.current?.getCursorPixelPosition() ?? null;
-      if (pos) setAiModeBadge({ intent, position: pos });
+      setAiModeIntent(intent);
     },
     [sessionId],
   );
@@ -199,34 +226,38 @@ export const TerminalPane = memo(function TerminalPane({
 
       const query = buf.slice(matchedPrefix.length).trim();
       inputBufferRef.current = "";
-      setAiModeBadge(null);
+      setAiModeIntent(null);
 
-      // 1) Clear zsh readline buffer (Ctrl+U) + execute empty line (Enter) → fresh prompt
-      //    Ctrl+A moves to start, Ctrl+K kills to end (more reliable than Ctrl+U alone)
-      if (isTerminalBridgeReady()) {
-        void writeToPty(sessionId, "\x01\x0b\r");
+      if (!query) {
+        // No query — just clear the line
+        if (isTerminalBridgeReady()) void writeToPty(sessionId, "\x15\r");
+        return true;
       }
 
-      // 2) Write AI response to display after a tick so PTY processes the clear first
-      if (query.length > 0) {
-        const suggestion = mockGenerateCommand(query, null);
-        const intentLabel = { fix: "FIX", explain: "EXPLAIN", ask: "AI" }[matchedIntent];
+      // Generate AI response
+      const suggestion = mockGenerateCommand(query, null);
+      const intentLabel = { fix: "FIX", explain: "EXPLAIN", ask: "AI" }[matchedIntent];
 
-        const lines = [
-          `\x1b[1;35m✦ ${intentLabel}\x1b[0m \x1b[36m${suggestion.command}\x1b[0m`,
-          `\x1b[2m  ${suggestion.explanation}\x1b[0m`,
-        ];
-        if (suggestion.alternatives != null && suggestion.alternatives.length > 0) {
-          lines.push(`\x1b[2m  alt: ${suggestion.alternatives.join(" | ")}\x1b[0m`);
-        }
+      // Format ANSI colored response
+      const lines = [
+        `\x1b[1;35m✦ ${intentLabel}\x1b[0m \x1b[36m${suggestion.command}\x1b[0m`,
+        `\x1b[2m  ${suggestion.explanation}\x1b[0m`,
+      ];
+      if (suggestion.alternatives != null && suggestion.alternatives.length > 0) {
+        lines.push(`\x1b[2m  alt: ${suggestion.alternatives.join(" | ")}\x1b[0m`);
+      }
+      const response = `\r\n${lines.join("\r\n")}\r\n`;
 
-        const formatted = `\r\n${lines.join("\r\n")}\r\n`;
-
-        // Small delay so zsh's Ctrl+U+Enter (clear + new prompt) is processed first,
-        // then our AI response appears, followed by the new prompt from PTY
+      // Clear the typed ##ai text from shell, show response, get fresh prompt
+      if (isTerminalBridgeReady()) {
+        // Tauri mode: Ctrl+C aborts current line, then display response + fresh prompt
+        void writeToPty(sessionId, "\x03");
         setTimeout(() => {
-          viewportRef.current?.writeToDisplay(formatted);
-        }, 30);
+          viewportRef.current?.writeToDisplay(response);
+        }, 40);
+      } else {
+        // Mock/dev mode: just display response directly
+        viewportRef.current?.writeToDisplay(response);
       }
 
       return true;
@@ -369,9 +400,9 @@ export const TerminalPane = memo(function TerminalPane({
             <AIExplainPopover onExecuteFix={handleAIExecute} onAskAgent={handleAskAgentFocused} />
             <CommandSearchOverlay onExecute={handleAIExecute} />
             <AIModeBadge
-              visible={aiModeBadge !== null}
-              intent={aiModeBadge?.intent ?? "ask"}
-              position={aiModeBadge?.position ?? null}
+              visible={aiModeIntent !== null}
+              intent={aiModeIntent ?? "ask"}
+              viewportRef={viewportRef}
             />
           </>
         )}
