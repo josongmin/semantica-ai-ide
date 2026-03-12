@@ -31,7 +31,7 @@ export interface TerminalSettingsValues {
 const DEFAULT_SETTINGS: TerminalSettingsValues = {
   defaultShell: "auto",
   fontSize: 13,
-  lineHeight: 1.35,
+  lineHeight: 1.2,
   cursorStyle: "bar",
   cursorBlink: true,
   scrollback: 5000,
@@ -48,7 +48,8 @@ const STORAGE_KEY = "semantica:terminal-settings";
 function loadSettings(): TerminalSettingsValues {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<TerminalSettingsValues>) };
+    if (raw)
+      return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<TerminalSettingsValues>) };
   } catch {
     /* ignore corrupted data */
   }
@@ -237,9 +238,7 @@ function SettingsRow({
     <div className="flex items-center justify-between gap-4 py-2 px-2 rounded hover:bg-vsc-surface-1/50 transition-colors duration-fast">
       <div className="flex-1 min-w-0">
         <div className="text-2xs text-vsc-fg">{label}</div>
-        {description && (
-          <div className="text-3xs text-vsc-text-ghost mt-0.5">{description}</div>
-        )}
+        {description && <div className="text-3xs text-vsc-text-ghost mt-0.5">{description}</div>}
       </div>
       <div className="shrink-0">{children}</div>
     </div>

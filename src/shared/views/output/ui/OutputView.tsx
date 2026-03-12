@@ -30,6 +30,175 @@ export const appendOutputLineAtom = atom(null, (get, set, line: OutputLine) => {
   set(outputLinesAtom, next);
 });
 
+// ─── Sample Data (dev-only) ─────────────────────────────
+
+const now = Date.now();
+
+const SAMPLE_OUTPUT: OutputLine[] = [
+  {
+    text: "[Agent] Session initialized — model: claude-sonnet-4-20250514, context: 128k",
+    level: "info",
+    channel: "Agent",
+    timestamp: now - 52000,
+  },
+  {
+    text: "[Agent] Loading workspace context from src/...",
+    level: "debug",
+    channel: "Agent",
+    timestamp: now - 51000,
+  },
+  {
+    text: "[Agent] Indexed 847 files in 1.2s",
+    level: "info",
+    channel: "Agent",
+    timestamp: now - 49800,
+  },
+  {
+    text: "[Build] vite v6.4.1 — dev server starting...",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 45000,
+  },
+  {
+    text: "[Build] Pre-bundling dependencies: react, react-dom, jotai, codemirror...",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 44000,
+  },
+  {
+    text: "[Build] Dependencies bundled in 812ms",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 43200,
+  },
+  {
+    text: "[Build] VITE ready in 1.4s — http://localhost:5173/",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 43000,
+  },
+  {
+    text: "[LSP] tsserver started (pid 48291)",
+    level: "info",
+    channel: "LSP",
+    timestamp: now - 42000,
+  },
+  {
+    text: "[LSP] Project loaded: /Users/songmin/semantica-code-agent-plugin/tsconfig.json",
+    level: "info",
+    channel: "LSP",
+    timestamp: now - 41500,
+  },
+  {
+    text: "[LSP] 3 errors, 4 warnings in workspace",
+    level: "warn",
+    channel: "LSP",
+    timestamp: now - 41000,
+  },
+  {
+    text: "[Extensions] Loaded: prettier, eslint, tailwindcss-intellisense",
+    level: "info",
+    channel: "Extensions",
+    timestamp: now - 40000,
+  },
+  {
+    text: "[Extensions] tailwindcss-intellisense: scanning for config...",
+    level: "debug",
+    channel: "Extensions",
+    timestamp: now - 39500,
+  },
+  {
+    text: "[Extensions] tailwindcss-intellisense: using /tailwind.config.ts",
+    level: "info",
+    channel: "Extensions",
+    timestamp: now - 39000,
+  },
+  {
+    text: "[Build] HMR update: src/shared/views/output/ui/OutputView.tsx",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 30000,
+  },
+  {
+    text: "[Build] HMR update applied in 45ms",
+    level: "debug",
+    channel: "Build",
+    timestamp: now - 29950,
+  },
+  {
+    text: "[Agent] Tool call: read_file src/app/shell/frames/TitleBar.tsx",
+    level: "info",
+    channel: "Agent",
+    timestamp: now - 25000,
+  },
+  {
+    text: "[Agent] Tool call: search_for_pattern 'activeSidebarViewAtom'",
+    level: "info",
+    channel: "Agent",
+    timestamp: now - 22000,
+  },
+  {
+    text: "[Agent] Found 12 references across 8 files",
+    level: "debug",
+    channel: "Agent",
+    timestamp: now - 21500,
+  },
+  {
+    text: "[LSP] File changed: src/shared/bootstrap/terminal/ui/TerminalPanel.tsx — revalidating...",
+    level: "debug",
+    channel: "LSP",
+    timestamp: now - 15000,
+  },
+  {
+    text: "[LSP] Diagnostics updated: 0 errors, 0 warnings in TerminalPanel.tsx",
+    level: "info",
+    channel: "LSP",
+    timestamp: now - 14500,
+  },
+  {
+    text: "[Build] HMR update: src/shared/bootstrap/terminal/ui/TerminalPanel.tsx",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 14000,
+  },
+  {
+    text: "[Extensions] prettier: formatted 2 files on save",
+    level: "debug",
+    channel: "Extensions",
+    timestamp: now - 10000,
+  },
+  {
+    text: "[Build] Warning: chunk 'mermaid' exceeds 500kB (682kB) — consider code splitting",
+    level: "warn",
+    channel: "Build",
+    timestamp: now - 8000,
+  },
+  {
+    text: "[Agent] Error: tool 'execute_command' timed out after 30s",
+    level: "error",
+    channel: "Agent",
+    timestamp: now - 5000,
+  },
+  {
+    text: "[Agent] Retrying with increased timeout (60s)...",
+    level: "warn",
+    channel: "Agent",
+    timestamp: now - 4500,
+  },
+  {
+    text: "[LSP] tsserver: request tq/completions took 1250ms (threshold: 500ms)",
+    level: "warn",
+    channel: "LSP",
+    timestamp: now - 3000,
+  },
+  {
+    text: "[Build] HMR update: src/shared/views/problems/ui/ProblemsView.tsx",
+    level: "info",
+    channel: "Build",
+    timestamp: now - 1000,
+  },
+];
+
 const CHANNELS = ["All", "Agent", "Build", "LSP", "Extensions"] as const;
 type Channel = (typeof CHANNELS)[number];
 
@@ -51,15 +220,15 @@ const LEVEL_ICON: Record<OutputLine["level"], string> = {
 };
 
 const LEVEL_COLOR: Record<OutputLine["level"], string> = {
-  error: "text-rose-400",
-  warn: "text-amber-400",
+  error: "text-vsc-error",
+  warn: "text-vsc-warning",
   info: "text-vsc-text-secondary",
   debug: "text-vsc-text-ghost",
 };
 
 const LEVEL_BG: Record<OutputLine["level"], string> = {
-  error: "bg-rose-500/6",
-  warn: "bg-amber-500/4",
+  error: "bg-vsc-error/6",
+  warn: "bg-vsc-warning/4",
   info: "",
   debug: "",
 };
@@ -67,7 +236,8 @@ const LEVEL_BG: Record<OutputLine["level"], string> = {
 // ─── Output View ─────────────────────────────────────────
 
 export const OutputView = React.memo(function OutputView() {
-  const lines = useAtomValue(outputLinesAtom);
+  const liveLines = useAtomValue(outputLinesAtom);
+  const lines = liveLines.length > 0 ? liveLines : SAMPLE_OUTPUT;
   const setLines = useSetAtom(outputLinesAtom);
   const [activeChannel, setActiveChannel] = useState<Channel>("All");
   const [levelFilter, setLevelFilter] = useState<Set<OutputLine["level"]>>(new Set());
@@ -195,10 +365,10 @@ export const OutputView = React.memo(function OutputView() {
                 type="button"
                 onClick={() => setActiveChannel(ch)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-2 h-[22px] rounded-md text-xs cursor-pointer border-none",
+                  "inline-flex items-center gap-1 px-1.5 h-[22px] rounded-md text-2xs cursor-pointer transition-colors duration-normal focus-ring border border-transparent",
                   isActive
-                    ? "bg-vsc-surface-2 text-vsc-fg font-medium"
-                    : "bg-transparent text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-1",
+                    ? "bg-vsc-surface-2 text-vsc-fg font-medium border-vsc-border/20 shadow-sm"
+                    : "text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-2/40",
                 )}
               >
                 <Icon name={CHANNEL_ICONS[ch]} size={12} className="shrink-0 opacity-60" />
@@ -268,18 +438,18 @@ export const OutputView = React.memo(function OutputView() {
 
       {/* ── Search bar ── */}
       {searchVisible && (
-        <div className="flex items-center gap-2 px-2 h-[30px] shrink-0 border-b border-vsc-border/10 bg-vsc-surface-0/30">
-          <Icon name="search" size={13} className="text-vsc-text-ghost shrink-0" />
+        <div className="flex items-center gap-1.5 px-2 h-[30px] shrink-0 border-b border-vsc-border/10 bg-vsc-surface-0/30">
+          <Icon name="search" tokenSize="2xs" className="text-vsc-text-ghost shrink-0" />
           <input
             ref={searchInputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter output..."
-            className="flex-1 bg-transparent border-none outline-none text-sm text-vsc-fg placeholder:text-vsc-text-ghost/40"
+            placeholder="Filter output…"
+            className="flex-1 bg-transparent border-none outline-none text-2xs text-vsc-fg placeholder:text-vsc-text-ghost"
           />
           {searchQuery && (
-            <span className="text-2xs text-vsc-text-ghost tabular-nums">
+            <span className="text-3xs text-vsc-text-ghost tabular-nums">
               {filtered.length} match{filtered.length !== 1 ? "es" : ""}
             </span>
           )}
@@ -289,9 +459,9 @@ export const OutputView = React.memo(function OutputView() {
               setSearchVisible(false);
               setSearchQuery("");
             }}
-            className="w-[18px] h-[18px] rounded flex items-center justify-center text-vsc-text-ghost hover:text-vsc-fg cursor-pointer border-none bg-transparent"
+            className="p-0.5 rounded hover:bg-vsc-surface-2 cursor-pointer border-none bg-transparent"
           >
-            <Icon name="close" size={12} />
+            <Icon name="close" tokenSize="3xs" className="text-vsc-text-ghost" />
           </button>
         </div>
       )}
@@ -300,7 +470,7 @@ export const OutputView = React.memo(function OutputView() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-xs leading-[22px]"
+        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-2xs"
         role="log"
       >
         {filtered.length === 0 ? (
@@ -350,7 +520,7 @@ export const OutputView = React.memo(function OutputView() {
           className={cn(
             "absolute bottom-3 left-1/2 -translate-x-1/2",
             "inline-flex items-center gap-1.5 px-3 h-[26px] rounded-full",
-            "bg-vsc-surface-2/95 text-vsc-text-secondary text-xs",
+            "bg-vsc-surface-2/95 text-vsc-text-secondary text-2xs",
             "border border-vsc-border/20 shadow-lg shadow-black/10",
             "cursor-pointer backdrop-blur-sm",
             "hover:text-vsc-fg hover:bg-vsc-surface-3/95",
@@ -399,26 +569,27 @@ const LogRow = React.memo(function LogRow({
     <div
       style={style}
       className={cn(
-        "group flex items-start gap-0 px-0 hover:bg-vsc-list-hover/40",
-        LEVEL_BG[line.level],
+        "group/row flex items-start gap-1.5 pl-2 pr-2 text-2xs",
+        "cursor-default transition-colors duration-75",
+        hovered ? cn("bg-vsc-list-hover/80", LEVEL_BG[line.level]) : "hover:bg-vsc-list-hover/50",
       )}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       {/* Level icon */}
-      <span
+      <Icon
+        name={LEVEL_ICON[line.level]}
+        tokenSize="2xs"
         className={cn(
-          "shrink-0 w-[28px] h-[22px] flex items-center justify-center",
+          "shrink-0 mt-[5px]",
           LEVEL_COLOR[line.level],
           line.level === "info" && "opacity-40",
           line.level === "debug" && "opacity-30",
         )}
-      >
-        <Icon name={LEVEL_ICON[line.level]} size={12} />
-      </span>
+      />
 
       {/* Timestamp */}
-      <span className="text-vsc-text-ghost/35 tabular-nums shrink-0 w-[62px] select-none leading-[22px]">
+      <span className="text-vsc-text-ghost tabular-nums shrink-0 select-none leading-snug mt-[4px] text-3xs font-mono opacity-40 group-hover/row:opacity-70 transition-opacity">
         {timeStr}
       </span>
 
@@ -426,9 +597,9 @@ const LogRow = React.memo(function LogRow({
       {showChannel && (
         <span
           className={cn(
-            "shrink-0 w-[64px] truncate text-2xs leading-[22px] uppercase tracking-wider font-medium",
+            "shrink-0 w-[52px] truncate text-3xs leading-snug mt-[4px] uppercase tracking-wider font-medium",
             LEVEL_COLOR[line.level],
-            "opacity-50",
+            "opacity-50 group-hover/row:opacity-80 transition-opacity",
           )}
         >
           {line.channel}
@@ -436,27 +607,33 @@ const LogRow = React.memo(function LogRow({
       )}
 
       {/* Text */}
-      <span
-        className={cn(
-          "flex-1 min-w-0 leading-[22px] pl-1",
-          LEVEL_COLOR[line.level],
-          wordWrap ? "whitespace-pre-wrap break-all" : "whitespace-pre truncate",
-        )}
-      >
-        {searchQuery ? <HighlightText text={line.text} query={searchQuery} /> : line.text}
-      </span>
+      <div className="flex-1 min-w-0">
+        <span
+          className={cn(
+            "leading-snug text-vsc-text-secondary",
+            wordWrap ? "whitespace-pre-wrap break-all" : "whitespace-pre truncate block",
+          )}
+        >
+          {searchQuery ? <HighlightText text={line.text} query={searchQuery} /> : line.text}
+        </span>
+      </div>
 
       {/* Copy button on hover */}
-      {hovered && (
+      <span
+        className={cn(
+          "shrink-0 ml-1 opacity-0 group-hover/row:opacity-100 transition-opacity duration-normal",
+          "inline-flex items-center mt-[3px]",
+        )}
+      >
         <button
           type="button"
           onClick={handleCopy}
-          className="shrink-0 w-[24px] h-[22px] flex items-center justify-center text-vsc-text-ghost/50 hover:text-vsc-fg cursor-pointer border-none bg-transparent"
+          className="w-[18px] h-[18px] rounded flex items-center justify-center text-vsc-text-ghost/50 hover:text-vsc-fg hover:bg-vsc-surface-2 cursor-pointer border-none bg-transparent"
           title="Copy line"
         >
-          <Icon name="copy" size={12} />
+          <Icon name="copy" tokenSize="3xs" />
         </button>
-      )}
+      </span>
     </div>
   );
 });

@@ -228,7 +228,7 @@ export const ProblemsView = React.memo(function ProblemsView() {
   return (
     <div className="flex flex-col h-full">
       {/* ─── Toolbar ─────────────────────────────────── */}
-      <div className="flex items-center gap-1.5 px-2 py-1 border-b border-vsc-border/20 shrink-0 bg-vsc-bg">
+      <div className="flex items-center gap-1.5 px-2 h-[32px] border-b border-vsc-border/15 shrink-0 bg-vsc-surface-0/50">
         {/* Filter pills */}
         <div className="flex items-center gap-0.5">
           <FilterPill
@@ -337,7 +337,7 @@ const FilterPill = React.memo(function FilterPill({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-2xs cursor-pointer transition-colors duration-normal focus-ring border border-transparent",
+        "inline-flex items-center gap-1 px-1.5 h-[22px] rounded-md text-2xs cursor-pointer transition-colors duration-normal focus-ring border border-transparent",
         isActive
           ? "bg-vsc-surface-2 text-vsc-fg font-medium border-vsc-border/20 shadow-sm"
           : "text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-2/40",
@@ -347,7 +347,7 @@ const FilterPill = React.memo(function FilterPill({
       {icon && (
         <Icon
           name={icon}
-          tokenSize="2xs"
+          size={12}
           className={cn("shrink-0", isActive ? iconClass : "opacity-60")}
         />
       )}

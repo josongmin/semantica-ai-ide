@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { cn, Icon } from "~shared/ui";
 
 import { activeSidebarViewAtom, activeTrayViewAtom } from "./model/shellAtoms";
-import { type FrameSlot,getViewsForFrame } from "./model/viewRegistry";
+import { type FrameSlot, getViewsForFrame } from "./model/viewRegistry";
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -61,11 +61,16 @@ export const ZonePanelTabs = React.memo(function ZonePanelTabs({
           onClick={() => setActive(view.id)}
           className={cn(
             "inline-flex items-center gap-1 px-2 py-0.5 text-2xs uppercase tracking-wider rounded-sm",
-            "cursor-pointer bg-transparent border-none transition-colors duration-fast focus-ring",
+            "cursor-pointer border-none transition-colors duration-fast focus-ring",
             active === view.id
               ? "text-vsc-fg font-semibold"
-              : "text-vsc-text-tertiary hover:text-vsc-text-secondary",
+              : "bg-transparent text-vsc-text-tertiary hover:text-vsc-text-secondary",
           )}
+          style={
+            active === view.id
+              ? { background: "color-mix(in srgb, var(--color-gnb-via) 35%, transparent)" }
+              : undefined
+          }
         >
           <Icon name={view.icon} tokenSize="2xs" className="shrink-0" />
           <span>{view.title}</span>

@@ -93,7 +93,7 @@ export const PromptBox = React.memo(function PromptBox() {
       <div
         ref={dropRef}
         className={cn(
-          "relative rounded-lg overflow-hidden border border-vsc-border bg-vsc-surface-1",
+          "relative rounded-lg overflow-hidden border border-vsc-border bg-vsc-surface-1/60",
           isDragging && "ring-2 ring-inset ring-vsc-focus ring-dashed",
         )}
         data-testid="prompt-box"
@@ -140,7 +140,7 @@ export const PromptBox = React.memo(function PromptBox() {
 
         <AttachmentChips attachments={attachments} onRemove={removeFile} className="px-2.5 pt-2" />
 
-        <div ref={containerRef} className="px-2.5 pt-1 pb-0.5">
+        <div ref={containerRef} className="px-2 pt-1 pb-0.5">
           <textarea
             ref={textareaRef}
             value={text}

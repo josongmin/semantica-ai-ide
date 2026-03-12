@@ -230,7 +230,7 @@ function TrayToggleButton({
         "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
         "text-xs tracking-[0.01em]",
         isActive
-          ? "text-white bg-vsc-accent rounded-full"
+          ? "text-white bg-vsc-fg/80 rounded-full"
           : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
       )}
       style={{ height: BAR_H - 7 }}

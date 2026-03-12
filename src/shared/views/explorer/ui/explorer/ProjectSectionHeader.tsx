@@ -59,7 +59,7 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
             open && "rotate-90",
           )}
         />
-        <span className="text-sm font-medium text-vsc-fg flex-1 truncate">{label}</span>
+        <span className="text-2xs font-medium text-vsc-fg flex-1 truncate">{label}</span>
         {primaryLang && (
           <span className="flex items-center gap-1 text-2xs text-vsc-text-ghost shrink-0">
             <span
@@ -74,20 +74,23 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
       </div>
 
       {/* Row 2: meta stats */}
-      <div className="flex items-center gap-2.5 pl-[18px] mt-px">
-        <span className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
-          <Icon name="file" tokenSize="2xs" className="opacity-50" />
+      <div className="flex items-center gap-1.5 pl-[18px] mt-px">
+        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost">
+          <Icon name="file" size={8} className="opacity-50" />
           {files}
         </span>
-        <span className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
-          <Icon name="folder" tokenSize="2xs" className="opacity-50" />
+        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost">
+          <Icon name="folder" size={8} className="opacity-50" />
           {folders}
         </span>
         {langBreakdown.length > 0 && (
           <>
-            <span className="w-px h-2.5 bg-vsc-border/30" />
+            <span className="w-px h-1.5 bg-vsc-border/30" />
             {langBreakdown.map(({ lang, pct }) => (
-              <span key={lang} className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
+              <span
+                key={lang}
+                className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost"
+              >
                 <span
                   className={cn(
                     "w-1 h-1 rounded-full shrink-0",

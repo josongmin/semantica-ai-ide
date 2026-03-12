@@ -70,6 +70,8 @@ export interface TerminalViewportRawProps {
   onScroll?: (isAtBottom: boolean) => void;
   /** Called with each keystroke input for ghost text matching */
   onInput?: (data: string) => void;
+  /** Called when "/" is pressed at the prompt — opens slash command palette */
+  onSlashCommand?: (position: { x: number; y: number }) => void;
 }
 
 /** Imperative handle for parent access to search + scroll */
@@ -79,6 +81,28 @@ export interface TerminalViewportRawHandle {
   searchPrevious(): boolean;
   clearSearch(): void;
   scrollToLine(line: number): void;
+  /** Get cursor pixel position for floating UI anchoring */
+  getCursorPixelPosition(): { x: number; y: number } | null;
+}
+
+// ─── Helpers ────────────────────────────────────────────────
+
+/** Get the pixel position of the cursor in the terminal viewport */
+function getCursorPos(
+  term: InstanceType<typeof Terminal>,
+  container: HTMLElement,
+): { x: number; y: number } | null {
+  const buf = term.buffer.active;
+  const core = (term as unknown as Record<string, unknown>)._core as
+    | { _renderService?: { dimensions?: { css?: { cell?: { width: number; height: number } } } } }
+    | undefined;
+  const cellWidth = core?._renderService?.dimensions?.css?.cell?.width ?? 8;
+  const cellHeight = core?._renderService?.dimensions?.css?.cell?.height ?? 18;
+  const rect = container.getBoundingClientRect();
+  return {
+    x: rect.left + buf.cursorX * cellWidth,
+    y: rect.top + (buf.cursorY + 1) * cellHeight,
+  };
 }
 
 // ─── Component ─────────────────────────────────────────────
@@ -89,11 +113,12 @@ export const TerminalViewportRaw = memo(
       sessionId,
       className,
       fontSize = 13,
-      lineHeight = 1.35,
+      lineHeight = 1.2,
       scrollback = 5000,
       onSearchResults,
       onScroll,
       onInput,
+      onSlashCommand,
     },
     ref,
   ) {
@@ -140,6 +165,27 @@ export const TerminalViewportRaw = memo(
         scrollToLine(line: number) {
           terminalRef.current?.scrollToLine(line);
         },
+        getCursorPixelPosition() {
+          const term = terminalRef.current;
+          const container = containerRef.current;
+          if (!term || !container) return null;
+          const buf = term.buffer.active;
+          // Access internal render dimensions for accurate cell size
+          const core = (term as unknown as Record<string, unknown>)._core as
+            | {
+                _renderService?: {
+                  dimensions?: { css?: { cell?: { width: number; height: number } } };
+                };
+              }
+            | undefined;
+          const cellWidth = core?._renderService?.dimensions?.css?.cell?.width ?? fontSize * 0.6;
+          const cellHeight = core?._renderService?.dimensions?.css?.cell?.height ?? fontSize * 1.35;
+          const rect = container.getBoundingClientRect();
+          return {
+            x: rect.left + buf.cursorX * cellWidth,
+            y: rect.top + (buf.cursorY + 1) * cellHeight,
+          };
+        },
       }),
       [],
     );
@@ -179,7 +225,7 @@ export const TerminalViewportRaw = memo(
               theme: cachedXtermTheme(),
               cursorBlink: true,
               cursorStyle: "bar",
-              cursorWidth: 2,
+              cursorWidth: 1,
               fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
               allowProposedApi: true,
             });
@@ -196,6 +242,29 @@ export const TerminalViewportRaw = memo(
             } catch {
               /* container may have zero dimensions */
             }
+
+            // Intercept "/" key to open slash command palette
+            terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+              if (
+                e.key === "/" &&
+                e.type === "keydown" &&
+                !e.ctrlKey &&
+                !e.altKey &&
+                !e.metaKey &&
+                !e.shiftKey
+              ) {
+                // Only intercept at prompt (not in alt-screen apps like vim/less)
+                const altScreen = terminal?.buffer.active === terminal?.buffer.alternate;
+                if (!altScreen && onSlashCommand && terminal) {
+                  const pos = getCursorPos(terminal, container);
+                  if (pos) {
+                    onSlashCommand(pos);
+                    return false; // Prevent "/" from going to PTY
+                  }
+                }
+              }
+              return true;
+            });
 
             // Mock session: connect via WebSocket PTY (browser dev mode)
             const isMock = sessionId.startsWith("mock_");

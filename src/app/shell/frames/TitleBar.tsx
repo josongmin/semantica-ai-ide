@@ -199,10 +199,18 @@ export const TitleBar = React.memo(function TitleBar() {
         <button
           type="button"
           className="flex items-center justify-center w-6 h-6 rounded-full shrink-0
-                     text-2xs font-bold cursor-pointer border-none focus-ring transition-colors duration-slow"
+                     text-2xs font-bold cursor-pointer border-none focus-ring transition-all duration-fast"
           style={{ backgroundColor: gnb.glow, color: gnb.accent }}
           title="Account"
           aria-label="Account"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = gnb.hover;
+            e.currentTarget.style.color = gnb.text;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = gnb.glow;
+            e.currentTarget.style.color = gnb.accent;
+          }}
         >
           U
         </button>
@@ -411,6 +419,14 @@ function GnbIconButton({
       className="inline-flex items-center justify-center w-8 h-8 rounded-md shrink-0
                  cursor-pointer bg-transparent border-none transition-all duration-fast focus-ring"
       style={{ color: isActive ? gnb.accent : gnb.textDim }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = gnb.hover;
+        e.currentTarget.style.color = gnb.text;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = "transparent";
+        e.currentTarget.style.color = isActive ? gnb.accent : gnb.textDim;
+      }}
     >
       <Icon size={16} strokeWidth={2} />
     </button>
@@ -439,7 +455,7 @@ function GnbNavButton({
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "relative inline-flex items-center gap-1.5 px-2 h-6 rounded-md shrink-0",
-        "cursor-pointer border-none transition-colors duration-slow focus-ring text-sm",
+        "cursor-pointer border-none transition-colors duration-slow focus-ring text-xs",
         !isActive && "bg-transparent",
       )}
       style={

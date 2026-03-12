@@ -1,209 +1,244 @@
 /**
- * TerminalSessionTabs — Multi-session tab bar
+ * TerminalSessionTabs — IntelliJ-style horizontal tab bar with tab groups
  *
- * Displays terminal sessions as tabs with status indicators.
- * Supports: create new, close, switch, provenance badges.
+ * Each tab represents a group of 1–2 sessions (single or split).
+ * Tab click switches to that group's sessions.
+ * Split creates a new session within the current tab.
+ *
+ * Layout: [Terminal] | [Tab1 ×] [Tab2 ×] [+] [∨]  ···  [⫞] [⋯] [—]
  */
 
 import { memo, useCallback } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
-import type { TerminalSessionId } from "~shared/protocol/types/core";
-import type { TerminalSession } from "~shared/protocol/types/terminal";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { cn } from "~shared/ui/variants";
 
+import { removeTerminalSessionAtom, terminalSessionListAtom } from "../model/atoms";
 import {
-  activeTerminalSessionIdAtom,
-  removeTerminalSessionAtom,
-  terminalSessionListAtom,
-} from "../model/atoms";
-import type { SessionProvenance, SessionStatus, TerminalSessionMeta } from "../model/types";
-
-// ─── Helpers ───────────────────────────────────────────────
-
-function getStatusColor(status: SessionStatus): string {
-  switch (status) {
-    case "running":
-      return "bg-vsc-success";
-    case "starting":
-      return "bg-vsc-info";
-    case "exited":
-      return "bg-vsc-text-tertiary";
-    case "failed":
-      return "bg-vsc-error";
-  }
-}
-
-function getProvenanceIconName(provenance: SessionProvenance): string | null {
-  switch (provenance.source) {
-    case "agent":
-      return "hubot";
-    case "task":
-      return "tasklist";
-    case "system":
-      return "gear";
-    case "user":
-      return null;
-  }
-}
-
-/** Extract the last directory name from a cwd path */
-function shortCwd(cwd: string): string {
-  if (!cwd) return "";
-  const parts = cwd.replace(/\/+$/, "").split("/");
-  return parts[parts.length - 1] ?? cwd;
-}
-
-/** Compact status label */
-function statusLabel(status: SessionStatus, exitCode?: number): string {
-  switch (status) {
-    case "running":
-      return "";
-    case "starting":
-      return "starting…";
-    case "exited":
-      return exitCode !== undefined ? `exit ${exitCode}` : "exited";
-    case "failed":
-      return "failed";
-  }
-}
+  activeTabIndexAtom,
+  closeTabAtom,
+  isSplitModeAtom,
+  selectTabAtom,
+  tabGroupsAtom,
+  unsplitTabAtom,
+} from "../model/splitPaneAtoms";
 
 // ─── Tab Item ──────────────────────────────────────────────
 
 interface TabItemProps {
-  session: TerminalSessionMeta | TerminalSession;
+  label: string;
+  isSplit: boolean;
   isActive: boolean;
-  onSelect: (id: string) => void;
-  onClose: (id: string) => void;
+  onSelect: () => void;
+  onClose: () => void;
 }
 
-const TabItem = memo(function TabItem({ session, isActive, onSelect, onClose }: TabItemProps) {
-  const provenanceIcon = getProvenanceIconName(session.provenance as SessionProvenance);
-  const status = statusLabel(session.status as SessionStatus, session.exitCode);
-
+const TabItem = memo(function TabItem({
+  label,
+  isSplit,
+  isActive,
+  onSelect,
+  onClose,
+}: TabItemProps) {
   return (
     <div
       role="tab"
       tabIndex={isActive ? 0 : -1}
       aria-selected={isActive}
       className={cn(
-        "group flex items-center gap-1.5 px-2 py-1.5 text-2xs cursor-pointer",
-        "border-r-2 transition-colors duration-fast",
-        "hover:bg-vsc-surface-1",
+        "group relative flex items-center h-full cursor-pointer shrink-0",
+        "transition-colors duration-fast select-none",
         isActive
-          ? "border-vsc-accent text-vsc-text-primary bg-vsc-surface-1"
-          : "border-transparent text-vsc-text-secondary",
+          ? "text-vsc-text-primary"
+          : "text-vsc-text-tertiary hover:text-vsc-text-secondary hover:bg-vsc-surface-1/40",
       )}
-      onClick={() => onSelect(session.sessionId)}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSelect(session.sessionId); }}
-      title={`${session.cwd} (${session.shellType} · pid ${session.pid})`}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onSelect();
+      }}
     >
-      {/* Status dot */}
-      <span className={cn("mt-0.5 inline-block h-1.5 w-1.5 rounded-full shrink-0 self-start", getStatusColor(session.status as SessionStatus))} />
+      <div className="flex items-center gap-1 px-2.5">
+        <span className="text-2xs whitespace-nowrap leading-none">{label}</span>
 
-      {/* Two-line info */}
-      <div className="flex-1 min-w-0">
-        {/* Line 1: shell + provenance + status */}
-        <div className="flex items-center gap-1">
-          {provenanceIcon && (
-            <Icon name={provenanceIcon} size={10} className="text-vsc-text-tertiary shrink-0" />
+        {/* Split badge */}
+        {isSplit && (
+          <span className="flex items-center justify-center w-3 h-3 rounded-sm bg-vsc-accent/15 text-vsc-accent">
+            <Icon name="split-horizontal" size={8} />
+          </span>
+        )}
+
+        {/* Close — always rendered for stable layout */}
+        <button
+          type="button"
+          className={cn(
+            "flex items-center justify-center w-3.5 h-3.5 rounded-sm -mr-0.5",
+            "hover:bg-vsc-surface-2 hover:text-vsc-text-primary",
+            "transition-all duration-fast",
+            isActive ? "text-vsc-text-ghost" : "text-transparent group-hover:text-vsc-text-ghost",
           )}
-          <span className="truncate font-medium">{session.shellType}</span>
-          {status && (
-            <span className="text-vsc-text-tertiary shrink-0">· {status}</span>
-          )}
-        </div>
-        {/* Line 2: cwd */}
-        <div className="truncate text-3xs text-vsc-text-tertiary leading-tight">
-          {shortCwd(session.cwd)}
-        </div>
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          tabIndex={-1}
+          title="Close"
+          aria-label="Close tab"
+        >
+          <Icon name="close" size={9} />
+        </button>
       </div>
 
-      {/* Close button */}
-      <button
-        type="button"
-        className={cn(
-          "rounded p-0.5 shrink-0 self-start",
-          "opacity-0 group-hover:opacity-100",
-          "hover:bg-vsc-error/20 hover:text-vsc-error",
-          "transition-opacity duration-fast",
-        )}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose(session.sessionId);
-        }}
-        title="Close session"
-      >
-        <Icon name="close" size={10} />
-      </button>
+      {/* Active underline */}
+      {isActive && <div className="absolute bottom-0 inset-x-0 h-[2px] bg-vsc-accent" />}
     </div>
   );
 });
+
+// ─── Icon Button ────────────────────────────────────────────
+
+function IconBtn({
+  icon,
+  title,
+  onClick,
+  active,
+  size = 13,
+}: {
+  icon: string;
+  title: string;
+  onClick?: () => void;
+  active?: boolean;
+  size?: number;
+}) {
+  return (
+    <button
+      type="button"
+      className={cn(
+        "flex items-center justify-center w-5 h-5 rounded shrink-0",
+        "transition-colors duration-fast",
+        active
+          ? "text-vsc-accent bg-vsc-accent/10 hover:bg-vsc-accent/20"
+          : "text-vsc-text-tertiary hover:text-vsc-text-primary hover:bg-vsc-surface-2/60",
+      )}
+      onClick={onClick}
+      title={title}
+      aria-label={title}
+    >
+      <Icon name={icon} size={size} />
+    </button>
+  );
+}
 
 // ─── Tab Bar ───────────────────────────────────────────────
 
 export interface TerminalSessionTabsProps {
   onCreateSession?: () => void;
+  onSplitSession?: () => void;
   className?: string;
 }
 
 export const TerminalSessionTabs = memo(function TerminalSessionTabs({
   onCreateSession,
+  onSplitSession,
   className,
 }: TerminalSessionTabsProps) {
   const sessions = useAtomValue(terminalSessionListAtom);
-  const activeId = useAtomValue(activeTerminalSessionIdAtom);
-  const setActiveId = useSetAtom(activeTerminalSessionIdAtom);
+  const tabGroups = useAtomValue(tabGroupsAtom);
+  const activeTabIdx = useAtomValue(activeTabIndexAtom);
+  const selectTab = useSetAtom(selectTabAtom);
+  const closeTab = useSetAtom(closeTabAtom);
+  const unsplitTab = useSetAtom(unsplitTabAtom);
   const removeSession = useSetAtom(removeTerminalSessionAtom);
+  const isSplitMode = useAtomValue(isSplitModeAtom);
 
-  const handleSelect = useCallback(
-    (id: string) => setActiveId(id as TerminalSessionId),
-    [setActiveId],
+  // Build a session lookup for labels
+  const sessionMap = new Map(sessions.map((s) => [s.sessionId, s]));
+
+  const handleSelectTab = useCallback((index: number) => selectTab(index), [selectTab]);
+
+  const handleCloseTab = useCallback(
+    (index: number) => {
+      const group = tabGroups[index];
+      if (!group) return;
+      // Remove all sessions in the group, then close the tab
+      for (const sid of group) {
+        removeSession(sid);
+      }
+      closeTab(index);
+    },
+    [tabGroups, removeSession, closeTab],
   );
 
-  const handleClose = useCallback(
-    (id: string) => removeSession(id as TerminalSessionId),
-    [removeSession],
-  );
+  const handleSplitToggle = useCallback(() => {
+    if (isSplitMode) {
+      // Unsplit: collapse to single pane, remove the extra session
+      unsplitTab();
+    } else {
+      // Split: create new session in current tab
+      onSplitSession?.();
+    }
+  }, [isSplitMode, unsplitTab, onSplitSession]);
+
+  // Generate tab labels from first session in each group
+  const tabLabels: string[] = [];
+  const shellCounts = new Map<string, number>();
+  for (const group of tabGroups) {
+    const firstId = group[0];
+    if (!firstId) continue;
+    const primarySession = sessionMap.get(firstId);
+    const shell = primarySession?.shellType ?? "Local";
+    const name = shell !== "unknown" ? shell : "Local";
+    const label = name.charAt(0).toUpperCase() + name.slice(1);
+    const count = shellCounts.get(shell) ?? 0;
+    shellCounts.set(shell, count + 1);
+    tabLabels.push(count === 0 ? label : `${label} (${count + 1})`);
+  }
 
   return (
     <div
       className={cn(
-        "flex flex-col h-full bg-vsc-surface-0",
-        "overflow-y-auto scrollbar-none",
+        "flex items-stretch h-[30px] bg-vsc-surface-0 border-b border-vsc-border/20 shrink-0",
         className,
       )}
       role="tablist"
-      aria-orientation="vertical"
+      aria-orientation="horizontal"
       aria-label="Terminal sessions"
     >
-      {sessions.map((session) => (
-        <TabItem
-          key={session.sessionId}
-          session={session}
-          isActive={session.sessionId === activeId}
-          onSelect={handleSelect}
-          onClose={handleClose}
-        />
-      ))}
+      {/* Tabs — one per tab group */}
+      <div className="flex items-stretch overflow-x-auto scrollbar-none min-w-0 pl-1">
+        {tabGroups.map((group, idx) => (
+          <TabItem
+            key={group[0]}
+            label={tabLabels[idx] ?? "Shell"}
+            isSplit={group.length > 1}
+            isActive={idx === activeTabIdx}
+            onSelect={() => handleSelectTab(idx)}
+            onClose={() => handleCloseTab(idx)}
+          />
+        ))}
+      </div>
 
-      {/* New session button */}
-      {onCreateSession && (
-        <button
-          type="button"
-          className={cn(
-            "flex items-center gap-1 px-2 py-1 text-2xs",
-            "text-vsc-text-tertiary hover:text-vsc-text-secondary",
-            "hover:bg-vsc-surface-1 transition-colors duration-fast",
-          )}
-          onClick={onCreateSession}
-          title="New terminal session"
-        >
-          <Icon name="add" size={12} />
-          <span>New</span>
-        </button>
-      )}
+      {/* + and ∨ */}
+      <div className="flex items-center gap-px px-0.5 shrink-0">
+        {onCreateSession && <IconBtn icon="add" title="New terminal" onClick={onCreateSession} />}
+        <IconBtn icon="chevron-down" title="Terminal list" size={10} />
+      </div>
+
+      <div className="flex-1" />
+
+      {/* Right actions */}
+      <div className="flex items-center gap-px pr-1.5 shrink-0">
+        {tabGroups.length > 0 && (
+          <IconBtn
+            icon="split-horizontal"
+            title={isSplitMode ? "Close split" : "Split terminal"}
+            onClick={handleSplitToggle}
+            active={isSplitMode}
+          />
+        )}
+        <IconBtn icon="ellipsis" title="More actions" />
+        <IconBtn icon="chrome-minimize" title="Minimize" />
+      </div>
     </div>
   );
 });

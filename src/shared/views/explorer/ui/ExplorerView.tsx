@@ -21,13 +21,21 @@ import { cn, Icon } from "~shared/ui";
 import { ROW_HEIGHT } from "./explorer/constants";
 import { EmptyState } from "./explorer/EmptyState";
 import { FileContextMenu, type FileContextTarget } from "./explorer/FileContextMenu";
-import { collectAllFolders, useAgentPresence } from "./explorer/helpers";
+import { collectAllFolders, deriveProjectStats, useAgentPresence } from "./explorer/helpers";
 import { SidebarRow } from "./explorer/SidebarRow";
 import { type ViewMode, ViewModeSelector } from "./explorer/ViewModeSelector";
 
 import { activeTabAtom } from "~domains/editor/editorAtoms";
 
 const TEST_PATTERN = /\/__tests__\/|\.test\.|\.spec\.|\/tests?\//;
+
+const LANG_SHORT: Record<string, string> = {
+  TypeScript: "TS",
+  JavaScript: "JS",
+  Python: "Py",
+  Kotlin: "Kt",
+  Svelte: "Sv",
+};
 
 export const ExplorerView = React.memo(function ExplorerView() {
   const projectFiles = useAtomValue(projectFilesAtom);
@@ -90,6 +98,11 @@ export const ExplorerView = React.memo(function ExplorerView() {
   }, [viewMode, projectFiles, fileChanges, recentFiles]);
 
   const tree = useMemo(() => buildFileTree(viewFilteredFiles), [viewFilteredFiles]);
+
+  const projectStats = useMemo(
+    () => deriveProjectStats(viewFilteredFiles, tree),
+    [viewFilteredFiles, tree],
+  );
 
   const filtered = useMemo(() => (search ? filterTree(tree, search) : tree), [tree, search]);
 
@@ -167,25 +180,46 @@ export const ExplorerView = React.memo(function ExplorerView() {
             type="button"
             onClick={() => setTreeOpen((v) => !v)}
             className={cn(
-              "flex items-center w-full gap-1 pl-1 pr-3",
+              "flex items-center w-full gap-2 px-3",
               "bg-transparent border-none cursor-pointer text-left",
-              "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
+              "hover:bg-vsc-list-hover/60 transition-colors duration-fast focus-ring",
             )}
-            style={{ height: ROW_HEIGHT }}
+            style={{ height: ROW_HEIGHT + 8 }}
             aria-expanded={treeOpen}
           >
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-[13px] font-medium text-vsc-fg truncate leading-tight">
+                {workspaceName || "Project"}
+              </span>
+              <div className="flex items-center gap-1.5 text-[9px] text-vsc-text-ghost leading-none mt-0.5">
+                <span className="flex items-center gap-0.5">
+                  <Icon name="file" size={9} className="opacity-40" />
+                  {projectStats.files}
+                </span>
+                <span className="flex items-center gap-0.5">
+                  <Icon name="folder" size={9} className="opacity-40" />
+                  {projectStats.folders}
+                </span>
+                {projectStats.langBreakdown.length > 0 && (
+                  <>
+                    <span className="opacity-20">·</span>
+                    {projectStats.langBreakdown.map(({ lang, pct }) => (
+                      <span key={lang}>
+                        {LANG_SHORT[lang] ?? lang} {pct}%
+                      </span>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
             <Icon
               name="chevron-right"
               size={10}
               className={cn(
-                "shrink-0 transition-transform duration-normal text-vsc-text-tertiary",
+                "shrink-0 transition-transform duration-normal text-vsc-text-ghost/50",
                 treeOpen && "rotate-90",
               )}
             />
-            <span className="text-md font-bold text-vsc-fg truncate">
-              {workspaceName || "Project"}
-            </span>
-            <span className="text-xs text-vsc-text-ghost truncate ml-0.5">~/...</span>
           </button>
         )}
 

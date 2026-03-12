@@ -60,7 +60,7 @@ export const ViewModeSelector = memo(function ViewModeSelector({
   );
 
   return (
-    <div className="flex items-center h-[36px] px-2 bg-white shrink-0 border-b border-vsc-border/10">
+    <div className="flex items-center h-[36px] pl-2 pr-2 bg-white shrink-0 border-b border-vsc-border/10">
       {/* Left: view mode dropdown */}
       <DropdownMenu
         items={items}
@@ -74,7 +74,7 @@ export const ViewModeSelector = memo(function ViewModeSelector({
               "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
             )}
           >
-            <span className="text-md font-medium text-vsc-fg truncate">
+            <span className="text-xs font-medium text-vsc-fg truncate">
               {VIEW_MODE_LABEL[value]}
             </span>
             <Icon name="chevron-down" size={9} className="text-vsc-text-ghost shrink-0" />

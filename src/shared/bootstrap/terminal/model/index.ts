@@ -3,6 +3,7 @@ export * from "./aiAtoms";
 export * from "./atoms";
 export * from "./events";
 export * from "./intentTypes";
+export * from "./splitPaneAtoms";
 // Re-export types explicitly to avoid TerminalMode name conflict with prefsAtoms
 export type {
   AgentPurpose,
