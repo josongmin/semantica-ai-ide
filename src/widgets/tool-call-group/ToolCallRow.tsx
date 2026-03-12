@@ -1,11 +1,7 @@
 import React, { useCallback, useId, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
-import {
-  categoryIcons,
-  riskLevelIcons,
-  toolCallAtomFamily,
-} from "~entities/tool-call";
+import { categoryIcons, riskLevelIcons, toolCallAtomFamily } from "~entities/tool-call";
 
 import { approvalGateAdapterAtom, dangerousApprovalToolCallIdAtom } from "../../shared/lib";
 import { Button, cn, Icon, RISK_TEXT_COLOR, Text } from "../../shared/ui";
@@ -64,7 +60,9 @@ export const ToolCallRow = React.memo(function ToolCallRow({ id }: ToolCallRowPr
 
   return (
     <div
-      className={status.showFlash ? "animate-[tool-success-flash_600ms_ease-out_forwards]" : undefined}
+      className={
+        status.showFlash ? "animate-[tool-success-flash_600ms_ease-out_forwards]" : undefined
+      }
       onAnimationEnd={status.showFlash ? status.onFlashEnd : undefined}
     >
       <div className="flex items-center gap-0.5">
@@ -100,7 +98,13 @@ export const ToolCallRow = React.memo(function ToolCallRow({ id }: ToolCallRowPr
             {tc.tool_name}
           </Text>
           {status.contextText && (
-            <Text size="xs" tone="tertiary" truncate className="flex-1 min-w-0" title={status.contextText}>
+            <Text
+              size="xs"
+              tone="tertiary"
+              truncate
+              className="flex-1 min-w-0"
+              title={status.contextText}
+            >
               {status.contextText}
             </Text>
           )}
@@ -139,7 +143,7 @@ export const ToolCallRow = React.memo(function ToolCallRow({ id }: ToolCallRowPr
       {/* Inline diff preview — always visible when diff_text is present */}
       {!expanded && tc.diff_text && (
         <div
-          className="ml-6 mr-6 mb-0.5 rounded-md overflow-hidden border border-vsc-border/30 animate-[fade-in_var(--duration-normal)_var(--ease-default)]"
+          className="ml-6 mr-6 mb-0.5 rounded-lg overflow-hidden border border-vsc-border/30 animate-[fade-in_var(--duration-normal)_var(--ease-default)]"
           role="region"
           aria-label="Diff preview"
         >
@@ -151,7 +155,7 @@ export const ToolCallRow = React.memo(function ToolCallRow({ id }: ToolCallRowPr
         <div
           id={contentId}
           role="region"
-          className="ml-6 mr-6 mb-1 px-2 py-1.5 rounded-md bg-vsc-code-bg text-2xs leading-relaxed animate-[fade-in_var(--duration-normal)_var(--ease-default)]"
+          className="ml-6 mr-6 mb-1 px-2 py-1.5 rounded-lg bg-vsc-code-bg text-2xs leading-relaxed animate-[fade-in_var(--duration-normal)_var(--ease-default)]"
         >
           {tc.args_summary && (
             <div className="mb-1">

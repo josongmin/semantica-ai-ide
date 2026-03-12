@@ -56,10 +56,7 @@ const TONE_CLASSES: Readonly<
   },
 };
 
-const CATEGORY_CONFIG: Record<
-  ErrorCategory,
-  { icon: string; tone: ErrorTone; label: string }
-> = {
+const CATEGORY_CONFIG: Record<ErrorCategory, { icon: string; tone: ErrorTone; label: string }> = {
   network: { icon: "globe", tone: "error", label: "Network Error" },
   model: { icon: "sparkle", tone: "warning", label: "Model Error" },
   tool: { icon: "tools", tone: "warning", label: "Tool Error" },
@@ -97,11 +94,7 @@ export const ErrorClassification = React.memo(function ErrorClassification({
 
   return (
     <div
-      className={cn(
-        "rounded-md border overflow-hidden",
-        tone.border,
-        tone.bg,
-      )}
+      className={cn("rounded-lg border overflow-hidden", tone.border, tone.bg)}
       role="alert"
       data-testid="error-classification"
     >
@@ -130,20 +123,14 @@ export const ErrorClassification = React.memo(function ErrorClassification({
         </div>
 
         {/* Error message */}
-        <p
-          className={cn("text-xs mt-1 leading-snug", tone.message)}
-          data-testid="error-message"
-        >
+        <p className={cn("text-xs mt-1 leading-snug", tone.message)} data-testid="error-message">
           {error.message}
         </p>
 
         {/* Retry row — compact inline */}
         {error.retry_strategy && (
           <div className="flex items-center gap-1.5 mt-1.5">
-            <span
-              className={cn("text-2xs", tone.retryText)}
-              data-testid="retry-label"
-            >
+            <span className={cn("text-2xs", tone.retryText)} data-testid="retry-label">
               {getRetryLabel(error.retry_strategy, error.retry_after_ms)}
             </span>
             {canRetry && onRetry && (

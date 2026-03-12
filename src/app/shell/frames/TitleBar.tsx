@@ -144,7 +144,7 @@ export const TitleBar = React.memo(function TitleBar() {
           }}
         >
           <span
-            className="inline-flex items-center justify-center w-5 h-5 rounded text-[11px] font-bold shrink-0"
+            className="inline-flex items-center justify-center w-6 h-6 rounded text-[13px] font-bold shrink-0"
             style={{ backgroundColor: "rgba(139,92,246,0.25)", color: gnb.accent }}
           >
             S
@@ -220,6 +220,8 @@ const OVERFLOW_BTN_W = 40;
 const GROUP_PADDING = 16;
 /** Minimum gap between center nav and left/right sections */
 const SAFETY_GAP = 32;
+/** Maximum number of visible nav items in the GNB */
+const MAX_VISIBLE_ITEMS = 6;
 
 function ResponsiveNavGroup({
   items,
@@ -253,16 +255,17 @@ function ResponsiveNavGroup({
       const available = headerW - leftW - rightW - SAFETY_GAP * 2;
       const usable = available - GROUP_PADDING;
 
-      // All items fit → show everything
-      const allItemsW = items.length * ITEM_EST_W;
+      // All items fit → show everything (capped at MAX_VISIBLE_ITEMS)
+      const cappedTotal = Math.min(items.length, MAX_VISIBLE_ITEMS);
+      const allItemsW = cappedTotal * ITEM_EST_W;
       if (allItemsW <= usable) {
-        setVisibleCount(items.length);
+        setVisibleCount(cappedTotal);
         return;
       }
 
       // Need overflow button → subtract its width
       const maxItems = Math.max(1, Math.floor((usable - OVERFLOW_BTN_W) / ITEM_EST_W));
-      setVisibleCount(Math.min(items.length, maxItems));
+      setVisibleCount(Math.min(cappedTotal, maxItems));
     };
 
     const ro = new ResizeObserver(measure);

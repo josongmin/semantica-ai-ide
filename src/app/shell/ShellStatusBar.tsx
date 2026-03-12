@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import { useAtom, useAtomValue } from "jotai";
 
 import { diagnosticCountsAtom } from "~features/diagnostics/model/diagnosticAtoms";
-import { currentGitBranchAtom } from "~entities/git-history/model/atoms";
 import {
   hasActiveAgentsAtom,
   runningAgentsCountAtom,
@@ -26,7 +25,6 @@ function getGraphVariant(status: string): "danger" | "active" | "success" | "mut
 }
 
 export const ShellStatusBar = React.memo(function ShellStatusBar() {
-  const currentBranch = useAtomValue(currentGitBranchAtom);
   const notifications = useAtomValue(notificationsAtom);
   const unreadCount = notifications.length;
   const trayViews = getViewsForFrame("tray");
@@ -119,11 +117,12 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
 
           <DiagnosticChip errors={errors} warnings={warnings} />
 
-          <Separator />
-
-          <MetaChip icon="git-branch" label={currentBranch} />
-
-          {unreadCount > 0 && <MetaChip icon="bell-dot" label={String(unreadCount)} accent />}
+          {unreadCount > 0 && (
+            <>
+              <Separator />
+              <MetaChip icon="bell-dot" label={String(unreadCount)} accent />
+            </>
+          )}
         </div>
       </div>
     </footer>

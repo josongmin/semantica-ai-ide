@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { lineStyles,parseDiffLines } from "../../shared/lib/parseDiffLines";
+import { lineStyles, parseDiffLines } from "../../shared/lib/parseDiffLines";
 import type { ToolCallOutput } from "../../shared/protocol";
 import { cn, Tabs, Text } from "../../shared/ui";
 
@@ -33,7 +33,10 @@ const InlineDiffBlock = React.memo(function InlineDiffBlock({ text }: { text: st
   return (
     <div className="font-mono text-2xs leading-relaxed overflow-auto">
       {lines.map((line, i) => (
-        <div key={`${line.type}-${line.lineNumber ?? i}`} className={cn("flex", lineStyles[line.type])}>
+        <div
+          key={`${line.type}-${line.lineNumber ?? i}`}
+          className={cn("flex", lineStyles[line.type])}
+        >
           <span
             className={cn(
               "select-none shrink-0 w-5 text-right pr-1 text-vsc-text-ghost/50",
@@ -42,8 +45,15 @@ const InlineDiffBlock = React.memo(function InlineDiffBlock({ text }: { text: st
           >
             {line.lineNumber ?? ""}
           </span>
-          <span className={cn("select-none shrink-0 w-3 text-center", LINE_PREFIX_STYLE[line.type])}>
-            {(() => { if (line.type === "add") return "+"; if (line.type === "remove") return "\u2212"; if (line.type === "header") return "@@"; return " "; })()}
+          <span
+            className={cn("select-none shrink-0 w-3 text-center", LINE_PREFIX_STYLE[line.type])}
+          >
+            {(() => {
+              if (line.type === "add") return "+";
+              if (line.type === "remove") return "\u2212";
+              if (line.type === "header") return "@@";
+              return " ";
+            })()}
           </span>
           <span className="flex-1 whitespace-pre-wrap break-all">
             {line.type === "header" ? line.content : line.content.slice(1)}
@@ -77,21 +87,20 @@ export const ToolOutputViewer = React.memo(function ToolOutputViewer({
   }
 
   return (
-    <div className={cn("rounded-md border border-vsc-border overflow-hidden", className)}>
+    <div className={cn("rounded-lg border border-vsc-border overflow-hidden", className)}>
       <Tabs tabs={[...OUTPUT_TABS]} activeId={activeTab} onTabChange={setActiveTab} />
 
       <div className="p-2 max-h-[--panel-max-h-md] overflow-auto">
         {activeTab === "output" ? (
           <div className="space-y-1.5">
-            {hasStdout && (
-              isDiff ? (
+            {hasStdout &&
+              (isDiff ? (
                 <InlineDiffBlock text={output.stdout} />
               ) : (
                 <pre className="text-2xs leading-relaxed text-vsc-fg whitespace-pre-wrap wrap-break-word font-mono">
                   {output.stdout}
                 </pre>
-              )
-            )}
+              ))}
             {hasStderr && (
               <pre className="text-2xs leading-relaxed text-vsc-error/80 whitespace-pre-wrap wrap-break-word font-mono">
                 {output.stderr}

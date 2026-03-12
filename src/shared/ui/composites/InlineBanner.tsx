@@ -37,7 +37,11 @@ export const InlineBanner = React.memo(function InlineBanner({
     <div
       role={variant === "error" ? "alert" : "status"}
       aria-live={variant === "error" ? "assertive" : "polite"}
-      className={cn("flex overflow-hidden rounded-md text-xs animate-[slide-down-in_200ms_ease]", styles.container, className)}
+      className={cn(
+        "flex overflow-hidden rounded-lg text-xs animate-[slide-down-in_200ms_ease]",
+        styles.container,
+        className,
+      )}
     >
       <div className="flex items-start gap-2 px-3 py-2 min-w-0 flex-1">
         <Icon name={icon ?? iconMap[variant]} className="shrink-0 mt-px" tokenSize="sm" />

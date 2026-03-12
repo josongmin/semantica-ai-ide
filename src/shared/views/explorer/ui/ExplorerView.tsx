@@ -182,11 +182,6 @@ export const ExplorerView = React.memo(function ExplorerView() {
                 treeOpen && "rotate-90",
               )}
             />
-            <Icon
-              name={treeOpen ? "folder-opened" : "folder"}
-              size={15}
-              className="shrink-0 text-vsc-text-secondary"
-            />
             <span className="text-[13px] font-bold text-vsc-fg truncate">
               {workspaceName || "Project"}
             </span>
