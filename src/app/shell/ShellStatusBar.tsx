@@ -144,8 +144,8 @@ type PillVariant = "muted" | "active" | "success" | "danger";
 
 const pillStyles: Record<PillVariant, string> = {
   muted: "text-vsc-text-ghost",
-  active: "text-sky-500",
-  success: "text-emerald-500",
+  active: "text-vsc-text-secondary",
+  success: "text-vsc-text-secondary",
   danger: "text-rose-500",
 };
 
@@ -231,7 +231,7 @@ function TrayToggleButton({
         "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
         "text-[11.25px] tracking-[0.01em]",
         isActive
-          ? "text-vsc-fg font-medium bg-vsc-surface-2/80"
+          ? "text-white bg-[#2d2b55] rounded-full"
           : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
       )}
       style={{ height: BAR_H - 7 }}
@@ -241,7 +241,7 @@ function TrayToggleButton({
       <Icon
         name={icon}
         size={12}
-        className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-70")}
+        className={cn("shrink-0", isActive ? "text-white" : "opacity-70")}
       />
       <span>{label}</span>
     </button>

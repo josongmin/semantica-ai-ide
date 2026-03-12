@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 
@@ -8,7 +8,7 @@ import { cn, Icon } from "~shared/ui";
 
 const MAX_OUTPUT_LINES = 5000;
 const RETAINED_LINES = 4000;
-const OUTPUT_ROW_HEIGHT = 20;
+const OUTPUT_ROW_HEIGHT = 22;
 
 // ─── Output Channel Model ────────────────────────────────
 
@@ -31,42 +31,90 @@ export const appendOutputLineAtom = atom(null, (get, set, line: OutputLine) => {
 });
 
 const CHANNELS = ["All", "Agent", "Build", "LSP", "Extensions"] as const;
+type Channel = (typeof CHANNELS)[number];
 
-function levelIcon(level: OutputLine["level"]): string {
-  if (level === "error") return "error";
-  if (level === "warn") return "warning";
-  if (level === "debug") return "bug";
-  return "info";
-}
+const CHANNEL_ICONS: Record<Channel, string> = {
+  All: "list-flat",
+  Agent: "hubot",
+  Build: "tools",
+  LSP: "symbol-namespace",
+  Extensions: "extensions",
+};
 
-const LEVEL_STYLE: Record<OutputLine["level"], string> = {
+const LEVELS = ["error", "warn", "info", "debug"] as const;
+
+const LEVEL_ICON: Record<OutputLine["level"], string> = {
+  error: "error",
+  warn: "warning",
+  info: "info",
+  debug: "bug",
+};
+
+const LEVEL_COLOR: Record<OutputLine["level"], string> = {
+  error: "text-rose-400",
+  warn: "text-amber-400",
   info: "text-vsc-text-secondary",
-  warn: "text-vsc-warning",
-  error: "text-vsc-error",
   debug: "text-vsc-text-ghost",
 };
 
-// ─── Output View (Bottom Zone) ──────────────────────────
+const LEVEL_BG: Record<OutputLine["level"], string> = {
+  error: "bg-rose-500/6",
+  warn: "bg-amber-500/4",
+  info: "",
+  debug: "",
+};
+
+// ─── Output View ─────────────────────────────────────────
 
 export const OutputView = React.memo(function OutputView() {
   const lines = useAtomValue(outputLinesAtom);
-  const set = useSetAtom(outputLinesAtom);
-  const [activeChannel, setActiveChannel] = useState<string>("All");
+  const setLines = useSetAtom(outputLinesAtom);
+  const [activeChannel, setActiveChannel] = useState<Channel>("All");
   const [levelFilter, setLevelFilter] = useState<Set<OutputLine["level"]>>(new Set());
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [wordWrap, setWordWrap] = useState(true);
   const [autoScroll, setAutoScroll] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = React.useMemo(() => {
-    let result = lines;
-    if (activeChannel !== "All") {
-      result = result.filter((l) => l.channel === activeChannel);
+  // ── Channel counts ──
+  const channelCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: lines.length };
+    for (const line of lines) {
+      counts[line.channel] = (counts[line.channel] ?? 0) + 1;
     }
+    return counts;
+  }, [lines]);
+
+  // ── Level counts (within active channel) ──
+  const channelLines = useMemo(
+    () => (activeChannel === "All" ? lines : lines.filter((l) => l.channel === activeChannel)),
+    [lines, activeChannel],
+  );
+
+  const levelCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const line of channelLines) {
+      counts[line.level] = (counts[line.level] ?? 0) + 1;
+    }
+    return counts;
+  }, [channelLines]);
+
+  // ── Filtered lines ──
+  const filtered = useMemo(() => {
+    let result = channelLines;
     if (levelFilter.size > 0) {
       result = result.filter((l) => levelFilter.has(l.level));
     }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((l) => l.text.toLowerCase().includes(q));
+    }
     return result;
-  }, [lines, activeChannel, levelFilter]);
+  }, [channelLines, levelFilter, searchQuery]);
 
+  // ── Auto-scroll ──
   useEffect(() => {
     if (autoScroll) {
       const el = scrollRef.current;
@@ -74,13 +122,13 @@ export const OutputView = React.memo(function OutputView() {
     }
   }, [filtered.length, autoScroll]);
 
-  const handleScroll = React.useCallback(() => {
+  const handleScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
-    setAutoScroll(isAtBottom);
+    setAutoScroll(el.scrollHeight - el.scrollTop - el.clientHeight < 40);
   }, []);
 
+  // ── Actions ──
   const toggleLevel = useCallback((level: OutputLine["level"]) => {
     setLevelFilter((prev) => {
       const next = new Set(prev);
@@ -90,7 +138,7 @@ export const OutputView = React.memo(function OutputView() {
     });
   }, []);
 
-  const handleClear = useCallback(() => set([]), [set]);
+  const handleClear = useCallback(() => setLines([]), [setLines]);
 
   const handleScrollToBottom = useCallback(() => {
     setAutoScroll(true);
@@ -98,77 +146,169 @@ export const OutputView = React.memo(function OutputView() {
     if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
+  const toggleSearch = useCallback(() => {
+    setSearchVisible((v) => {
+      if (!v) requestAnimationFrame(() => searchInputRef.current?.focus());
+      else setSearchQuery("");
+      return !v;
+    });
+  }, []);
+
+  // ── Keyboard ──
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "f") {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSearch();
+      }
+      if (e.key === "Escape" && searchVisible) {
+        setSearchVisible(false);
+        setSearchQuery("");
+      }
+    };
+    const el = scrollRef.current?.closest("[data-keyboard-zone]");
+    (el ?? document).addEventListener("keydown", handler as EventListener);
+    return () => (el ?? document).removeEventListener("keydown", handler as EventListener);
+  }, [searchVisible, toggleSearch]);
+
+  // ── Virtualizer ──
   const virtualizer = useVirtualizer({
     count: filtered.length,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => OUTPUT_ROW_HEIGHT,
-    overscan: 20,
+    overscan: 30,
   });
 
   return (
-    <div className="flex flex-col h-full w-full">
-      {/* Channel tabs + controls */}
-      <div className="flex items-center gap-1 px-2 py-1 border-b border-vsc-border/30 shrink-0">
-        {CHANNELS.map((ch) => (
-          <button
-            key={ch}
-            type="button"
-            onClick={() => setActiveChannel(ch)}
-            className={cn(
-              "px-1.5 py-0.5 rounded text-2xs cursor-pointer transition-colors duration-fast focus-ring",
-              activeChannel === ch
-                ? "bg-vsc-surface-2 text-vsc-fg font-medium"
-                : "text-vsc-text-ghost hover:text-vsc-text-secondary",
-            )}
-          >
-            {ch}
-          </button>
-        ))}
+    <div className="flex flex-col h-full w-full bg-vsc-bg">
+      {/* ── Toolbar ── */}
+      <div className="flex items-center gap-0.5 px-2 h-[32px] shrink-0 border-b border-vsc-border/15 bg-vsc-surface-0/50">
+        {/* Channel tabs */}
+        <div className="flex items-center gap-px">
+          {CHANNELS.map((ch) => {
+            const count = channelCounts[ch] ?? 0;
+            const isActive = activeChannel === ch;
+            return (
+              <button
+                key={ch}
+                type="button"
+                onClick={() => setActiveChannel(ch)}
+                className={cn(
+                  "inline-flex items-center gap-1 px-2 h-[22px] rounded-md text-[11px] cursor-pointer border-none",
+                  isActive
+                    ? "bg-vsc-surface-2 text-vsc-fg font-medium"
+                    : "bg-transparent text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-1",
+                )}
+              >
+                <Icon name={CHANNEL_ICONS[ch]} size={12} className="shrink-0 opacity-60" />
+                <span>{ch}</span>
+                {count > 0 && (
+                  <span
+                    className={cn(
+                      "ml-0.5 min-w-[16px] h-[14px] inline-flex items-center justify-center rounded-full text-[9px] font-medium leading-none px-1",
+                      isActive
+                        ? "bg-vsc-fg/10 text-vsc-text-secondary"
+                        : "bg-vsc-surface-2/60 text-vsc-text-ghost",
+                    )}
+                  >
+                    {count > 999 ? "999+" : count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="flex-1" />
 
-        {/* Level toggles */}
-        {(["error", "warn", "info", "debug"] as const).map((level) => (
-          <button
-            key={level}
-            type="button"
-            onClick={() => toggleLevel(level)}
-            className={cn(
-              "w-5 h-5 rounded-sm flex items-center justify-center cursor-pointer transition-colors duration-fast",
-              levelFilter.has(level)
-                ? LEVEL_STYLE[level]
-                : "text-vsc-text-ghost/50 hover:text-vsc-text-ghost",
-            )}
-            title={level}
-            aria-label={level}
-          >
-            <Icon name={levelIcon(level)} tokenSize="2xs" />
-          </button>
-        ))}
+        {/* Level filters with counts */}
+        <div className="flex items-center gap-px">
+          {LEVELS.map((level) => {
+            const count = levelCounts[level] ?? 0;
+            const isActive = levelFilter.has(level);
+            return (
+              <button
+                key={level}
+                type="button"
+                onClick={() => toggleLevel(level)}
+                title={`${level} (${count})`}
+                className={cn(
+                  "inline-flex items-center gap-0.5 h-[20px] px-1.5 rounded-md text-[10px] cursor-pointer border-none",
+                  isActive
+                    ? cn(LEVEL_COLOR[level], "bg-vsc-surface-2")
+                    : "text-vsc-text-ghost/40 bg-transparent hover:text-vsc-text-ghost",
+                  count === 0 && "opacity-40",
+                )}
+              >
+                <Icon name={LEVEL_ICON[level]} size={12} className="shrink-0" />
+                {count > 0 && <span className="tabular-nums">{count}</span>}
+              </button>
+            );
+          })}
+        </div>
 
-        {/* Clear */}
-        <button
-          type="button"
-          onClick={handleClear}
-          className="w-5 h-5 rounded-sm flex items-center justify-center text-vsc-text-ghost
-                     hover:text-vsc-fg cursor-pointer transition-colors duration-fast"
-          title="Clear Output"
-          aria-label="Clear Output"
-        >
-          <Icon name="clear-all" tokenSize="2xs" />
-        </button>
+        <Separator />
+
+        {/* Action buttons */}
+        <ToolbarButton
+          icon="search"
+          label="Search (Cmd+F)"
+          isActive={searchVisible}
+          onClick={toggleSearch}
+        />
+        <ToolbarButton
+          icon={wordWrap ? "word-wrap" : "word-wrap"}
+          label={wordWrap ? "Disable Word Wrap" : "Enable Word Wrap"}
+          isActive={wordWrap}
+          onClick={() => setWordWrap((v) => !v)}
+        />
+        <ToolbarButton icon="clear-all" label="Clear Output" onClick={handleClear} />
       </div>
 
-      {/* Output lines */}
+      {/* ── Search bar ── */}
+      {searchVisible && (
+        <div className="flex items-center gap-2 px-2 h-[30px] shrink-0 border-b border-vsc-border/10 bg-vsc-surface-0/30">
+          <Icon name="search" size={13} className="text-vsc-text-ghost shrink-0" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Filter output..."
+            className="flex-1 bg-transparent border-none outline-none text-[12px] text-vsc-fg placeholder:text-vsc-text-ghost/40"
+          />
+          {searchQuery && (
+            <span className="text-[10px] text-vsc-text-ghost tabular-nums">
+              {filtered.length} match{filtered.length !== 1 ? "es" : ""}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setSearchVisible(false);
+              setSearchQuery("");
+            }}
+            className="w-[18px] h-[18px] rounded flex items-center justify-center text-vsc-text-ghost hover:text-vsc-fg cursor-pointer border-none bg-transparent"
+          >
+            <Icon name="close" size={12} />
+          </button>
+        </div>
+      )}
+
+      {/* ── Log output ── */}
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto font-mono text-2xs leading-relaxed scroll-shadow"
+        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-[11.5px] leading-[22px]"
         role="log"
       >
         {filtered.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-vsc-text-ghost text-xs">
-            No output
-          </div>
+          <EmptyState
+            hasLines={lines.length > 0}
+            activeChannel={activeChannel}
+            searchQuery={searchQuery}
+          />
         ) : (
           <div
             style={{
@@ -179,10 +319,11 @@ export const OutputView = React.memo(function OutputView() {
           >
             {virtualizer.getVirtualItems().map((virtualRow) => {
               const line = filtered[virtualRow.index];
-              if (line === undefined) return null;
+              if (!line) return null;
               return (
-                <div
+                <LogRow
                   key={`${line.timestamp}-${virtualRow.index}`}
+                  line={line}
                   style={{
                     position: "absolute",
                     top: 0,
@@ -191,47 +332,236 @@ export const OutputView = React.memo(function OutputView() {
                     height: `${virtualRow.size}px`,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
-                  className={cn(
-                    "flex items-start gap-2 px-2 py-px hover:bg-vsc-list-hover/50",
-                    LEVEL_STYLE[line.level],
-                  )}
-                >
-                  <span className="text-vsc-text-ghost/50 tabular-nums shrink-0 w-[60px] select-none">
-                    {new Date(line.timestamp).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
-                  </span>
-                  {activeChannel === "All" && (
-                    <span className="text-vsc-text-ghost/50 shrink-0 w-[56px] truncate">
-                      [{line.channel}]
-                    </span>
-                  )}
-                  <span className="whitespace-pre-wrap break-all">{line.text}</span>
-                </div>
+                  showChannel={activeChannel === "All"}
+                  wordWrap={wordWrap}
+                  searchQuery={searchQuery}
+                />
               );
             })}
           </div>
         )}
       </div>
 
-      {/* Scroll-to-bottom indicator */}
-      {!autoScroll && (
+      {/* ── Scroll-to-bottom ── */}
+      {!autoScroll && filtered.length > 0 && (
         <button
           type="button"
           onClick={handleScrollToBottom}
-          className="absolute bottom-8 right-4 px-2 py-1 rounded-full text-2xs
-                     bg-vsc-surface-2 text-vsc-accent border border-vsc-border/30
-                     hover:bg-vsc-surface-2/80 cursor-pointer shadow-md transition-colors duration-fast"
+          className={cn(
+            "absolute bottom-3 left-1/2 -translate-x-1/2",
+            "inline-flex items-center gap-1.5 px-3 h-[26px] rounded-full",
+            "bg-vsc-surface-2/95 text-vsc-text-secondary text-[11px]",
+            "border border-vsc-border/20 shadow-lg shadow-black/10",
+            "cursor-pointer backdrop-blur-sm",
+            "hover:text-vsc-fg hover:bg-vsc-surface-3/95",
+          )}
         >
-          <Icon name="arrow-down" tokenSize="2xs" className="mr-1" />
-          New output
+          <Icon name="arrow-down" size={12} />
+          <span>New output</span>
         </button>
       )}
     </div>
   );
 });
+
+// ─── Log Row ─────────────────────────────────────────────
+
+const LogRow = React.memo(function LogRow({
+  line,
+  style,
+  showChannel,
+  wordWrap,
+  searchQuery,
+}: {
+  line: OutputLine;
+  style: React.CSSProperties;
+  showChannel: boolean;
+  wordWrap: boolean;
+  searchQuery: string;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  const handleCopy = useCallback(() => {
+    void navigator.clipboard.writeText(line.text);
+  }, [line.text]);
+
+  const timeStr = useMemo(
+    () =>
+      new Date(line.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+    [line.timestamp],
+  );
+
+  return (
+    <div
+      style={style}
+      className={cn(
+        "group flex items-start gap-0 px-0 hover:bg-vsc-list-hover/40",
+        LEVEL_BG[line.level],
+      )}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Level icon */}
+      <span
+        className={cn(
+          "shrink-0 w-[28px] h-[22px] flex items-center justify-center",
+          LEVEL_COLOR[line.level],
+          line.level === "info" && "opacity-40",
+          line.level === "debug" && "opacity-30",
+        )}
+      >
+        <Icon name={LEVEL_ICON[line.level]} size={12} />
+      </span>
+
+      {/* Timestamp */}
+      <span className="text-vsc-text-ghost/35 tabular-nums shrink-0 w-[62px] select-none leading-[22px]">
+        {timeStr}
+      </span>
+
+      {/* Channel tag */}
+      {showChannel && (
+        <span
+          className={cn(
+            "shrink-0 w-[64px] truncate text-[10px] leading-[22px] uppercase tracking-wider font-medium",
+            LEVEL_COLOR[line.level],
+            "opacity-50",
+          )}
+        >
+          {line.channel}
+        </span>
+      )}
+
+      {/* Text */}
+      <span
+        className={cn(
+          "flex-1 min-w-0 leading-[22px] pl-1",
+          LEVEL_COLOR[line.level],
+          wordWrap ? "whitespace-pre-wrap break-all" : "whitespace-pre truncate",
+        )}
+      >
+        {searchQuery ? <HighlightText text={line.text} query={searchQuery} /> : line.text}
+      </span>
+
+      {/* Copy button on hover */}
+      {hovered && (
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="shrink-0 w-[24px] h-[22px] flex items-center justify-center text-vsc-text-ghost/50 hover:text-vsc-fg cursor-pointer border-none bg-transparent"
+          title="Copy line"
+        >
+          <Icon name="copy" size={12} />
+        </button>
+      )}
+    </div>
+  );
+});
+
+// ─── Highlight Text ──────────────────────────────────────
+
+function HighlightText({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
+
+  const parts: React.ReactNode[] = [];
+  const lower = text.toLowerCase();
+  const q = query.toLowerCase();
+  let lastIndex = 0;
+
+  let idx = lower.indexOf(q, lastIndex);
+  while (idx !== -1) {
+    if (idx > lastIndex) parts.push(text.slice(lastIndex, idx));
+    parts.push(
+      <mark key={idx} className="bg-vsc-selection text-inherit rounded-sm px-px">
+        {text.slice(idx, idx + query.length)}
+      </mark>,
+    );
+    lastIndex = idx + query.length;
+    idx = lower.indexOf(q, lastIndex);
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+
+  return <>{parts}</>;
+}
+
+// ─── Empty State ─────────────────────────────────────────
+
+function EmptyState({
+  hasLines,
+  activeChannel,
+  searchQuery,
+}: {
+  hasLines: boolean;
+  activeChannel: string;
+  searchQuery: string;
+}) {
+  if (searchQuery) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-text-ghost">
+        <Icon name="search" size={28} className="opacity-20" />
+        <span className="text-xs">No matches for &ldquo;{searchQuery}&rdquo;</span>
+      </div>
+    );
+  }
+
+  if (hasLines) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-text-ghost">
+        <Icon name="filter" size={28} className="opacity-20" />
+        <span className="text-xs">No output in {activeChannel} channel</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full gap-3">
+      <Icon name="output" size={32} className="text-vsc-text-ghost/15" />
+      <div className="flex flex-col items-center gap-1">
+        <span className="text-xs text-vsc-text-ghost/60">Waiting for output...</span>
+        <span className="text-[10.5px] text-vsc-text-ghost/30">
+          Agent, Build, LSP, Extension logs will appear here
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Toolbar Components ──────────────────────────────────
+
+function ToolbarButton({
+  icon,
+  label,
+  isActive,
+  onClick,
+}: {
+  icon: string;
+  label: string;
+  isActive?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      className={cn(
+        "w-[22px] h-[22px] rounded-md flex items-center justify-center cursor-pointer border-none",
+        isActive
+          ? "text-vsc-text-secondary bg-vsc-surface-2"
+          : "text-vsc-text-ghost/50 bg-transparent hover:text-vsc-text-ghost hover:bg-vsc-surface-1",
+      )}
+    >
+      <Icon name={icon} size={13} />
+    </button>
+  );
+}
+
+function Separator() {
+  return <span className="w-px h-3 bg-vsc-border/20 mx-1 shrink-0" />;
+}
 
 /** @deprecated Use OutputView instead */
 export { OutputView as OutputPanel };

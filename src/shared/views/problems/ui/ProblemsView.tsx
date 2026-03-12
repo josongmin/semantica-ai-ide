@@ -420,9 +420,19 @@ const FileGroup = React.memo(function FileGroup({
         <span className="text-vsc-fg font-medium truncate text-3xs">{fileName}</span>
         <span className="text-vsc-text-ghost truncate text-3xs opacity-50">{dirPath}</span>
 
-        <div className="ml-auto flex items-center gap-1.5 shrink-0 text-3xs tabular-nums">
-          {fileErrors > 0 && <span className="text-vsc-error opacity-70">{fileErrors}</span>}
-          {fileWarnings > 0 && <span className="text-vsc-warning opacity-70">{fileWarnings}</span>}
+        <div className="ml-auto flex items-center gap-1.5 shrink-0 text-4xs tabular-nums">
+          {fileErrors > 0 && (
+            <span className="inline-flex items-center gap-0.5 text-vsc-error opacity-80">
+              <Icon name="error" tokenSize="3xs" />
+              {fileErrors}
+            </span>
+          )}
+          {fileWarnings > 0 && (
+            <span className="inline-flex items-center gap-0.5 text-vsc-warning opacity-80">
+              <Icon name="warning" tokenSize="3xs" />
+              {fileWarnings}
+            </span>
+          )}
           {diagnostics.length - fileErrors - fileWarnings > 0 && (
             <span className="text-vsc-text-ghost opacity-50">
               +{diagnostics.length - fileErrors - fileWarnings}
