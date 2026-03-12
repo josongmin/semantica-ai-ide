@@ -1,5 +1,7 @@
-export function TasksView() {
-  return (
-    <div className="flex items-center justify-center h-full text-vsc-text-ghost text-sm">Tasks</div>
-  );
-}
+import React from "react";
+
+import { ViewEmptyState } from "~shared/ui";
+
+export const TasksView = React.memo(function TasksView() {
+  return <ViewEmptyState icon="tasklist" title="Tasks" />;
+});

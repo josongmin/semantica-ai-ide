@@ -8,12 +8,11 @@ registerSurface({
   icon: "edit",
   persistence: "session",
   priority: 20,
-  component: lazy(() =>
-    import("./EditorSurface").then((m) => ({ default: m.EditorSurface })),
-  ),
+  layout: { sidebar: true, agent: true, tray: true },
+  component: lazy(() => import("./EditorSurface").then((m) => ({ default: m.EditorSurface }))),
 });
 
-export { DEMO_DEFAULT_FILE,DEMO_FILES } from "./demoFiles";
+export { DEMO_DEFAULT_FILE, DEMO_FILES } from "./demoFiles";
 export type { EditorTab } from "./editorAtoms";
 export {
   activeEditorTabAtom,

@@ -8,9 +8,8 @@ registerSurface({
   icon: "timeline-open",
   persistence: "session",
   priority: 120,
-  component: lazy(() =>
-    import("./TimelineSurface").then((m) => ({ default: m.TimelineSurface })),
-  ),
+  layout: { sidebar: false, agent: false, tray: false },
+  component: lazy(() => import("./TimelineSurface").then((m) => ({ default: m.TimelineSurface }))),
 });
 
 export { TimelineSurface } from "./TimelineSurface";

@@ -203,6 +203,34 @@ export function useTerminalIntentDispatch() {
     [setActiveSessionId, dispatch],
   );
 
+  /** Dispatch ##ai inline query to agent (no TerminalCommand needed) */
+  const dispatchAIQuery = useCallback(
+    (
+      _aiIntent: "ask" | "fix" | "explain",
+      query: string,
+      agentIntent: AskAgentPayload["intent"],
+    ) => {
+      const attachment: TerminalBlockAttachment = {
+        blockId: `ai_${Date.now()}`,
+        sessionId,
+        command: query,
+        status: "succeeded",
+        diagnostics: [],
+        testResults: [],
+        outputPreview: "",
+      };
+      const payload: AskAgentPayload = {
+        attachment,
+        intent: agentIntent,
+        customMessage: query,
+        autoMessage: query,
+      };
+      dispatchIntent("ask-agent", payload);
+      dispatch({ action: "show-frame", frame: "dock-right" });
+    },
+    [sessionId, dispatch],
+  );
+
   return useMemo(
     () => ({
       openFile,
@@ -211,7 +239,8 @@ export function useTerminalIntentDispatch() {
       askAgent,
       openProblems,
       revealTerminal,
+      dispatchAIQuery,
     }),
-    [openFile, openDiagnostic, openUrl, askAgent, openProblems, revealTerminal],
+    [openFile, openDiagnostic, openUrl, askAgent, openProblems, revealTerminal, dispatchAIQuery],
   );
 }

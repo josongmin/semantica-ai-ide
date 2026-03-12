@@ -1,27 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { atom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 
-import { cn, Icon, Text } from "~shared/ui";
+import { cn, Icon, ViewEmptyState } from "~shared/ui";
 
-// ─── Problem Model ───────────────────────────────────────
-
-export interface Diagnostic {
-  readonly id: string;
-  readonly file: string;
-  readonly line: number;
-  readonly col: number;
-  readonly severity: "error" | "warning" | "info" | "hint";
-  readonly message: string;
-  readonly source?: string;
-  /** Optional error code (e.g. TS2345) */
-  readonly code?: string;
-  /** Optional quick-fix available flag */
-  readonly fixable?: boolean;
-}
-
-/** Global diagnostics atom — updated by LSP bridge or agent */
-// eslint-disable-next-line react-refresh/only-export-components
-export const diagnosticsAtom = atom<Diagnostic[]>([]);
+import { type Diagnostic, diagnosticsAtom } from "../model/problemsAtoms";
 
 // ─── Sample Data (dev-only) ─────────────────────────────
 
@@ -283,7 +265,7 @@ export const ProblemsView = React.memo(function ProblemsView() {
       {/* ─── Content ─────────────────────────────────── */}
       <div className="flex-1 overflow-y-auto" role="tree" aria-label="Problems">
         {grouped.size === 0 ? (
-          <EmptyState hasFilter={filter !== "all" || searchQuery.length > 0} />
+          <ProblemsEmptyState hasFilter={filter !== "all" || searchQuery.length > 0} />
         ) : (
           <>
             {/* Results summary */}
@@ -308,9 +290,6 @@ export const ProblemsView = React.memo(function ProblemsView() {
     </div>
   );
 });
-
-/** @deprecated Use ProblemsView instead */
-export { ProblemsView as ProblemsPanel };
 
 // ─── Filter Pill ────────────────────────────────────────
 
@@ -358,26 +337,19 @@ const FilterPill = React.memo(function FilterPill({
 
 // ─── Empty State ────────────────────────────────────────
 
-function EmptyState({ hasFilter }: { hasFilter: boolean }) {
+const ProblemsEmptyState = React.memo(function ProblemsEmptyState({
+  hasFilter,
+}: {
+  hasFilter: boolean;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-text-ghost">
-      <div className="relative">
-        <Icon name="check-all" size={32} className="opacity-15" />
-        <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-vsc-success/15 flex items-center justify-center">
-          <Icon name="check" tokenSize="3xs" className="text-vsc-success" />
-        </div>
-      </div>
-      <div className="text-center">
-        <Text size="xs" tone="ghost" weight="medium">
-          {hasFilter ? "No matching problems" : "No problems detected"}
-        </Text>
-        <Text size="2xs" tone="ghost" className="mt-0.5 opacity-60">
-          {hasFilter ? "Try adjusting your filters" : "Your workspace is clean"}
-        </Text>
-      </div>
-    </div>
+    <ViewEmptyState
+      icon="check-all"
+      title={hasFilter ? "No matching problems" : "No problems detected"}
+      subtitle={hasFilter ? "Try adjusting your filters" : "Your workspace is clean"}
+    />
   );
-}
+});
 
 // ─── File Group ─────────────────────────────────────────
 
@@ -407,6 +379,7 @@ const FileGroup = React.memo(function FileGroup({
       <button
         type="button"
         onClick={handleToggle}
+        aria-expanded={!collapsed}
         className={cn(
           "flex items-center gap-1.5 w-full px-2 py-[5px] text-2xs",
           "hover:bg-vsc-list-hover/60 cursor-pointer transition-colors duration-normal text-left group",
@@ -469,6 +442,9 @@ const DiagnosticRow = React.memo(function DiagnosticRow({
   isHovered: boolean;
   onHover: (id: string | null) => void;
 }) {
+  const handleMouseEnter = useCallback(() => onHover(d.id), [onHover, d.id]);
+  const handleMouseLeave = useCallback(() => onHover(null), [onHover]);
+
   return (
     <div
       className={cn(
@@ -477,8 +453,8 @@ const DiagnosticRow = React.memo(function DiagnosticRow({
         isHovered ? cn("bg-vsc-list-hover/80", SEV_BG[d.severity]) : "hover:bg-vsc-list-hover/50",
       )}
       role="treeitem"
-      onMouseEnter={() => onHover(d.id)}
-      onMouseLeave={() => onHover(null)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Icon
         name={SEV_ICON[d.severity]}

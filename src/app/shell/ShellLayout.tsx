@@ -10,22 +10,44 @@ import { SidebarFrame } from "./frames/SidebarFrame";
 import { TitleBar } from "./frames/TitleBar";
 import { TrayFrame } from "./frames/TrayFrame";
 import { KeyboardShortcutOverlay } from "./KeyboardShortcutOverlay";
-import { activeNavCategoryAtom } from "./model/navRegistry";
 import {
-  activeSurfaceAtom,
-  agentPanelVisibleAtom,
   agentPanelWidthAtom,
+  effectiveAgentVisibleAtom,
+  effectiveSidebarVisibleAtom,
+  effectiveTrayVisibleAtom,
   focusModeAtom,
-  sidebarVisibleAtom,
   sidebarWidthAtom,
   toggleFocusModeAtom,
   trayHeightAtom,
-  trayVisibleAtom,
   zenModeAtom,
   zoomLevelAtom,
 } from "./model/shellAtoms";
 import { ResizeHandle } from "./Resizable";
 import { ShellStatusBar } from "./ShellStatusBar";
+
+// ─── Hooks ──────────────────────────────────────────────
+
+/**
+ * Creates a clamped resize handler for drag-resize interactions.
+ * @param min   — minimum allowed size (px)
+ * @param max   — maximum allowed size (px)
+ * @param setter — Jotai setter for the size atom
+ * @param invert — when true, subtracts delta (used when dragging toward the panel shrinks it)
+ */
+function useResizeHandler(
+  min: number,
+  max: number,
+  setter: (fn: (prev: number) => number) => void,
+  invert = false,
+) {
+  return useCallback(
+    (delta: number) => {
+      const d = invert ? -delta : delta;
+      setter((prev) => Math.max(min, Math.min(max, prev + d)));
+    },
+    [min, max, setter, invert],
+  );
+}
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -52,45 +74,23 @@ export const ShellLayout = React.memo(function ShellLayout({
   children,
   agentContent,
 }: ShellLayoutProps) {
-  const activeNavCategory = useAtomValue(activeNavCategoryAtom);
-  const sidebarVisible = useAtomValue(sidebarVisibleAtom);
-  const agentVisible = useAtomValue(agentPanelVisibleAtom);
-  const trayVisible = useAtomValue(trayVisibleAtom);
+  const sidebarVisible = useAtomValue(effectiveSidebarVisibleAtom);
+  const agentVisible = useAtomValue(effectiveAgentVisibleAtom);
+  const trayVisible = useAtomValue(effectiveTrayVisibleAtom);
   const sidebarWidth = useAtomValue(sidebarWidthAtom);
   const agentWidth = useAtomValue(agentPanelWidthAtom);
   const trayHeight = useAtomValue(trayHeightAtom);
   const isFocusMode = useAtomValue(focusModeAtom);
   const isZenMode = useAtomValue(zenModeAtom);
-  const activeSurface = useAtomValue(activeSurfaceAtom);
-  const isFullscreenSurface = activeSurface === "settings";
   const zoomLevel = useAtomValue(zoomLevelAtom);
   const toggleFocus = useSetAtom(toggleFocusModeAtom);
   const setSidebarWidth = useSetAtom(sidebarWidthAtom);
   const setAgentWidth = useSetAtom(agentPanelWidthAtom);
   const setTrayHeight = useSetAtom(trayHeightAtom);
 
-  const isIdeMode = activeNavCategory === "ide";
-
-  const handleSidebarResize = useCallback(
-    (delta: number) => {
-      setSidebarWidth((prev) => Math.max(160, Math.min(400, prev + delta)));
-    },
-    [setSidebarWidth],
-  );
-
-  const handleAgentResize = useCallback(
-    (delta: number) => {
-      setAgentWidth((prev) => Math.max(300, Math.min(700, prev - delta)));
-    },
-    [setAgentWidth],
-  );
-
-  const handleTrayResize = useCallback(
-    (delta: number) => {
-      setTrayHeight((prev) => Math.max(100, Math.min(500, prev - delta)));
-    },
-    [setTrayHeight],
-  );
+  const handleSidebarResize = useResizeHandler(160, 400, setSidebarWidth);
+  const handleAgentResize = useResizeHandler(300, 700, setAgentWidth, true);
+  const handleTrayResize = useResizeHandler(100, 500, setTrayHeight, true);
 
   return (
     <div
@@ -106,7 +106,7 @@ export const ShellLayout = React.memo(function ShellLayout({
         <div className="flex flex-col flex-1 min-w-0">
           {/* Main row: Sidebar | Canvas */}
           <div className="flex flex-1 min-h-0 min-w-0">
-            {isIdeMode && sidebarVisible && !isFocusMode && !isFullscreenSurface && (
+            {sidebarVisible && !isFocusMode && (
               <>
                 <div className="shrink-0 h-full" style={{ width: sidebarWidth }}>
                   <SidebarFrame width={sidebarWidth} />
@@ -150,7 +150,7 @@ export const ShellLayout = React.memo(function ShellLayout({
           </div>
 
           {/* Tray — spans Sidebar + Canvas width, Agent is beside it */}
-          {isIdeMode && trayVisible && !isFocusMode && !isFullscreenSurface && (
+          {trayVisible && !isFocusMode && (
             <>
               <ResizeHandle direction="vertical" onResize={handleTrayResize} />
               <TrayFrame height={trayHeight} />
@@ -159,7 +159,7 @@ export const ShellLayout = React.memo(function ShellLayout({
         </div>
 
         {/* Agent Panel — full height, beside left section */}
-        {agentVisible && !isFocusMode && !isFullscreenSurface && (
+        {agentVisible && !isFocusMode && (
           <>
             <ResizeHandle direction="horizontal" onResize={handleAgentResize} />
             <div className="shrink-0 h-full" style={{ width: agentWidth }}>

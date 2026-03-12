@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
+import { ViewEmptyState } from "~shared/ui/composites/ViewEmptyState";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
@@ -349,16 +350,10 @@ export const FindingsView = React.memo(function FindingsView() {
       {/* ── Findings List ── */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 pt-1">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
-            <Icon name="check" tokenSize="lg" className="text-vsc-success/30" />
-            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
-              No{" "}
-              {activeTab === "all"
-                ? "findings"
-                : SEVERITY_CONFIG[activeTab as Severity].label.toLowerCase()}{" "}
-              found
-            </Text>
-          </div>
+          <ViewEmptyState
+            icon="check"
+            title={`No ${activeTab === "all" ? "findings" : SEVERITY_CONFIG[activeTab as Severity].label.toLowerCase()} found`}
+          />
         ) : (
           Array.from(groupedByFile.entries()).map(([filePath, findings]) => (
             <FileGroup key={filePath} filePath={filePath} findings={findings} />

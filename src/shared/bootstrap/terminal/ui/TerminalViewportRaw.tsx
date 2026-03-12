@@ -72,6 +72,8 @@ export interface TerminalViewportRawProps {
   onInput?: (data: string) => void;
   /** Called when "/" is pressed at the prompt — opens slash command palette */
   onSlashCommand?: (position: { x: number; y: number }) => void;
+  /** Called before input is sent to PTY. Return true to intercept (prevent PTY write). */
+  onBeforeInput?: (data: string) => boolean;
 }
 
 /** Imperative handle for parent access to search + scroll */
@@ -83,6 +85,8 @@ export interface TerminalViewportRawHandle {
   scrollToLine(line: number): void;
   /** Get cursor pixel position for floating UI anchoring */
   getCursorPixelPosition(): { x: number; y: number } | null;
+  /** Write display-only text to the terminal (does NOT go to PTY) */
+  writeToDisplay(data: string): void;
 }
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -119,6 +123,7 @@ export const TerminalViewportRaw = memo(
       onScroll,
       onInput,
       onSlashCommand,
+      onBeforeInput,
     },
     ref,
   ) {
@@ -129,6 +134,10 @@ export const TerminalViewportRaw = memo(
     const [, setIsReady] = useState(false);
 
     const compatibility = useAtomValue(activeSessionCompatibilityAtom);
+
+    // Ref to avoid stale closure in onData
+    const onBeforeInputRef = useRef(onBeforeInput);
+    onBeforeInputRef.current = onBeforeInput;
 
     // ─── Imperative handle ──────────────────────────────────
     // Track last search query for next/previous navigation
@@ -185,6 +194,9 @@ export const TerminalViewportRaw = memo(
             x: rect.left + buf.cursorX * cellWidth,
             y: rect.top + (buf.cursorY + 1) * cellHeight,
           };
+        },
+        writeToDisplay(data: string) {
+          terminalRef.current?.write(data);
         },
       }),
       [],
@@ -245,6 +257,9 @@ export const TerminalViewportRaw = memo(
 
             // Intercept "/" key to open slash command palette
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+              // Skip during IME composition (한글 등)
+              if (e.isComposing) return true;
+
               if (
                 e.key === "/" &&
                 e.type === "keydown" &&
@@ -303,6 +318,11 @@ export const TerminalViewportRaw = memo(
             const ws = mockWs; // Capture for closure
             disposables.push(
               terminal.onData((data: string) => {
+                // Allow parent to intercept (e.g. ##ai prefix → route to backend)
+                if (onBeforeInputRef.current?.(data)) {
+                  onInput?.(data);
+                  return;
+                }
                 if (isMock && ws) {
                   if (ws.readyState === WebSocket.OPEN) {
                     ws.send(data);

@@ -95,13 +95,15 @@ export function useTerminalSessions() {
     if (id) splitTab(id);
   }, [spawnSession, splitTab]);
 
-  // Auto-create first session/tab on mount
-  const autoCreated = useRef(false);
+  // Auto-create a session whenever there are none (mount or after closing all)
+  const creatingRef = useRef(false);
   useEffect(() => {
     const canCreate = IS_TAURI ? bridgeReady : true;
-    if (tabGroups.length === 0 && !autoCreated.current && canCreate) {
-      autoCreated.current = true;
-      void handleCreateSession();
+    if (tabGroups.length === 0 && !creatingRef.current && canCreate) {
+      creatingRef.current = true;
+      void handleCreateSession().finally(() => {
+        creatingRef.current = false;
+      });
     }
   }, [tabGroups.length, handleCreateSession, bridgeReady]);
 

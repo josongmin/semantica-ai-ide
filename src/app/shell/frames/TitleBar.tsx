@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import React, { useEffect, useRef, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   Activity,
   Bell,
@@ -27,9 +27,8 @@ import {
 import { cn } from "~shared/ui";
 
 import { conversationSearchOpenAtom } from "../../../shared/lib/atoms/dialogAtoms";
-import { detachToFloatingAtom } from "../model/floatingAtoms";
-import { activeNavCategoryAtom, type NavCategoryId, type NavToolId } from "../model/navRegistry";
-import { activeSurfaceAtom } from "../model/shellAtoms";
+import { useNavCategoryActions } from "../hooks/useNavCategoryActions";
+import type { NavCategoryId, NavToolId } from "../model/navRegistry";
 
 // ─── GNB CSS variable helpers ────────────────────────────
 
@@ -86,30 +85,7 @@ const NAV_ITEMS: readonly NavItem[] = [
 export const TitleBar = React.memo(function TitleBar() {
   const currentBranch = useAtomValue(currentGitBranchAtom);
   const setSearchOpen = useSetAtom(conversationSearchOpenAtom);
-  const [activeCategory, setActiveCategory] = useAtom(activeNavCategoryAtom);
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
-  const detachToFloating = useSetAtom(detachToFloatingAtom);
-
-  const handleCategoryClick = useCallback(
-    (id: NavCategoryId) => {
-      setActiveCategory(id);
-      if (id === "graph") setActiveSurface("graph");
-      if (id === "agent") setActiveSurface("chat");
-      if (id === "ide") setActiveSurface("code");
-    },
-    [setActiveCategory, setActiveSurface],
-  );
-
-  const handleToolClick = useCallback(
-    (id: NavToolId) => {
-      if (id === "terminal") {
-        detachToFloating("terminal");
-      } else if (id === "settings") {
-        setActiveSurface("settings");
-      }
-    },
-    [setActiveSurface, detachToFloating],
-  );
+  const { activeCategory, handleCategoryClick, handleToolClick } = useNavCategoryActions();
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);

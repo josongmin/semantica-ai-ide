@@ -59,6 +59,14 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
             open && "rotate-90",
           )}
         />
+        <span
+          className="w-3.5 h-3.5 rounded-[5px] bg-vsc-text-ghost/15 flex items-center justify-center shrink-0"
+          aria-hidden
+        >
+          <span className="text-[8px] font-semibold leading-none text-vsc-text-secondary uppercase">
+            {label.charAt(0)}
+          </span>
+        </span>
         <span className="text-2xs font-medium text-vsc-fg flex-1 truncate">{label}</span>
         {primaryLang && (
           <span className="flex items-center gap-1 text-2xs text-vsc-text-ghost shrink-0">
@@ -74,7 +82,7 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
       </div>
 
       {/* Row 2: meta stats */}
-      <div className="flex items-center gap-1.5 pl-[18px] mt-px">
+      <div className="flex items-center gap-1.5 pl-[34px] mt-px">
         <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost">
           <Icon name="file" size={8} className="opacity-50" />
           {files}

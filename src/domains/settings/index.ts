@@ -8,9 +8,8 @@ registerSurface({
   icon: "gear",
   persistence: "session",
   priority: 90,
-  component: lazy(() =>
-    import("./SettingsSurface").then((m) => ({ default: m.SettingsSurface })),
-  ),
+  layout: { sidebar: false, agent: false, tray: false },
+  component: lazy(() => import("./SettingsSurface").then((m) => ({ default: m.SettingsSurface }))),
 });
 
 export { SettingsSurface } from "./SettingsSurface";

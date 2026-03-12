@@ -14,6 +14,7 @@ import { cn } from "~shared/ui/variants";
 import { useFEParserFallback } from "../lib/useFEParserFallback";
 import { usePluginParserSync } from "../lib/usePluginParserSync";
 import { useTerminalProblemsSync } from "../lib/useTerminalProblemsSync";
+import { removeTerminalSessionAtom } from "../model/atoms";
 import { activeTerminalSessionIdAtom } from "../model/sessionAtoms";
 import { useTerminalSessions } from "./hooks/useTerminalSessions";
 import { TerminalPane } from "./TerminalPane";
@@ -37,6 +38,7 @@ export const TerminalView = memo(function TerminalView({ className }: TerminalVi
     splitSession: handleSplitSession,
   } = useTerminalSessions();
   const setActiveSessionId = useSetAtom(activeTerminalSessionIdAtom);
+  const removeSession = useSetAtom(removeTerminalSessionAtom);
 
   useFEParserFallback();
   usePluginParserSync();
@@ -48,6 +50,13 @@ export const TerminalView = memo(function TerminalView({ className }: TerminalVi
     },
     [setActiveSessionId],
   );
+
+  /** Close the current active tab — removes its sessions, tab cleanup is automatic */
+  const handleCloseCurrentTab = useCallback(() => {
+    for (const sid of visiblePaneIds) {
+      removeSession(sid as never);
+    }
+  }, [visiblePaneIds, removeSession]);
 
   const visibleSet = useMemo(() => new Set(visiblePaneIds), [visiblePaneIds]);
 
@@ -88,6 +97,9 @@ export const TerminalView = memo(function TerminalView({ className }: TerminalVi
                     sessionId={paneId}
                     isFocused={paneId === activeSessionId}
                     onFocus={handlePaneFocus}
+                    onSplitSession={handleSplitSession}
+                    onCreateSession={handleCreateSession}
+                    onCloseSession={handleCloseCurrentTab}
                   />
                 </div>
               ))}

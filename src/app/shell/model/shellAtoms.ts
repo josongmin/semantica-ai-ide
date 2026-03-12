@@ -3,6 +3,7 @@ import { atom } from "jotai";
 import { registerResetAtom } from "../../../shared/lib/atoms/resetRegistry";
 import { activeSurfaceAtom } from "../../../shared/lib/atoms/surfaceAtoms";
 import type { SurfaceId } from "../../../shared/protocol/types/ui";
+import { getSurfaceLayout } from "../../surfaceRegistry";
 import { getViewById } from "./viewRegistry";
 
 // ─── Surface Routing (re-exported from shared) ─────────
@@ -32,6 +33,64 @@ export const trayVisibleAtom = atom(true);
 export const trayHeightAtom = atom(200);
 export const activeTrayViewAtom = atom<string>("problems");
 export const trayMaximizedAtom = atom(false);
+
+// ─── Per-Surface Frame State ────────────────────────────
+//
+// Remembers user-toggled frame visibility per surface.
+// When switching surfaces, the user's last state is restored.
+// Layout constraints (SurfaceLayout) always take precedence.
+
+interface PerSurfaceFrameState {
+  sidebar: boolean;
+  agent: boolean;
+  tray: boolean;
+}
+
+/** Map<SurfaceId, user-toggled state> — lazily populated on first visit. */
+export const perSurfaceFrameStateAtom = atom<Map<SurfaceId, PerSurfaceFrameState>>(new Map());
+
+/** Save current frame visibility into the per-surface map for the active surface. */
+export const saveFrameStateAtom = atom(null, (get, set) => {
+  const surfaceId = get(activeSurfaceAtom);
+  const map = new Map(get(perSurfaceFrameStateAtom));
+  map.set(surfaceId, {
+    sidebar: get(sidebarVisibleAtom),
+    agent: get(agentPanelVisibleAtom),
+    tray: get(trayVisibleAtom),
+  });
+  set(perSurfaceFrameStateAtom, map);
+});
+
+/** Restore frame visibility from per-surface map, constrained by surface layout. */
+export const restoreFrameStateAtom = atom(null, (get, set, surfaceId: SurfaceId) => {
+  const layout = getSurfaceLayout(surfaceId);
+  const saved = get(perSurfaceFrameStateAtom).get(surfaceId);
+
+  // Effective: layout must allow AND user must have it on (or default to layout setting)
+  set(sidebarVisibleAtom, layout.sidebar && (saved?.sidebar ?? layout.sidebar));
+  set(agentPanelVisibleAtom, layout.agent && (saved?.agent ?? layout.agent));
+  set(trayVisibleAtom, layout.tray && (saved?.tray ?? layout.tray));
+});
+
+// ─── Effective Frame Visibility (layout-constrained) ────
+//
+// These derived atoms combine user toggle state with surface layout constraints.
+// ShellLayout reads ONLY these for rendering decisions.
+
+export const effectiveSidebarVisibleAtom = atom((get) => {
+  const layout = getSurfaceLayout(get(activeSurfaceAtom));
+  return layout.sidebar && get(sidebarVisibleAtom);
+});
+
+export const effectiveAgentVisibleAtom = atom((get) => {
+  const layout = getSurfaceLayout(get(activeSurfaceAtom));
+  return layout.agent && get(agentPanelVisibleAtom);
+});
+
+export const effectiveTrayVisibleAtom = atom((get) => {
+  const layout = getSurfaceLayout(get(activeSurfaceAtom));
+  return layout.tray && get(trayVisibleAtom);
+});
 
 // ─── Layout Persistence (S1 layer — RFC-010) ───────────
 
@@ -90,63 +149,52 @@ const focusRestoreAtom = atom<{
   tray: boolean;
 } | null>(null);
 
-export const toggleFocusModeAtom = atom(null, (get, set) => {
-  const isFocused = get(focusModeAtom);
+function createToggleModeAtom(opts: {
+  activeAtom: typeof focusModeAtom;
+  zenOnEnter: boolean;
+  saveOnlyIfNotFocused: boolean;
+}) {
+  return atom(null, (get, set) => {
+    const isActive = get(opts.activeAtom);
 
-  if (!isFocused) {
-    // Enter focus mode — save current state, hide everything
-    set(focusRestoreAtom, {
-      sidebar: get(sidebarVisibleAtom),
-      agent: get(agentPanelVisibleAtom),
-      tray: get(trayVisibleAtom),
-    });
-    set(sidebarVisibleAtom, false);
-    set(agentPanelVisibleAtom, false);
-    set(trayVisibleAtom, false);
-    set(focusModeAtom, true);
-    set(zenModeAtom, false);
-  } else {
-    // Exit focus mode — restore saved state
-    const restore = get(focusRestoreAtom);
-    if (restore) {
-      set(sidebarVisibleAtom, restore.sidebar);
-      set(agentPanelVisibleAtom, restore.agent);
-      set(trayVisibleAtom, restore.tray);
+    if (!isActive) {
+      if (!opts.saveOnlyIfNotFocused || !get(focusModeAtom)) {
+        set(focusRestoreAtom, {
+          sidebar: get(sidebarVisibleAtom),
+          agent: get(agentPanelVisibleAtom),
+          tray: get(trayVisibleAtom),
+        });
+      }
+      set(sidebarVisibleAtom, false);
+      set(agentPanelVisibleAtom, false);
+      set(trayVisibleAtom, false);
+      set(focusModeAtom, true);
+      set(zenModeAtom, opts.zenOnEnter);
+    } else {
+      const restore = get(focusRestoreAtom);
+      if (restore) {
+        set(sidebarVisibleAtom, restore.sidebar);
+        set(agentPanelVisibleAtom, restore.agent);
+        set(trayVisibleAtom, restore.tray);
+      }
+      set(focusModeAtom, false);
+      set(zenModeAtom, false);
+      set(focusRestoreAtom, null);
     }
-    set(focusModeAtom, false);
-    set(zenModeAtom, false);
-    set(focusRestoreAtom, null);
-  }
+  });
+}
+
+export const toggleFocusModeAtom = createToggleModeAtom({
+  activeAtom: focusModeAtom,
+  zenOnEnter: false,
+  saveOnlyIfNotFocused: false,
 });
 
 /** Zen Mode — hides ALL chrome (including StatusBar) + centers canvas */
-export const toggleZenModeAtom = atom(null, (get, set) => {
-  const isZen = get(zenModeAtom);
-
-  if (!isZen) {
-    if (!get(focusModeAtom)) {
-      set(focusRestoreAtom, {
-        sidebar: get(sidebarVisibleAtom),
-        agent: get(agentPanelVisibleAtom),
-        tray: get(trayVisibleAtom),
-      });
-    }
-    set(sidebarVisibleAtom, false);
-    set(agentPanelVisibleAtom, false);
-    set(trayVisibleAtom, false);
-    set(focusModeAtom, true);
-    set(zenModeAtom, true);
-  } else {
-    const restore = get(focusRestoreAtom);
-    if (restore) {
-      set(sidebarVisibleAtom, restore.sidebar);
-      set(agentPanelVisibleAtom, restore.agent);
-      set(trayVisibleAtom, restore.tray);
-    }
-    set(focusModeAtom, false);
-    set(zenModeAtom, false);
-    set(focusRestoreAtom, null);
-  }
+export const toggleZenModeAtom = createToggleModeAtom({
+  activeAtom: zenModeAtom,
+  zenOnEnter: true,
+  saveOnlyIfNotFocused: true,
 });
 
 // ─── Layout Presets ────────────────────────────────────

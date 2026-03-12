@@ -8,12 +8,11 @@ registerSurface({
   icon: "type-hierarchy",
   persistence: "session",
   priority: 60,
-  component: lazy(() =>
-    import("./GraphSurface").then((m) => ({ default: m.GraphSurface })),
-  ),
+  layout: { sidebar: false, agent: false, tray: false },
+  component: lazy(() => import("./GraphSurface").then((m) => ({ default: m.GraphSurface }))),
 });
 
-export type { GraphFilter,GraphLayout } from "./graphAtoms";
+export type { GraphFilter, GraphLayout } from "./graphAtoms";
 export {
   graphFilterAtom,
   graphLayoutAtom,

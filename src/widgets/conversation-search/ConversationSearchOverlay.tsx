@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom";
 import { useAtom } from "jotai";
 
+import { useKeyboardShortcut } from "~shared/lib";
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { Text } from "~shared/ui/primitives/Text";
@@ -396,16 +397,8 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
   }, [selectedIdx]);
 
   // ── Global shortcut: Cmd+K ──
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      }
-    }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [setOpen]);
+  const toggleOpen = useCallback(() => setOpen((prev) => !prev), [setOpen]);
+  useKeyboardShortcut("mod+k", toggleOpen);
 
   // ── Auto-focus + inert background ──
   useEffect(() => {

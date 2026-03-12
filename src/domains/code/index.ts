@@ -8,9 +8,8 @@ registerSurface({
   icon: "code",
   persistence: "session",
   priority: 80,
-  component: lazy(() =>
-    import("./CodeSurface").then((m) => ({ default: m.CodeSurface })),
-  ),
+  layout: { sidebar: true, agent: true, tray: true },
+  component: lazy(() => import("./CodeSurface").then((m) => ({ default: m.CodeSurface }))),
 });
 
 export { CodeSurface } from "./CodeSurface";

@@ -8,9 +8,8 @@ registerSurface({
   icon: "server-environment",
   persistence: "session",
   priority: 130,
-  component: lazy(() =>
-    import("./AgentsSurface").then((m) => ({ default: m.AgentsSurface })),
-  ),
+  layout: { sidebar: false, agent: true, tray: true },
+  component: lazy(() => import("./AgentsSurface").then((m) => ({ default: m.AgentsSurface }))),
 });
 
 export { AgentsSurface } from "./AgentsSurface";

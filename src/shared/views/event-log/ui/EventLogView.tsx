@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 
 import { timelineEventsAtom } from "~entities/timeline-event";
 import type { TimelineEventType } from "~shared/protocol";
-import { cn, Icon, Text } from "~shared/ui";
+import { cn, Icon, Text, ViewEmptyState } from "~shared/ui";
 
 // ─── Event icons & colors ────────────────────────────────
 
@@ -121,9 +121,10 @@ export const EventLogView = React.memo(function EventLogView() {
       {/* Event list */}
       <div className="flex-1 overflow-y-auto scroll-shadow" role="log" aria-label="Event log">
         {filteredEvents.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-vsc-text-ghost text-xs">
-            {allEvents.length === 0 ? "No events yet" : "No matching events"}
-          </div>
+          <ViewEmptyState
+            icon="history"
+            title={allEvents.length === 0 ? "No events yet" : "No matching events"}
+          />
         ) : (
           filteredEvents.map((event) => (
             <div

@@ -187,6 +187,14 @@ export const ExplorerView = React.memo(function ExplorerView() {
             style={{ height: ROW_HEIGHT + 8 }}
             aria-expanded={treeOpen}
           >
+            <span
+              className="w-5 h-5 rounded-md bg-vsc-text-ghost/15 flex items-center justify-center shrink-0"
+              aria-hidden
+            >
+              <span className="text-[10px] font-semibold leading-none text-vsc-text-secondary uppercase">
+                {(workspaceName || "P").charAt(0)}
+              </span>
+            </span>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-[13px] font-medium text-vsc-fg truncate leading-tight">
                 {workspaceName || "Project"}

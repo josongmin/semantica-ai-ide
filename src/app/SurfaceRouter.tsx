@@ -8,8 +8,8 @@ import { SurfaceSkeleton } from "../surfaces/SurfaceSkeleton";
 import { getAllSurfaces } from "./surfaceRegistry";
 
 /**
- * Keep-alive surface router — all visited surfaces stay mounted (display:none),
- * active surface gets a subtle entrance animation.
+ * Keep-alive surface router — all visited surfaces stay mounted (display:none).
+ * No entrance animation — instant switching between surfaces.
  *
  * RFC-016 §4.2: Reads from surfaceRegistry instead of a hardcoded SURFACE_MAP.
  */
@@ -51,7 +51,7 @@ export function SurfaceRouter() {
         return (
           <div
             key={id}
-            className={isActive ? "absolute inset-0 surface-enter" : "absolute inset-0"}
+            className="absolute inset-0"
             style={{ display: isActive ? undefined : "none" }}
           >
             <Comp />

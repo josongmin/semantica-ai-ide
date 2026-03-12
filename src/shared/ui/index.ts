@@ -71,6 +71,7 @@ export {
   ListRow,
   StatusLine,
   StepTimeline,
+  ViewEmptyState,
 } from "./composites";
 
 // ─── Layouts (Tier 4) ─────────────────────────────────────
@@ -116,6 +117,7 @@ export type { DropdownMenuItem, DropdownMenuProps } from "./composites";
 export type { LazyPanelProps } from "./composites";
 export type { AgentCardProps } from "./composites";
 export type { Step, StepStatus, StepTimelineProps } from "./composites";
+export type { ViewEmptyStateProps } from "./composites";
 // Primitives
 export type { AccordionItem, AccordionProps } from "./primitives";
 export type { AlertDialogProps } from "./primitives";

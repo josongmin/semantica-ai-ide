@@ -8,9 +8,8 @@ registerSurface({
   icon: "history",
   persistence: "session",
   priority: 40,
-  component: lazy(() =>
-    import("./ReplaySurface").then((m) => ({ default: m.ReplaySurface })),
-  ),
+  layout: { sidebar: false, agent: false, tray: false },
+  component: lazy(() => import("./ReplaySurface").then((m) => ({ default: m.ReplaySurface }))),
 });
 
 export { EventTimeline } from "./EventTimeline";

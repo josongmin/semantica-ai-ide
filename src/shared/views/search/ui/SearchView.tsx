@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
+import { ViewEmptyState } from "~shared/ui/composites/ViewEmptyState";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
@@ -346,22 +347,10 @@ export const SearchView = React.memo(function SearchView() {
 
       {/* ── Results Area ── */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-        {!searched && !loading && (
-          <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
-            <Icon name="search" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
-              Search across all files
-            </Text>
-          </div>
-        )}
+        {!searched && !loading && <ViewEmptyState icon="search" title="Search across all files" />}
 
         {searched && results.length === 0 && !loading && (
-          <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
-            <Icon name="search-stop" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
-              No results found for &ldquo;{query}&rdquo;
-            </Text>
-          </div>
+          <ViewEmptyState icon="search-stop" title={`No results found for \u201c${query}\u201d`} />
         )}
 
         {results.map((fileResult) => (

@@ -8,9 +8,8 @@ registerSurface({
   icon: "dashboard",
   persistence: "session",
   priority: 90,
-  component: lazy(() =>
-    import("./OverviewSurface").then((m) => ({ default: m.OverviewSurface })),
-  ),
+  layout: { sidebar: false, agent: false, tray: false },
+  component: lazy(() => import("./OverviewSurface").then((m) => ({ default: m.OverviewSurface }))),
 });
 
 export { OverviewSurface } from "./OverviewSurface";

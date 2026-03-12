@@ -8,9 +8,8 @@ registerSurface({
   icon: "tasklist",
   persistence: "session",
   priority: 110,
-  component: lazy(() =>
-    import("./TasksSurface").then((m) => ({ default: m.TasksSurface })),
-  ),
+  layout: { sidebar: false, agent: true, tray: false },
+  component: lazy(() => import("./TasksSurface").then((m) => ({ default: m.TasksSurface }))),
 });
 
 export { TasksSurface } from "./TasksSurface";

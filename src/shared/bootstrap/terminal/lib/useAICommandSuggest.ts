@@ -15,7 +15,12 @@
 import { useCallback, useRef } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 
-import { type AICommandInputState, terminalAICommandInputAtom, type TerminalAIContext, terminalAIContextAtom } from "../model/aiAtoms";
+import {
+  type AICommandInputState,
+  terminalAICommandInputAtom,
+  type TerminalAIContext,
+  terminalAIContextAtom,
+} from "../model/aiAtoms";
 
 // ─── Mock AI Backend ──────────────────────────────────────
 
@@ -26,7 +31,7 @@ interface CommandSuggestion {
   readonly alternatives?: string[];
 }
 
-function mockGenerateCommand(
+export function mockGenerateCommand(
   query: string,
   _context: TerminalAIContext | null,
 ): CommandSuggestion {
@@ -117,7 +122,11 @@ function mockGenerateCommand(
   // Git-related queries
   if (/\bgit\b/.test(q)) {
     if (/\bstatus\b/.test(q)) {
-      return { command: "git status", explanation: "Show the working tree status.", confidence: 0.95 };
+      return {
+        command: "git status",
+        explanation: "Show the working tree status.",
+        confidence: 0.95,
+      };
     }
     if (/\bbranch\b/.test(q)) {
       if (/\bnew\b|\bcreate\b/.test(q)) {

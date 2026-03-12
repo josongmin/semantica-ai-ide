@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
+import { ViewEmptyState } from "~shared/ui/composites/ViewEmptyState";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
@@ -210,12 +211,10 @@ export const SymbolsView = React.memo(function SymbolsView() {
       {/* ── Symbol Tree ── */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 pt-1">
         {filteredSymbols.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
-            <Icon name="symbol-class" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
-              {filter ? `No symbols matching "${filter}"` : "No symbols found"}
-            </Text>
-          </div>
+          <ViewEmptyState
+            icon="symbol-class"
+            title={filter ? `No symbols matching "${filter}"` : "No symbols found"}
+          />
         ) : (
           KIND_ORDER.filter((k) => grouped.has(k)).map((kind) => (
             <SymbolGroup key={kind} kind={kind} symbols={grouped.get(kind) ?? []} />

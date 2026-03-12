@@ -50,15 +50,6 @@ registerTurnFeature({
   render: (turnId) => <DebateArena turnId={turnId} />,
 });
 
-const TurnMetrics = React.lazy(() =>
-  import("../turn-metrics").then((m) => ({ default: m.TurnMetrics })),
-);
-registerTurnFeature({
-  id: "turn-metrics",
-  slot: "pre-phases",
-  render: (turnId) => <TurnMetrics turnId={turnId} />,
-});
-
 // ─── Post-phase features ────────────────────────────────────
 
 const UserInputCard = React.lazy(() =>

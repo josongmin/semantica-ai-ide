@@ -139,6 +139,94 @@ export const dismissExplainAtom = atom(null, (_get, set) => {
   set(terminalExplainAtom, null);
 });
 
+// ─── AI Inline Mode (##ai) ──────────────────────────────
+
+export type AIInlineIntent = "ask" | "fix" | "explain";
+
+export const AI_INLINE_PREFIX: Record<AIInlineIntent, string> = {
+  ask: "##ai",
+  fix: "##ai-fix",
+  explain: "##ai-explain",
+};
+
+export interface AIInlineModeState {
+  readonly active: boolean;
+  readonly intent: AIInlineIntent;
+  readonly query: string;
+  readonly loading: boolean;
+  readonly result: {
+    readonly command: string;
+    readonly explanation: string;
+    readonly confidence: number;
+    readonly alternatives?: string[];
+  } | null;
+  /** Pixel position of the terminal cursor when mode was entered */
+  readonly anchorPosition: { x: number; y: number } | null;
+}
+
+export const terminalAIInlineModeAtom = atom<AIInlineModeState>({
+  active: false,
+  intent: "ask",
+  query: "",
+  loading: false,
+  result: null,
+  anchorPosition: null,
+});
+
+/** Submit an AI inline query (triggered by Enter after ##ai ...) */
+export const submitAIInlineQueryAtom = atom(
+  null,
+  (
+    _get,
+    set,
+    payload: {
+      intent: AIInlineIntent;
+      query: string;
+      anchorPosition: { x: number; y: number } | null;
+    },
+  ) => {
+    set(terminalAIInlineModeAtom, {
+      active: true,
+      intent: payload.intent,
+      query: payload.query,
+      loading: true,
+      result: null,
+      anchorPosition: payload.anchorPosition,
+    });
+  },
+);
+
+/** Set AI inline result (called by AI suggestion hook) */
+export const setAIInlineResultAtom = atom(
+  null,
+  (
+    _get,
+    set,
+    result: {
+      command: string;
+      explanation: string;
+      confidence: number;
+      alternatives?: string[];
+    },
+  ) => {
+    set(terminalAIInlineModeAtom, (prev) => ({
+      ...prev,
+      loading: false,
+      result,
+    }));
+  },
+);
+
+/** Exit AI inline mode */
+export const exitAIInlineModeAtom = atom(null, (_get, set) => {
+  set(terminalAIInlineModeAtom, (prev) => ({
+    ...prev,
+    active: false,
+    loading: false,
+    result: null,
+  }));
+});
+
 // ─── Command Search (Cmd+K) ─────────────────────────────
 
 /** Whether the terminal command search overlay is visible */

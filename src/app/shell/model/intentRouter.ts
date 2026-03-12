@@ -1,6 +1,7 @@
 import { atom } from "jotai";
 
 import type { SurfaceId } from "../../../shared/protocol/types/ui";
+import { getSurfaceLayout } from "../../surfaceRegistry";
 import { detachToFloatingAtom } from "./floatingAtoms";
 import {
   activeSidebarViewAtom,
@@ -9,6 +10,8 @@ import {
   agentPanelVisibleAtom,
   applyLayoutPresetAtom,
   type LayoutPreset,
+  restoreFrameStateAtom,
+  saveFrameStateAtom,
   sidebarVisibleAtom,
   trayVisibleAtom,
 } from "./shellAtoms";
@@ -31,7 +34,7 @@ export type IntentAction =
   | { action: "apply-preset"; preset: LayoutPreset }
   | { action: "editor-command"; command: string; filePath: string; line: number };
 
-export const dispatchIntentAtom = atom(null, (_get, set, intent: IntentAction) => {
+export const dispatchIntentAtom = atom(null, (get, set, intent: IntentAction) => {
   switch (intent.action) {
     case "show-view": {
       const view = getViewById(intent.viewId);
@@ -51,19 +54,25 @@ export const dispatchIntentAtom = atom(null, (_get, set, intent: IntentAction) =
       break;
     }
     case "show-surface": {
+      // Save current surface frame state, switch, then restore target's state
+      set(saveFrameStateAtom);
       set(activeSurfaceAtom, intent.surfaceId);
+      set(restoreFrameStateAtom, intent.surfaceId);
       break;
     }
     case "toggle-frame": {
-      if (intent.frame === "dock-left") set(sidebarVisibleAtom, (v) => !v);
-      else if (intent.frame === "dock-right") set(agentPanelVisibleAtom, (v) => !v);
-      else if (intent.frame === "tray") set(trayVisibleAtom, (v) => !v);
+      // Respect surface layout constraints — only toggle if allowed
+      const layout = getSurfaceLayout(get(activeSurfaceAtom));
+      if (intent.frame === "dock-left" && layout.sidebar) set(sidebarVisibleAtom, (v) => !v);
+      else if (intent.frame === "dock-right" && layout.agent) set(agentPanelVisibleAtom, (v) => !v);
+      else if (intent.frame === "tray" && layout.tray) set(trayVisibleAtom, (v) => !v);
       break;
     }
     case "show-frame": {
-      if (intent.frame === "dock-left") set(sidebarVisibleAtom, true);
-      else if (intent.frame === "dock-right") set(agentPanelVisibleAtom, true);
-      else if (intent.frame === "tray") set(trayVisibleAtom, true);
+      const showLayout = getSurfaceLayout(get(activeSurfaceAtom));
+      if (intent.frame === "dock-left" && showLayout.sidebar) set(sidebarVisibleAtom, true);
+      else if (intent.frame === "dock-right" && showLayout.agent) set(agentPanelVisibleAtom, true);
+      else if (intent.frame === "tray" && showLayout.tray) set(trayVisibleAtom, true);
       break;
     }
     case "apply-preset": {

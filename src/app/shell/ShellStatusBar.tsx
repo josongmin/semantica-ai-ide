@@ -13,9 +13,11 @@ import { notificationsAtom } from "../../features/notifications/model/notificati
 import { activeTrayViewAtom, trayVisibleAtom } from "./model/shellAtoms";
 import { getViewsForFrame } from "./model/viewRegistry";
 
-// ─── Status Bar ─────────────────────────────────────────
+// ─── Constants ──────────────────────────────────────────
 
 const BAR_H = 28;
+
+// ─── Helpers ────────────────────────────────────────────
 
 function getGraphVariant(status: string): "danger" | "active" | "success" | "muted" {
   if (status === "error") return "danger";
@@ -24,23 +26,13 @@ function getGraphVariant(status: string): "danger" | "active" | "success" | "mut
   return "muted";
 }
 
-export const ShellStatusBar = React.memo(function ShellStatusBar() {
-  const notifications = useAtomValue(notificationsAtom);
-  const unreadCount = notifications.length;
+// ─── Hooks ──────────────────────────────────────────────
+
+/** Tray visibility + active view switching logic. */
+function useTrayControls() {
   const trayViews = getViewsForFrame("tray");
   const [activeView, setActiveView] = useAtom(activeTrayViewAtom);
   const [trayVisible, setTrayVisible] = useAtom(trayVisibleAtom);
-
-  // P0: Agent
-  const hasActive = useAtomValue(hasActiveAgentsAtom);
-  const runningCount = useAtomValue(runningAgentsCountAtom);
-
-  // P0: Graph / Index
-  const indexStatus = useAtomValue(indexStatusAtom);
-  const indexProgress = useAtomValue(indexProgressAtom);
-
-  // P0: Diagnostics
-  const { errors, warnings } = useAtomValue(diagnosticCountsAtom);
 
   const handleTrayViewClick = useCallback(
     (viewId: string) => {
@@ -54,10 +46,32 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
     [trayVisible, activeView, setTrayVisible, setActiveView],
   );
 
-  // ─── Derived labels ──────────────────────────────────
+  return { trayViews, activeView, trayVisible, handleTrayViewClick };
+}
+
+/** Reads all cross-domain status data consumed by the bar. */
+function useStatusBarData() {
+  // Notifications
+  const notifications = useAtomValue(notificationsAtom);
+  const unreadCount = notifications.length;
+
+  // Agent
+  const hasActive = useAtomValue(hasActiveAgentsAtom);
+  const runningCount = useAtomValue(runningAgentsCountAtom);
+
+  // Graph / Index
+  const indexStatus = useAtomValue(indexStatusAtom);
+  const indexProgress = useAtomValue(indexProgressAtom);
+
+  // Diagnostics
+  const { errors, warnings } = useAtomValue(diagnosticCountsAtom);
+
+  // Derived agent labels
   const agentLabel = hasActive ? `Agent Running (${runningCount})` : "Agent Idle";
   const agentIcon = hasActive ? "sync~spin" : "check";
+  const agentVariant: PillVariant = hasActive ? "active" : "muted";
 
+  // Derived graph labels
   let graphLabel: string;
   let graphIcon: string;
   if (indexStatus === "indexing") {
@@ -73,6 +87,36 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
     graphLabel = "Index Idle";
     graphIcon = "circle-outline";
   }
+  const graphVariant = getGraphVariant(indexStatus);
+
+  return {
+    unreadCount,
+    agentLabel,
+    agentIcon,
+    agentVariant,
+    graphLabel,
+    graphIcon,
+    graphVariant,
+    errors,
+    warnings,
+  };
+}
+
+// ─── Status Bar ─────────────────────────────────────────
+
+export const ShellStatusBar = React.memo(function ShellStatusBar() {
+  const { trayViews, activeView, trayVisible, handleTrayViewClick } = useTrayControls();
+  const {
+    unreadCount,
+    agentLabel,
+    agentIcon,
+    agentVariant,
+    graphLabel,
+    graphIcon,
+    graphVariant,
+    errors,
+    warnings,
+  } = useStatusBarData();
 
   return (
     <footer
@@ -103,25 +147,21 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
 
         {/* Right: AI status + diagnostics + git + notifications */}
         <div className="flex items-center gap-px pr-1">
-          <StatusPill
-            icon={agentIcon}
-            label={agentLabel}
-            variant={hasActive ? "active" : "muted"}
-          />
+          <StatusPill icon={agentIcon} label={agentLabel} variant={agentVariant} />
 
           <Separator />
 
-          <StatusPill icon={graphIcon} label={graphLabel} variant={getGraphVariant(indexStatus)} />
+          <StatusPill icon={graphIcon} label={graphLabel} variant={graphVariant} />
 
           <Divider />
 
           <DiagnosticChip errors={errors} warnings={warnings} />
 
-          {unreadCount > 0 && (
-            <>
-              <Separator />
-              <MetaChip icon="bell-dot" label={String(unreadCount)} accent />
-            </>
+          <Separator />
+          {unreadCount > 0 ? (
+            <MetaChip icon="bell-dot" label={String(unreadCount)} accent />
+          ) : (
+            <MetaChip icon="bell" label="0" />
           )}
         </div>
       </div>
@@ -131,13 +171,13 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
 
 // ─── Sub-components ─────────────────────────────────────
 
-function Divider() {
+const Divider = React.memo(function Divider() {
   return <span className="w-px h-3.5 bg-vsc-border/50 mx-1.5 shrink-0" />;
-}
+});
 
-function Separator() {
+const Separator = React.memo(function Separator() {
   return <span className="w-px h-3 bg-vsc-border/20 mx-0.5 shrink-0" />;
-}
+});
 
 type PillVariant = "muted" | "active" | "success" | "danger";
 
@@ -145,10 +185,10 @@ const pillStyles: Record<PillVariant, string> = {
   muted: "text-vsc-text-ghost",
   active: "text-vsc-text-secondary",
   success: "text-vsc-text-secondary",
-  danger: "text-rose-500",
+  danger: "text-vsc-error",
 };
 
-function StatusPill({
+const StatusPill = React.memo(function StatusPill({
   icon,
   label,
   variant = "muted",
@@ -172,9 +212,15 @@ function StatusPill({
       <span className="truncate max-w-[140px]">{label}</span>
     </span>
   );
-}
+});
 
-function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number }) {
+const DiagnosticChip = React.memo(function DiagnosticChip({
+  errors,
+  warnings,
+}: {
+  errors: number;
+  warnings: number;
+}) {
   const hasErrors = errors > 0;
   const hasWarnings = warnings > 0;
   const clean = !hasErrors && !hasWarnings;
@@ -191,7 +237,7 @@ function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number
       <span
         className={cn(
           "inline-flex items-center gap-0.5",
-          hasErrors ? "text-rose-400" : "text-vsc-text-ghost",
+          hasErrors ? "text-vsc-error" : "text-vsc-text-ghost",
         )}
       >
         <Icon name="error" size={12} className="shrink-0" />
@@ -201,7 +247,7 @@ function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number
       <span
         className={cn(
           "inline-flex items-center gap-0.5",
-          hasWarnings ? "text-amber-400" : "text-vsc-text-ghost",
+          hasWarnings ? "text-vsc-warning" : "text-vsc-text-ghost",
         )}
       >
         <Icon name="warning" size={12} className="shrink-0" />
@@ -209,9 +255,9 @@ function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number
       </span>
     </span>
   );
-}
+});
 
-function TrayToggleButton({
+const TrayToggleButton = React.memo(function TrayToggleButton({
   icon,
   label,
   isActive,
@@ -230,7 +276,7 @@ function TrayToggleButton({
         "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
         "text-xs tracking-[0.01em]",
         isActive
-          ? "text-white bg-vsc-fg/80 rounded-full"
+          ? "text-vsc-fg font-medium bg-vsc-surface-3/60 rounded-md"
           : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
       )}
       style={{ height: BAR_H - 7 }}
@@ -240,20 +286,28 @@ function TrayToggleButton({
       <Icon
         name={icon}
         size={12}
-        className={cn("shrink-0", isActive ? "text-white" : "opacity-70")}
+        className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-70")}
       />
       <span>{label}</span>
     </button>
   );
-}
+});
 
-function MetaChip({ icon, label, accent }: { icon: string; label: string; accent?: boolean }) {
+const MetaChip = React.memo(function MetaChip({
+  icon,
+  label,
+  accent,
+}: {
+  icon: string;
+  label: string;
+  accent?: boolean;
+}) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full cursor-default",
         accent
-          ? "px-2 bg-rose-500/12 text-rose-500 hover:bg-rose-500/20"
+          ? "px-2 bg-vsc-error/12 text-vsc-error hover:bg-vsc-error/20"
           : "px-2 text-vsc-text-ghost hover:bg-vsc-surface-2/60",
       )}
       style={{ height: BAR_H - 6 }}
@@ -261,14 +315,14 @@ function MetaChip({ icon, label, accent }: { icon: string; label: string; accent
       <Icon
         name={icon}
         size={13}
-        className={cn("shrink-0", accent ? "text-rose-500" : "opacity-70")}
+        className={cn("shrink-0", accent ? "text-vsc-error" : "opacity-70")}
       />
       {accent && (
-        <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-2xs font-bold leading-none">
+        <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-vsc-error text-vsc-surface-0 text-2xs font-bold leading-none">
           {label}
         </span>
       )}
       {!accent && <span className="truncate max-w-[100px] text-xs tracking-[0.01em]">{label}</span>}
     </span>
   );
-}
+});

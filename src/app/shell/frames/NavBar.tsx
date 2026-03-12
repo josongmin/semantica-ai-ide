@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import React from "react";
+import { useAtomValue } from "jotai";
 import {
   Activity,
   Bot,
@@ -15,14 +15,9 @@ import {
 
 import { cn } from "~shared/ui";
 
-import { detachToFloatingAtom } from "../model/floatingAtoms";
-import {
-  activeNavCategoryAtom,
-  NAV_SECTIONS,
-  type NavCategoryId,
-  type NavToolId,
-} from "../model/navRegistry";
-import { activeSurfaceAtom, navBarExpandedAtom } from "../model/shellAtoms";
+import { useNavCategoryActions } from "../hooks/useNavCategoryActions";
+import { NAV_SECTIONS, type NavCategoryId, type NavToolId } from "../model/navRegistry";
+import { navBarExpandedAtom } from "../model/shellAtoms";
 
 // ─── Icon Map (Lucide) ──────────────────────────────────
 
@@ -69,30 +64,7 @@ const RAIL_W = 48;
 
 export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
   const expanded = useAtomValue(navBarExpandedAtom);
-  const [activeCategory, setActiveCategory] = useAtom(activeNavCategoryAtom);
-  const setActiveSurface = useSetAtom(activeSurfaceAtom);
-  const detachToFloating = useSetAtom(detachToFloatingAtom);
-
-  const handleCategoryClick = useCallback(
-    (id: NavCategoryId) => {
-      setActiveCategory(id);
-      if (id === "graph") setActiveSurface("graph");
-      if (id === "agent") setActiveSurface("chat");
-      if (id === "ide") setActiveSurface("code");
-    },
-    [setActiveCategory, setActiveSurface],
-  );
-
-  const handleToolClick = useCallback(
-    (id: NavToolId) => {
-      if (id === "terminal") {
-        detachToFloating("terminal");
-      } else if (id === "settings") {
-        setActiveSurface("settings");
-      }
-    },
-    [setActiveSurface, detachToFloating],
-  );
+  const { activeCategory, handleCategoryClick, handleToolClick } = useNavCategoryActions();
 
   return (
     <nav
@@ -182,7 +154,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
           <div className="px-2 mt-2">
             <button
               type="button"
-              onClick={() => setActiveSurface("settings")}
+              onClick={() => handleToolClick("settings")}
               className="flex items-center gap-3 h-8 px-2 rounded-lg w-full
                          cursor-pointer border-none focus-ring transition-colors duration-slow
                          text-vsc-text-secondary hover:text-vsc-fg hover:bg-vsc-surface-3/30"
@@ -243,7 +215,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
             icon="gear"
             label="Settings"
             isActive={false}
-            onClick={() => setActiveSurface("settings")}
+            onClick={() => handleToolClick("settings")}
           />
         </div>
       )}

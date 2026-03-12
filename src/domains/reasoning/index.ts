@@ -8,6 +8,7 @@ registerSurface({
   icon: "lightbulb",
   persistence: "session",
   priority: 100,
+  layout: { sidebar: false, agent: true, tray: false },
   component: lazy(() =>
     import("./ReasoningSurface").then((m) => ({
       default: m.ReasoningSurface,

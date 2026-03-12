@@ -1,34 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 
-import { cn, Icon } from "~shared/ui";
+import { useKeyboardShortcut } from "~shared/lib";
+import { cn, Icon, ViewEmptyState } from "~shared/ui";
 
-// ─── Constants ────────────────────────────────────────────
+import { type OutputLine, outputLinesAtom } from "../model/outputAtoms";
 
-const MAX_OUTPUT_LINES = 5000;
-const RETAINED_LINES = 4000;
 const OUTPUT_ROW_HEIGHT = 22;
-
-// ─── Output Channel Model ────────────────────────────────
-
-export interface OutputLine {
-  readonly text: string;
-  readonly level: "info" | "warn" | "error" | "debug";
-  readonly channel: string;
-  readonly timestamp: number;
-}
-
-/** Global output lines atom — append from anywhere via useSetAtom */
-// eslint-disable-next-line react-refresh/only-export-components
-export const outputLinesAtom = atom<OutputLine[]>([]);
-// eslint-disable-next-line react-refresh/only-export-components
-export const appendOutputLineAtom = atom(null, (get, set, line: OutputLine) => {
-  const prev = get(outputLinesAtom);
-  const next =
-    prev.length >= MAX_OUTPUT_LINES ? [...prev.slice(-RETAINED_LINES), line] : [...prev, line];
-  set(outputLinesAtom, next);
-});
 
 // ─── Sample Data (dev-only) ─────────────────────────────
 
@@ -324,23 +303,24 @@ export const OutputView = React.memo(function OutputView() {
     });
   }, []);
 
-  // ── Keyboard ──
+  // ── Keyboard scope (closest [data-keyboard-zone]) ──
+  const [keyboardScope, setKeyboardScope] = useState<HTMLElement | null>(null);
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "f") {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleSearch();
-      }
-      if (e.key === "Escape" && searchVisible) {
-        setSearchVisible(false);
-        setSearchQuery("");
-      }
-    };
-    const el = scrollRef.current?.closest("[data-keyboard-zone]");
-    (el ?? document).addEventListener("keydown", handler as EventListener);
-    return () => (el ?? document).removeEventListener("keydown", handler as EventListener);
-  }, [searchVisible, toggleSearch]);
+    const el = scrollRef.current?.closest<HTMLElement>("[data-keyboard-zone]");
+    setKeyboardScope(el ?? null);
+  }, []);
+
+  // ── Keyboard shortcuts ──
+  useKeyboardShortcut("mod+f", toggleSearch, { scope: keyboardScope });
+
+  const dismissSearch = useCallback(() => {
+    setSearchVisible(false);
+    setSearchQuery("");
+  }, []);
+  useKeyboardShortcut("Escape", dismissSearch, {
+    enabled: searchVisible,
+    scope: keyboardScope,
+  });
 
   // ── Virtualizer ──
   const virtualizer = useVirtualizer({
@@ -474,7 +454,7 @@ export const OutputView = React.memo(function OutputView() {
         role="log"
       >
         {filtered.length === 0 ? (
-          <EmptyState
+          <OutputEmptyState
             hasLines={lines.length > 0}
             activeChannel={activeChannel}
             searchQuery={searchQuery}
@@ -666,7 +646,7 @@ function HighlightText({ text, query }: { text: string; query: string }) {
 
 // ─── Empty State ─────────────────────────────────────────
 
-function EmptyState({
+function OutputEmptyState({
   hasLines,
   activeChannel,
   searchQuery,
@@ -676,33 +656,19 @@ function EmptyState({
   searchQuery: string;
 }) {
   if (searchQuery) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-text-ghost">
-        <Icon name="search" size={28} className="opacity-20" />
-        <span className="text-xs">No matches for &ldquo;{searchQuery}&rdquo;</span>
-      </div>
-    );
+    return <ViewEmptyState icon="search" title={`No matches for \u201c${searchQuery}\u201d`} />;
   }
 
   if (hasLines) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-text-ghost">
-        <Icon name="filter" size={28} className="opacity-20" />
-        <span className="text-xs">No output in {activeChannel} channel</span>
-      </div>
-    );
+    return <ViewEmptyState icon="filter" title={`No output in ${activeChannel} channel`} />;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-3">
-      <Icon name="output" size={32} className="text-vsc-text-ghost/15" />
-      <div className="flex flex-col items-center gap-1">
-        <span className="text-xs text-vsc-text-ghost/60">Waiting for output...</span>
-        <span className="text-2xs text-vsc-text-ghost/30">
-          Agent, Build, LSP, Extension logs will appear here
-        </span>
-      </div>
-    </div>
+    <ViewEmptyState
+      icon="output"
+      title="Waiting for output..."
+      subtitle="Agent, Build, LSP, Extension logs will appear here"
+    />
   );
 }
 
@@ -739,6 +705,3 @@ function ToolbarButton({
 function Separator() {
   return <span className="w-px h-3 bg-vsc-border/20 mx-1 shrink-0" />;
 }
-
-/** @deprecated Use OutputView instead */
-export { OutputView as OutputPanel };
