@@ -8,7 +8,6 @@ import {
   performanceSummaryAtom,
   resourceMetricsAtom,
 } from "../../entities/resource-monitor";
-import { getVscodeColor } from "../../shared/lib/vscodeTheme";
 import { Badge, cn, EmptyState, Icon, Text } from "../../shared/ui";
 
 // ─── Cost Summary Bar (for HeaderBar inline) ─────────────────
@@ -33,7 +32,11 @@ export const CostSummaryBar = React.memo(function CostSummaryBar() {
           <div
             className={cn(
               "h-full rounded-full transition-[width,background-color] duration-normal",
-              (() => { if (ratio < 0.5) return "bg-vsc-success"; if (ratio < 0.8) return "bg-vsc-warning"; return "bg-vsc-error"; })(),
+              (() => {
+                if (ratio < 0.5) return "bg-vsc-success";
+                if (ratio < 0.8) return "bg-vsc-warning";
+                return "bg-vsc-error";
+              })(),
             )}
             style={{ width: `${ratio * 100}%` }}
             role="progressbar"
@@ -160,19 +163,17 @@ const PerformanceGauges = React.memo(function PerformanceGauges() {
 
 // ─── Model Cost Breakdown ────────────────────────────────────
 
-const CHART_COLOR_VARS: readonly { cssVar: string; fallback: string }[] = [
-  { cssVar: "--vscode-charts-blue", fallback: "var(--color-vsc-info)" },
-  { cssVar: "--vscode-charts-green", fallback: "var(--color-vsc-success)" },
-  { cssVar: "--vscode-charts-yellow", fallback: "var(--color-vsc-warning)" },
-  { cssVar: "--vscode-charts-purple", fallback: "var(--color-vsc-info)" },
-  { cssVar: "--vscode-charts-red", fallback: "var(--color-vsc-error)" },
-  { cssVar: "--vscode-charts-blue", fallback: "var(--color-vsc-info)" },
+const CHART_COLORS: readonly string[] = [
+  "var(--color-chart-blue)",
+  "var(--color-chart-green)",
+  "var(--color-chart-yellow)",
+  "var(--color-chart-purple)",
+  "var(--color-chart-red)",
+  "var(--color-chart-blue)",
 ];
 
 function getChartColor(index: number): string {
-  const entry = CHART_COLOR_VARS[index % CHART_COLOR_VARS.length];
-  if (entry === undefined) return "#666";
-  return getVscodeColor(entry.cssVar, entry.fallback);
+  return CHART_COLORS[index % CHART_COLORS.length] ?? "#666";
 }
 
 const ModelCostBreakdown = React.memo(function ModelCostBreakdown() {

@@ -42,11 +42,35 @@ export interface CommandSearchOverlayProps {
 // ─── Common Commands ────────────────────────────────────────
 
 const COMMON_COMMANDS: readonly CommandEntry[] = [
-  { id: "common:git-status", command: "git status", label: "Git status", icon: "git-commit", category: "common" },
-  { id: "common:git-diff", command: "git diff", label: "Git diff", icon: "diff", category: "common" },
-  { id: "common:git-log", command: "git log --oneline -10", label: "Git log (last 10)", icon: "history", category: "common" },
+  {
+    id: "common:git-status",
+    command: "git status",
+    label: "Git status",
+    icon: "git-commit",
+    category: "common",
+  },
+  {
+    id: "common:git-diff",
+    command: "git diff",
+    label: "Git diff",
+    icon: "diff",
+    category: "common",
+  },
+  {
+    id: "common:git-log",
+    command: "git log --oneline -10",
+    label: "Git log (last 10)",
+    icon: "history",
+    category: "common",
+  },
   { id: "common:ls", command: "ls -la", label: "List files", icon: "files", category: "common" },
-  { id: "common:pwd", command: "pwd", label: "Print working directory", icon: "folder", category: "common" },
+  {
+    id: "common:pwd",
+    command: "pwd",
+    label: "Print working directory",
+    icon: "folder",
+    category: "common",
+  },
 ];
 
 // ─── Helpers ────────────────────────────────────────────────
@@ -207,17 +231,13 @@ export const CommandSearchOverlay = memo(function CommandSearchOverlay({
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev < filteredEntries.length - 1 ? prev + 1 : 0,
-        );
+        setSelectedIndex((prev) => (prev < filteredEntries.length - 1 ? prev + 1 : 0));
         return;
       }
 
       if (e.key === "ArrowUp") {
         e.preventDefault();
-        setSelectedIndex((prev) =>
-          prev > 0 ? prev - 1 : filteredEntries.length - 1,
-        );
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : filteredEntries.length - 1));
         return;
       }
 
@@ -227,7 +247,6 @@ export const CommandSearchOverlay = memo(function CommandSearchOverlay({
         if (entry) {
           handleExecute(entry.command);
         }
-        
       }
     },
     [filteredEntries, selectedIndex, handleClose, handleExecute],
@@ -249,7 +268,7 @@ export const CommandSearchOverlay = memo(function CommandSearchOverlay({
     <div
       className={cn(
         "pointer-events-auto",
-        "absolute bottom-4 left-1/2 -translate-x-1/2 z-[24]",
+        "absolute bottom-4 left-1/2 -translate-x-1/2 z-[--z-overlay]",
         "w-[calc(100vw-2rem)] sm:w-[420px] max-h-[360px] flex flex-col",
         "bg-vsc-surface-2/95 backdrop-blur-md",
         "border border-vsc-border rounded-lg shadow-xl",
@@ -434,9 +453,7 @@ const CommandRow = memo(function CommandRow({
       />
 
       <span className="flex-1 min-w-0 truncate font-mono">
-        {entry.category === "recent" && (
-          <span className="text-vsc-text-ghost mr-1">$</span>
-        )}
+        {entry.category === "recent" && <span className="text-vsc-text-ghost mr-1">$</span>}
         {entry.category === "script" ? entry.label : entry.command}
       </span>
 

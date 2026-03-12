@@ -51,7 +51,7 @@ const FlowDiagram = memo(function FlowDiagram({ flow }: { flow: DataFlow }) {
               <div key={step.label} className="flex items-start gap-2">
                 {/* Step indicator */}
                 <div className="flex shrink-0 flex-col items-center">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-vsc-accent/20 text-[10px] font-medium text-vsc-accent">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-vsc-accent/20 text-2xs font-medium text-vsc-accent">
                     {i + 1}
                   </span>
                   {i < flow.steps.length - 1 && (
@@ -66,9 +66,7 @@ const FlowDiagram = memo(function FlowDiagram({ flow }: { flow: DataFlow }) {
                     <p className="text-xs text-vsc-text-tertiary">{step.description}</p>
                   )}
                   {step.filePath && (
-                    <span className="font-mono text-[10px] text-vsc-text-ghost">
-                      {step.filePath}
-                    </span>
+                    <span className="font-mono text-2xs text-vsc-text-ghost">{step.filePath}</span>
                   )}
                 </div>
               </div>

@@ -40,7 +40,7 @@ export const DiffToolbarExtension = React.memo(function DiffToolbarExtension({
               size="sm"
               onClick={onToggle}
               className={cn(
-                "text-2xs h-5 px-2 rounded-[3px] transition-colors duration-150",
+                "text-2xs h-5 px-2 rounded-sm transition-colors duration-slow",
                 isActive
                   ? "bg-vsc-surface-2 text-vsc-fg shadow-sm"
                   : "text-vsc-text-tertiary hover:text-vsc-text-secondary",

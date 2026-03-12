@@ -4,6 +4,7 @@ import { useAtom } from "jotai";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { Icon } from "~shared/ui/primitives/Icon";
+import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
 
 import { conversationSearchOpenAtom } from "../../shared/lib/atoms/dialogAtoms";
@@ -466,7 +467,7 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
                 inputRef.current?.focus();
               }}
               className={cn(
-                "inline-flex items-center gap-1 px-2 h-6 rounded-md text-[11px]",
+                "inline-flex items-center gap-1 px-2 h-6 rounded-md text-xs",
                 "cursor-pointer border-none transition-all duration-fast",
                 mode === m.id
                   ? "bg-vsc-accent/15 text-vsc-accent font-medium"
@@ -475,11 +476,11 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
             >
               <Icon name={m.icon} tokenSize="2xs" />
               <span>{m.label}</span>
-              {m.prefix && <kbd className="ml-0.5 text-[9px] opacity-70 font-mono">{m.prefix}</kbd>}
+              {m.prefix && <kbd className="ml-0.5 text-3xs opacity-70 font-mono">{m.prefix}</kbd>}
             </button>
           ))}
           <div className="flex-1" />
-          <kbd className="text-[9px] text-vsc-text-tertiary font-mono">Tab to switch</kbd>
+          <kbd className="text-3xs text-vsc-text-tertiary font-mono">Tab to switch</kbd>
         </div>
 
         {/* Input */}
@@ -521,14 +522,14 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
           {results.length === 0 && query.trim() && (
             <div className="flex flex-col items-center gap-2 py-8 text-vsc-text-tertiary">
               <Icon name="search-stop" size={24} className="opacity-60" />
-              <span className="text-xs">No results for &ldquo;{query}&rdquo;</span>
+              <Text size="xs">No results for &ldquo;{query}&rdquo;</Text>
             </div>
           )}
 
           {results.length === 0 && !query.trim() && mode !== "files" && (
             <div className="flex flex-col items-center gap-2 py-8 text-vsc-text-tertiary">
               <Icon name={currentMode.icon} size={24} className="opacity-60" />
-              <span className="text-xs">Type to search {currentMode.label.toLowerCase()}…</span>
+              <Text size="xs">Type to search {currentMode.label.toLowerCase()}…</Text>
             </div>
           )}
 
@@ -545,25 +546,25 @@ export const ConversationSearchOverlay = React.memo(function ConversationSearchO
         </div>
 
         {/* Footer hints */}
-        <div className="flex items-center gap-3 px-4 py-1.5 border-t border-vsc-border/30 text-[10px] text-vsc-text-tertiary">
+        <div className="flex items-center gap-3 px-4 py-1.5 border-t border-vsc-border/30 text-2xs text-vsc-text-tertiary">
           <span className="inline-flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-[9px]">↑↓</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-3xs">↑↓</kbd>
             navigate
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-[9px]">↵</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-3xs">↵</kbd>
             open
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-[9px]">esc</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-3xs">esc</kbd>
             close
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-[9px]">&gt;</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-3xs">&gt;</kbd>
             code
           </span>
           <span className="inline-flex items-center gap-1">
-            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-[9px]">#</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-vsc-surface-2 font-mono text-3xs">#</kbd>
             symbols
           </span>
         </div>
@@ -664,10 +665,12 @@ const FileRow = React.memo(function FileRow({
       )}
     >
       <Icon name={data.icon} tokenSize="2xs" className="text-vsc-text-tertiary shrink-0" />
-      <span className="text-xs text-vsc-fg truncate">
+      <Text size="xs" truncate>
         <Highlight text={fileName} query={query} />
-      </span>
-      <span className="text-[10px] text-vsc-text-secondary/70 truncate min-w-0">{dirPath}</span>
+      </Text>
+      <Text size="2xs" tone="secondary" truncate className="opacity-70 min-w-0">
+        {dirPath}
+      </Text>
     </button>
   );
 });
@@ -702,13 +705,15 @@ const CodeRow = React.memo(function CodeRow({
       )}
     >
       <Icon name="file-code" tokenSize="2xs" className="text-vsc-text-tertiary shrink-0" />
-      <span className="text-[10px] text-vsc-text-tertiary shrink-0 tabular-nums w-6 text-right">
+      <Text size="2xs" tone="tertiary" mono className="shrink-0 tabular-nums w-6 text-right">
         {data.line}
-      </span>
-      <span className="text-xs font-mono text-vsc-fg truncate min-w-0">
+      </Text>
+      <Text size="xs" mono truncate className="min-w-0">
         <Highlight text={data.content.trim()} query={query} />
-      </span>
-      <span className="ml-auto text-[10px] text-vsc-text-secondary/70 shrink-0">{fileName}</span>
+      </Text>
+      <Text size="2xs" tone="secondary" className="ml-auto opacity-70 shrink-0">
+        {fileName}
+      </Text>
     </button>
   );
 });
@@ -743,20 +748,20 @@ const SymbolRow = React.memo(function SymbolRow({
       )}
     >
       <Icon name={data.icon} tokenSize="2xs" className="text-vsc-accent/70 shrink-0" />
-      <span className="text-xs text-vsc-fg font-medium truncate">
+      <Text size="xs" weight="medium" truncate>
         <Highlight text={data.name} query={query} />
-      </span>
+      </Text>
       <span
         className={cn(
-          "text-[9px] px-1 py-0.5 rounded font-mono shrink-0",
+          "text-3xs px-1 py-0.5 rounded font-mono shrink-0",
           "bg-vsc-surface-2 text-vsc-text-tertiary",
         )}
       >
         {data.kind}
       </span>
-      <span className="ml-auto text-[10px] text-vsc-text-secondary/70 shrink-0">
+      <Text size="2xs" tone="secondary" className="ml-auto opacity-70 shrink-0">
         {fileName}:{data.line}
-      </span>
+      </Text>
     </button>
   );
 });

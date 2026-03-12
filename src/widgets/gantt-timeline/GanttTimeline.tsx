@@ -8,10 +8,10 @@ import { cn, Icon, Text } from "../../shared/ui";
 // ─── Color mapping by tool type ─────────────────────────────
 
 const TOOL_TYPE_COLORS: Record<GanttToolType, string> = {
-  read: "bg-[var(--vscode-charts-blue,#3794ff)]",
-  write: "bg-[var(--vscode-charts-green,#89d185)]",
-  bash: "bg-[var(--vscode-charts-orange,#d18616)]",
-  search: "bg-[var(--vscode-charts-purple,#b267e6)]",
+  read: "bg-chart-blue",
+  write: "bg-chart-green",
+  bash: "bg-chart-orange",
+  search: "bg-chart-purple",
   other: "bg-vsc-text-ghost",
 };
 

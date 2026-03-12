@@ -29,7 +29,7 @@ const ScoreBar = React.memo(function ScoreBar({ score }: { score: number }) {
       <span className="text-2xs tabular-nums text-vsc-text-ghost">{score.toFixed(2)}</span>
       <div className="w-10 h-1 rounded-full bg-vsc-surface-2 overflow-hidden">
         <div
-          className="h-full rounded-full bg-vsc-accent/70 transition-[width] duration-200 ease-out"
+          className="h-full rounded-full bg-vsc-accent/70 transition-[width] duration-slow ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -64,7 +64,7 @@ export const SearchResultCard = React.memo(function SearchResultCard({
       onMouseEnter={onMouseEnter}
       className={cn(
         "group relative px-3 py-2 cursor-pointer",
-        "transition-colors duration-150",
+        "transition-colors duration-slow",
         isSelected
           ? "bg-vsc-accent/8 border-l-2 border-l-vsc-accent"
           : "border-l-2 border-l-transparent hover:bg-vsc-surface-2/50",

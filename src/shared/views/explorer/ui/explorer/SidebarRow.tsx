@@ -90,7 +90,7 @@ export const SidebarRow = memo(function SidebarRow({
       )}
 
       {/* Label */}
-      <span className={cn("truncate text-[13px] leading-tight text-vsc-fg/90", statusColor)}>
+      <span className={cn("truncate text-md leading-tight text-vsc-fg/90", statusColor)}>
         {label}
       </span>
 

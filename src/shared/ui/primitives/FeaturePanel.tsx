@@ -38,7 +38,7 @@ export const FeaturePanel = React.memo(
     const stableOnClose = useCallback(() => onClose(), [onClose]);
 
     const { mounted, exiting, handleTabKeyDown } = useOverlayBehavior({
-      id: `feature-panel-${  titleId}`,
+      id: `feature-panel-${titleId}`,
       type: "dialog",
       open,
       onClose: stableOnClose,
@@ -64,7 +64,10 @@ export const FeaturePanel = React.memo(
           data-testid="feature-panel-backdrop"
         >
           {/* Frosted backdrop */}
-          <div className="absolute inset-0 bg-vsc-fg/50 backdrop-blur-[2px]" aria-hidden />
+          <div
+            className="absolute inset-0 bg-vsc-fg/50 backdrop-blur-[--blur-overlay]"
+            aria-hidden
+          />
 
           {/* Panel */}
           <div

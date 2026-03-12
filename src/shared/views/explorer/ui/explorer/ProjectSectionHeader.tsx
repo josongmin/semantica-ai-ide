@@ -7,13 +7,13 @@ import type { ProjectStats } from "./helpers";
 // ── Language color mapping ───────────────────────────────
 
 const LANG_DOT_COLOR: Record<string, string> = {
-  TypeScript: "bg-[#3178c6]",
-  JavaScript: "bg-[#f1e05a]",
-  Python: "bg-[#3572A5]",
-  Rust: "bg-[#dea584]",
-  Go: "bg-[#00ADD8]",
-  Java: "bg-[#b07219]",
-  Ruby: "bg-[#701516]",
+  TypeScript: "bg-lang-typescript",
+  JavaScript: "bg-lang-javascript",
+  Python: "bg-lang-python",
+  Rust: "bg-lang-rust",
+  Go: "bg-lang-go",
+  Java: "bg-lang-java",
+  Ruby: "bg-lang-ruby",
   Swift: "bg-[#F05138]",
   Kotlin: "bg-[#A97BFF]",
   "C#": "bg-[#178600]",
@@ -61,7 +61,7 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
         />
         <span className="text-sm font-medium text-vsc-fg flex-1 truncate">{label}</span>
         {primaryLang && (
-          <span className="flex items-center gap-1 text-[10px] text-vsc-text-ghost shrink-0">
+          <span className="flex items-center gap-1 text-2xs text-vsc-text-ghost shrink-0">
             <span
               className={cn(
                 "w-1.5 h-1.5 rounded-full shrink-0",
@@ -75,11 +75,11 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
 
       {/* Row 2: meta stats */}
       <div className="flex items-center gap-2.5 pl-[18px] mt-px">
-        <span className="flex items-center gap-0.5 text-[10px] text-vsc-text-ghost">
+        <span className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
           <Icon name="file" tokenSize="2xs" className="opacity-50" />
           {files}
         </span>
-        <span className="flex items-center gap-0.5 text-[10px] text-vsc-text-ghost">
+        <span className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
           <Icon name="folder" tokenSize="2xs" className="opacity-50" />
           {folders}
         </span>
@@ -87,10 +87,7 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
           <>
             <span className="w-px h-2.5 bg-vsc-border/30" />
             {langBreakdown.map(({ lang, pct }) => (
-              <span
-                key={lang}
-                className="flex items-center gap-0.5 text-[10px] text-vsc-text-ghost"
-              >
+              <span key={lang} className="flex items-center gap-0.5 text-2xs text-vsc-text-ghost">
                 <span
                   className={cn(
                     "w-1 h-1 rounded-full shrink-0",

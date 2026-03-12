@@ -88,7 +88,7 @@ export const BottomSheet = React.memo(
     const stableOnClose = handleClose;
 
     const { mounted, exiting, handleTabKeyDown } = useOverlayBehavior({
-      id: `bottom-sheet-${  titleId}`,
+      id: `bottom-sheet-${titleId}`,
       type: "dialog",
       open,
       onClose: stableOnClose,
@@ -248,7 +248,7 @@ export const BottomSheet = React.memo(
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-vsc-fg/40 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-vsc-fg/40 backdrop-blur-[--blur-overlay]"
             aria-hidden
             data-sheet-backdrop
           />

@@ -97,7 +97,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
             className="w-4 h-4 rounded-md bg-vsc-error/20 text-vsc-error hover:bg-vsc-error/30 transition-none p-0"
             title="Stop (Esc)"
           >
-            <Icon name="primitive-square" tokenSize="2xs" className="text-[9px]" />
+            <Icon name="primitive-square" tokenSize="2xs" className="text-3xs" />
           </Button>
         ) : (
           <Button
@@ -107,7 +107,7 @@ export const PromptStatusBar = React.memo(function PromptStatusBar({
             disabled={!canSend}
             aria-label={isRunning ? "Queue message" : "Send message"}
             className="w-4 h-4 rounded-md disabled:opacity-30 transition-none p-0"
-            style={{ backgroundColor: "var(--color-gnb-accent, #8b5cf6)" }}
+            style={{ backgroundColor: "var(--color-gnb-accent)" }}
             title={isRunning ? "Queue (Enter)" : "Send (Enter)"}
           >
             <Icon name="arrow-up" tokenSize="2xs" />

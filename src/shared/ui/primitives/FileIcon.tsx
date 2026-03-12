@@ -22,22 +22,22 @@ interface IconDef {
 
 const ICONS: Readonly<Record<string, IconDef>> = {
   // ── Languages ─────────────────────────────
-  ts: { color: "#3178c6", label: "TS" },
-  tsx: { color: "#3178c6", label: "TX" },
-  js: { color: "#f0db4f", label: "JS" },
-  jsx: { color: "#61dafb", label: "JX" },
-  mjs: { color: "#f0db4f", label: "MJ" },
-  cjs: { color: "#f0db4f", label: "CJ" },
-  py: { color: "#3776ab", label: "PY" },
-  rs: { color: "#dea584", label: "RS" },
-  go: { color: "#00add8", label: "GO" },
+  ts: { color: "var(--color-lang-typescript)", label: "TS" },
+  tsx: { color: "var(--color-lang-typescript)", label: "TX" },
+  js: { color: "var(--color-lang-javascript)", label: "JS" },
+  jsx: { color: "var(--color-lang-javascript)", label: "JX" },
+  mjs: { color: "var(--color-lang-javascript)", label: "MJ" },
+  cjs: { color: "var(--color-lang-javascript)", label: "CJ" },
+  py: { color: "var(--color-lang-python)", label: "PY" },
+  rs: { color: "var(--color-lang-rust)", label: "RS" },
+  go: { color: "var(--color-lang-go)", label: "GO" },
   c: { color: "#5c6bc0", label: "C" },
   cpp: { color: "#5c6bc0", label: "++" },
   h: { color: "#5c6bc0", label: ".h" },
   cs: { color: "#68217a", label: "C#" },
-  java: { color: "#e76f00", label: "JA" },
+  java: { color: "var(--color-lang-java)", label: "JA" },
   kt: { color: "#7f52ff", label: "KT" },
-  rb: { color: "#cc342d", label: "RB" },
+  rb: { color: "var(--color-lang-ruby)", label: "RB" },
   php: { color: "#777bb4", label: "PH" },
   swift: { color: "#f05138", label: "SW" },
   dart: { color: "#0175c2", label: "DA" },
@@ -50,8 +50,8 @@ const ICONS: Readonly<Record<string, IconDef>> = {
   clj: { color: "#5881d8", label: "CJ" },
 
   // ── Web ───────────────────────────────────
-  html: { color: "#e44d26", label: "HT" },
-  css: { color: "#663399", label: "CS" },
+  html: { color: "var(--color-lang-html)", label: "HT" },
+  css: { color: "var(--color-lang-css)", label: "CS" },
   scss: { color: "#cd6799", label: "SC" },
   less: { color: "#1d365d", label: "LE" },
   vue: { color: "#41b883", label: "VU" },
@@ -59,8 +59,8 @@ const ICONS: Readonly<Record<string, IconDef>> = {
   astro: { color: "#ff5d01", label: "AS" },
 
   // ── Data / Config ─────────────────────────
-  json: { color: "#9e9e3c", label: "{}" },
-  jsonc: { color: "#9e9e3c", label: "{}" },
+  json: { color: "var(--color-lang-json)", label: "{}" },
+  jsonc: { color: "var(--color-lang-json)", label: "{}" },
   yaml: { color: "#cb171e", label: "YM" },
   yml: { color: "#cb171e", label: "YM" },
   toml: { color: "#9c4121", label: "TL" },
@@ -70,17 +70,17 @@ const ICONS: Readonly<Record<string, IconDef>> = {
   conf: { color: "#6d8086", label: "CF" },
 
   // ── Docs ──────────────────────────────────
-  md: { color: "#519aba", label: "MD" },
-  mdx: { color: "#519aba", label: "MX" },
+  md: { color: "var(--color-lang-markdown)", label: "MD" },
+  mdx: { color: "var(--color-lang-markdown)", label: "MX" },
   txt: { color: "#78909c", label: "TX" },
   pdf: { color: "#e53935", label: "PD" },
   rst: { color: "#78909c", label: "RS" },
 
   // ── Shell / Script ────────────────────────
-  sh: { color: "#4eaa25", label: "SH" },
-  bash: { color: "#4eaa25", label: "SH" },
-  zsh: { color: "#4eaa25", label: "SH" },
-  fish: { color: "#4eaa25", label: "SH" },
+  sh: { color: "var(--color-lang-shell)", label: "SH" },
+  bash: { color: "var(--color-lang-shell)", label: "SH" },
+  zsh: { color: "var(--color-lang-shell)", label: "SH" },
+  fish: { color: "var(--color-lang-shell)", label: "SH" },
   ps1: { color: "#012456", label: "PS" },
 
   // ── Database / Query ──────────────────────

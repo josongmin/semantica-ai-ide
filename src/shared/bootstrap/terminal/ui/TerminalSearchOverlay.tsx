@@ -104,7 +104,7 @@ export const TerminalSearchOverlay = memo(function TerminalSearchOverlay({
     <div
       className={cn(
         "pointer-events-auto",
-        "absolute top-1 right-2 z-[25]",
+        "absolute top-1 right-2 z-[--z-overlay]",
         "flex items-center gap-1.5 px-2 py-1",
         "bg-vsc-surface-2 border border-vsc-border rounded-md shadow-lg",
         "animate-[slide-in-top_80ms_var(--ease-spring)]",

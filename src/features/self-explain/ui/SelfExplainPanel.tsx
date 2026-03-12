@@ -11,7 +11,12 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useNavigateToFile } from "~shared/lib";
 import { Badge, type BreadcrumbItem, Breadcrumbs, cn, Icon, Kbd, Skeleton, Text } from "~shared/ui";
 
-import { closeSelfExplainAtom, selfExplainDataAtom, selfExplainLoadingAtom, selfExplainVisibleAtom } from "../model/atoms";
+import {
+  closeSelfExplainAtom,
+  selfExplainDataAtom,
+  selfExplainLoadingAtom,
+  selfExplainVisibleAtom,
+} from "../model/atoms";
 import { ExplainSection } from "./ExplainSection";
 import { WhyChain } from "./WhyChain";
 
@@ -109,9 +114,12 @@ export const SelfExplainPanel = React.memo(function SelfExplainPanel() {
 
   const navigateToFile = useNavigateToFile();
 
-  const handleCallerClick = useCallback((filePath: string, line: number) => {
-    navigateToFile(filePath, line);
-  }, [navigateToFile]);
+  const handleCallerClick = useCallback(
+    (filePath: string, line: number) => {
+      navigateToFile(filePath, line);
+    },
+    [navigateToFile],
+  );
 
   if (!visible) return null;
 
@@ -138,177 +146,193 @@ export const SelfExplainPanel = React.memo(function SelfExplainPanel() {
 
       {/* Content */}
       <div className="flex-1 min-h-0 overflow-y-auto">
-      {loading && <LoadingSkeleton />}
-      {!loading && !data && <EmptyState />}
-      {!loading && data && (
-        <div className="flex flex-col animate-in fade-in duration-200">
-          {/* Analysis context breadcrumb */}
-          <ExplainContextBar
-            filePath={data.filePath}
-            symbolName={data.symbolName}
-            symbolKind={data.symbolKind}
-          />
-
-          {/* Symbol Header */}
-          <div className="flex items-center gap-2 px-3 py-2.5">
-            <Icon
-              name={SYMBOL_KIND_ICON[data.symbolKind] ?? "symbol-method"}
-              tokenSize="sm"
-              className="text-vsc-accent shrink-0"
+        {loading && <LoadingSkeleton />}
+        {!loading && !data && <EmptyState />}
+        {!loading && data && (
+          <div className="flex flex-col animate-in fade-in duration-slow">
+            {/* Analysis context breadcrumb */}
+            <ExplainContextBar
+              filePath={data.filePath}
+              symbolName={data.symbolName}
+              symbolKind={data.symbolKind}
             />
-            <div className="flex flex-col min-w-0">
-              <Text size="sm" className="font-medium text-vsc-fg truncate">
-                {data.symbolName}
-              </Text>
-              <Text size="2xs" tone="ghost" className="truncate">
-                {data.filePath}:{data.line}
-              </Text>
-            </div>
-          </div>
 
-          {/* Purpose */}
-          <ExplainSection icon="book" title="Purpose" index={0}>
-            <Text size="xs" className="text-vsc-text-secondary leading-relaxed">
-              {data.purpose}
-            </Text>
-          </ExplainSection>
-
-          {/* Usage */}
-          <ExplainSection icon="references" title="Usage" index={1}>
-            <div className="flex flex-col gap-1.5">
-              <Text size="2xs" tone="ghost">
-                {data.usage.callerCount} caller{data.usage.callerCount !== 1 ? "s" : ""}
-              </Text>
-              <div className="flex flex-col gap-0.5">
-                {data.usage.topCallers.map((caller) => (
-                  <button
-                    key={`${caller.filePath}:${caller.line}`}
-                    onClick={() => handleCallerClick(caller.filePath, caller.line)}
-                    className="flex items-center gap-1.5 text-left hover:bg-vsc-surface-2 rounded px-1.5 py-0.5 transition-colors"
-                  >
-                    <Icon name="symbol-method" tokenSize="2xs" className="text-vsc-text-ghost shrink-0" />
-                    <Text size="2xs" className="text-vsc-accent truncate">
-                      {caller.name}
-                    </Text>
-                    <Text size="2xs" tone="ghost" className="truncate">
-                      {caller.filePath}:{caller.line}
-                    </Text>
-                  </button>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-1 mt-0.5">
-                {data.usage.exposedVia.map((via) => (
-                  <Badge key={via} text={via} variant="info" className="text-2xs" />
-                ))}
-              </div>
-            </div>
-          </ExplainSection>
-
-          {/* Impact */}
-          <ExplainSection icon="pulse" title="Impact" index={2}>
-            <div className="flex flex-col gap-1.5">
-              <div className="flex flex-wrap gap-3">
-                <Text size="2xs" tone="ghost">
-                  <span className="text-vsc-fg font-medium tabular-nums">{data.impact.modules}</span> modules
-                </Text>
-                <Text size="2xs" tone="ghost">
-                  <span className="text-vsc-fg font-medium tabular-nums">{data.impact.tests}</span> tests
-                </Text>
-                <Text size="2xs" tone="ghost">
-                  <span className="text-vsc-fg font-medium tabular-nums">{data.impact.apis}</span> APIs
-                </Text>
-                <Text size="2xs" tone="ghost">
-                  <span className="text-vsc-fg font-medium tabular-nums">{data.impact.services}</span> services
-                </Text>
-              </div>
-              <Badge
-                text={data.impact.riskLevel}
-                variant={RISK_VARIANT[data.impact.riskLevel] ?? "info"}
-                className="text-2xs w-fit"
+            {/* Symbol Header */}
+            <div className="flex items-center gap-2 px-3 py-2.5">
+              <Icon
+                name={SYMBOL_KIND_ICON[data.symbolKind] ?? "symbol-method"}
+                tokenSize="sm"
+                className="text-vsc-accent shrink-0"
               />
+              <div className="flex flex-col min-w-0">
+                <Text size="sm" className="font-medium text-vsc-fg truncate">
+                  {data.symbolName}
+                </Text>
+                <Text size="2xs" tone="ghost" className="truncate">
+                  {data.filePath}:{data.line}
+                </Text>
+              </div>
             </div>
-          </ExplainSection>
 
-          {/* History */}
-          <ExplainSection icon="history" title="History" index={3}>
-            <div className="flex flex-col gap-1.5">
-              <Text size="2xs" tone="ghost">
-                Created by{" "}
-                <span className="text-vsc-fg">{data.history.createdBy}</span>{" "}
-                {data.history.createdDaysAgo}d ago ({data.history.createdCommit})
+            {/* Purpose */}
+            <ExplainSection icon="book" title="Purpose" index={0}>
+              <Text size="xs" className="text-vsc-text-secondary leading-relaxed">
+                {data.purpose}
               </Text>
-              <Text size="2xs" tone="ghost">
-                {data.history.totalChanges} total change{data.history.totalChanges !== 1 ? "s" : ""}
-              </Text>
-              {data.history.significantChanges.length > 0 && (
-                <div className="flex flex-col gap-0.5 mt-0.5">
-                  {data.history.significantChanges.map((change) => (
-                    <div key={change.hash} className="flex items-start gap-1.5 min-w-0">
-                      <Text size="2xs" className="text-vsc-text-ghost shrink-0 tabular-nums">
-                        {change.hash.slice(0, 7)}
+            </ExplainSection>
+
+            {/* Usage */}
+            <ExplainSection icon="references" title="Usage" index={1}>
+              <div className="flex flex-col gap-1.5">
+                <Text size="2xs" tone="ghost">
+                  {data.usage.callerCount} caller{data.usage.callerCount !== 1 ? "s" : ""}
+                </Text>
+                <div className="flex flex-col gap-0.5">
+                  {data.usage.topCallers.map((caller) => (
+                    <button
+                      key={`${caller.filePath}:${caller.line}`}
+                      onClick={() => handleCallerClick(caller.filePath, caller.line)}
+                      className="flex items-center gap-1.5 text-left hover:bg-vsc-surface-2 rounded px-1.5 py-0.5 transition-colors"
+                    >
+                      <Icon
+                        name="symbol-method"
+                        tokenSize="2xs"
+                        className="text-vsc-text-ghost shrink-0"
+                      />
+                      <Text size="2xs" className="text-vsc-accent truncate">
+                        {caller.name}
                       </Text>
-                      <Text size="2xs" className="text-vsc-text-secondary truncate">
-                        {change.message}
+                      <Text size="2xs" tone="ghost" className="truncate">
+                        {caller.filePath}:{caller.line}
                       </Text>
-                      <Text size="2xs" tone="ghost" className="shrink-0">
-                        {change.daysAgo}d
-                      </Text>
-                    </div>
+                    </button>
                   ))}
                 </div>
-              )}
-            </div>
-          </ExplainSection>
+                <div className="flex flex-wrap gap-1 mt-0.5">
+                  {data.usage.exposedVia.map((via) => (
+                    <Badge key={via} text={via} variant="info" className="text-2xs" />
+                  ))}
+                </div>
+              </div>
+            </ExplainSection>
 
-          {/* Runtime */}
-          <ExplainSection icon="dashboard" title="Runtime" index={4}>
-            <div className="flex flex-col gap-1.5">
-              <div className="flex flex-wrap gap-3">
-                {data.runtime.callsPerHour !== null && (
+            {/* Impact */}
+            <ExplainSection icon="pulse" title="Impact" index={2}>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap gap-3">
                   <Text size="2xs" tone="ghost">
                     <span className="text-vsc-fg font-medium tabular-nums">
-                      {data.runtime.callsPerHour.toLocaleString()}
+                      {data.impact.modules}
                     </span>{" "}
-                    calls/hr
+                    modules
                   </Text>
-                )}
-                {data.runtime.avgLatencyMs !== null && (
                   <Text size="2xs" tone="ghost">
                     <span className="text-vsc-fg font-medium tabular-nums">
-                      {data.runtime.avgLatencyMs}
-                    </span>
-                    ms avg
-                  </Text>
-                )}
-                {data.runtime.errorRate !== null && (
-                  <Text size="2xs" tone="ghost">
-                    <span className={cn(
-                      "font-medium tabular-nums",
-                      data.runtime.errorRate > 0.01 ? "text-vsc-error" : "text-vsc-fg",
-                    )}>
-                      {(data.runtime.errorRate * 100).toFixed(1)}%
+                      {data.impact.tests}
                     </span>{" "}
-                    errors
+                    tests
                   </Text>
+                  <Text size="2xs" tone="ghost">
+                    <span className="text-vsc-fg font-medium tabular-nums">{data.impact.apis}</span>{" "}
+                    APIs
+                  </Text>
+                  <Text size="2xs" tone="ghost">
+                    <span className="text-vsc-fg font-medium tabular-nums">
+                      {data.impact.services}
+                    </span>{" "}
+                    services
+                  </Text>
+                </div>
+                <Badge
+                  text={data.impact.riskLevel}
+                  variant={RISK_VARIANT[data.impact.riskLevel] ?? "info"}
+                  className="text-2xs w-fit"
+                />
+              </div>
+            </ExplainSection>
+
+            {/* History */}
+            <ExplainSection icon="history" title="History" index={3}>
+              <div className="flex flex-col gap-1.5">
+                <Text size="2xs" tone="ghost">
+                  Created by <span className="text-vsc-fg">{data.history.createdBy}</span>{" "}
+                  {data.history.createdDaysAgo}d ago ({data.history.createdCommit})
+                </Text>
+                <Text size="2xs" tone="ghost">
+                  {data.history.totalChanges} total change
+                  {data.history.totalChanges !== 1 ? "s" : ""}
+                </Text>
+                {data.history.significantChanges.length > 0 && (
+                  <div className="flex flex-col gap-0.5 mt-0.5">
+                    {data.history.significantChanges.map((change) => (
+                      <div key={change.hash} className="flex items-start gap-1.5 min-w-0">
+                        <Text size="2xs" className="text-vsc-text-ghost shrink-0 tabular-nums">
+                          {change.hash.slice(0, 7)}
+                        </Text>
+                        <Text size="2xs" className="text-vsc-text-secondary truncate">
+                          {change.message}
+                        </Text>
+                        <Text size="2xs" tone="ghost" className="shrink-0">
+                          {change.daysAgo}d
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
-              {data.runtime.lastIncident && (
-                <Text size="2xs" tone="ghost">
-                  Last incident: {data.runtime.lastIncident}
-                </Text>
-              )}
-              {data.runtime.criticalPath && (
-                <Badge text="Critical Path" variant="error" className="text-2xs w-fit" />
-              )}
-            </div>
-          </ExplainSection>
+            </ExplainSection>
 
-          {/* Why Chain */}
-          <ExplainSection icon="type-hierarchy" title="Why Chain" index={5}>
-            <WhyChain chain={data.whyChain} />
-          </ExplainSection>
-        </div>
-      )}
+            {/* Runtime */}
+            <ExplainSection icon="dashboard" title="Runtime" index={4}>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap gap-3">
+                  {data.runtime.callsPerHour !== null && (
+                    <Text size="2xs" tone="ghost">
+                      <span className="text-vsc-fg font-medium tabular-nums">
+                        {data.runtime.callsPerHour.toLocaleString()}
+                      </span>{" "}
+                      calls/hr
+                    </Text>
+                  )}
+                  {data.runtime.avgLatencyMs !== null && (
+                    <Text size="2xs" tone="ghost">
+                      <span className="text-vsc-fg font-medium tabular-nums">
+                        {data.runtime.avgLatencyMs}
+                      </span>
+                      ms avg
+                    </Text>
+                  )}
+                  {data.runtime.errorRate !== null && (
+                    <Text size="2xs" tone="ghost">
+                      <span
+                        className={cn(
+                          "font-medium tabular-nums",
+                          data.runtime.errorRate > 0.01 ? "text-vsc-error" : "text-vsc-fg",
+                        )}
+                      >
+                        {(data.runtime.errorRate * 100).toFixed(1)}%
+                      </span>{" "}
+                      errors
+                    </Text>
+                  )}
+                </div>
+                {data.runtime.lastIncident && (
+                  <Text size="2xs" tone="ghost">
+                    Last incident: {data.runtime.lastIncident}
+                  </Text>
+                )}
+                {data.runtime.criticalPath && (
+                  <Badge text="Critical Path" variant="error" className="text-2xs w-fit" />
+                )}
+              </div>
+            </ExplainSection>
+
+            {/* Why Chain */}
+            <ExplainSection icon="type-hierarchy" title="Why Chain" index={5}>
+              <WhyChain chain={data.whyChain} />
+            </ExplainSection>
+          </div>
+        )}
       </div>
     </div>
   );

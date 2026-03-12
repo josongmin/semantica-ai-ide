@@ -18,7 +18,7 @@ import { memo, useCallback, useState } from "react";
 import { DurationLabel } from "~shared/ui/primitives/DurationLabel";
 import { ExitCodeBadge } from "~shared/ui/primitives/ExitCodeBadge";
 import { Icon } from "~shared/ui/primitives/Icon";
-import { ProvenanceBadge,type ProvenanceSource } from "~shared/ui/primitives/ProvenanceBadge";
+import { ProvenanceBadge, type ProvenanceSource } from "~shared/ui/primitives/ProvenanceBadge";
 import { cn } from "~shared/ui/variants";
 
 import type {
@@ -185,7 +185,12 @@ export const CommandBlock = memo(function CommandBlock({
     .map((e) => e.data as DiagnosticEvent);
   // Renderable inline decorations (diagnostics, file links, URLs, ports, tests)
   const inlineDecorations = commandEvents.filter(
-    (e) => e.kind === "diagnostic" || e.kind === "file-link" || e.kind === "url" || e.kind === "port-binding" || e.kind === "test-result",
+    (e) =>
+      e.kind === "diagnostic" ||
+      e.kind === "file-link" ||
+      e.kind === "url" ||
+      e.kind === "port-binding" ||
+      e.kind === "test-result",
   );
 
   const hasActions = command.status !== "running";
@@ -220,10 +225,7 @@ export const CommandBlock = memo(function CommandBlock({
       {/* Output region — pointer-events-none so clicks pass through to xterm */}
       {!isCollapsed && (
         <div
-          className={cn(
-            "relative animate-in fade-in duration-100",
-            outputHeightClass,
-          )}
+          className={cn("relative animate-in fade-in duration-normal", outputHeightClass)}
           data-output-range={
             command.outputLineRange
               ? `${command.outputLineRange.start}-${command.outputLineRange.end}`
@@ -249,10 +251,7 @@ export const CommandBlock = memo(function CommandBlock({
 
       {/* Summary footer — auto-generated from parsed events */}
       {!isCollapsed && hasSummary && (
-        <BlockSummaryFooter
-          commandId={command.commandId}
-          parsedEvents={parsedEvents}
-        />
+        <BlockSummaryFooter commandId={command.commandId} parsedEvents={parsedEvents} />
       )}
 
       {/* Action bar — contextual actions for this block */}

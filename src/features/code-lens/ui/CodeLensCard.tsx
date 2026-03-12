@@ -36,14 +36,14 @@ const COMPLEXITY_COLOR: Record<CodeLensData["complexity"], string> = {
 };
 
 const LANG_ACCENT: Record<string, string> = {
-  typescript: "bg-[var(--color-lang-ts,#3178c6)]",
-  javascript: "bg-[var(--color-lang-js,#f1e05a)]",
-  python: "bg-[var(--color-lang-py,#3572a5)]",
-  rust: "bg-[var(--color-lang-rs,#dea584)]",
-  go: "bg-[var(--color-lang-go,#00add8)]",
-  java: "bg-[var(--color-lang-java,#b07219)]",
-  css: "bg-[var(--color-lang-css,#563d7c)]",
-  html: "bg-[var(--color-lang-html,#e34c26)]",
+  typescript: "bg-lang-typescript",
+  javascript: "bg-lang-javascript",
+  python: "bg-lang-python",
+  rust: "bg-lang-rust",
+  go: "bg-lang-go",
+  java: "bg-lang-java",
+  css: "bg-lang-css",
+  html: "bg-lang-html",
 };
 
 function getAccentClass(language?: string): string {
@@ -129,9 +129,7 @@ export const CodeLensCard = memo(function CodeLensCard({
         <div className="flex-1 min-w-0 p-3 space-y-3">
           {/* Header: summary + close */}
           <div className="flex items-start gap-2">
-            <p className="flex-1 text-xs font-semibold text-vsc-fg leading-snug">
-              {data.summary}
-            </p>
+            <p className="flex-1 text-xs font-semibold text-vsc-fg leading-snug">{data.summary}</p>
             <button
               type="button"
               className={cn(
@@ -157,11 +155,7 @@ export const CodeLensCard = memo(function CodeLensCard({
                 {data.flow.map((node, i) => (
                   <span key={`${node.name}-${node.line}`} className="flex items-center gap-1">
                     {i > 0 && (
-                      <Icon
-                        name="arrow-right"
-                        size={10}
-                        className="text-vsc-text-ghost shrink-0"
-                      />
+                      <Icon name="arrow-right" size={10} className="text-vsc-text-ghost shrink-0" />
                     )}
                     <button
                       type="button"
@@ -214,10 +208,7 @@ export const CodeLensCard = memo(function CodeLensCard({
                 </h4>
                 <ul className="space-y-0.5">
                   {data.throws.map((err) => (
-                    <li
-                      key={err}
-                      className="flex items-start gap-1 text-2xs text-vsc-error/80"
-                    >
+                    <li key={err} className="flex items-start gap-1 text-2xs text-vsc-error/80">
                       <span className="shrink-0 mt-px" aria-hidden>
                         &bull;
                       </span>
@@ -234,22 +225,23 @@ export const CodeLensCard = memo(function CodeLensCard({
             <h4 className="text-2xs font-medium text-vsc-text-secondary uppercase tracking-wide">
               Complexity
             </h4>
-            <div className="flex items-center gap-0.5" aria-label={`Complexity: ${data.complexity}`}>
+            <div
+              className="flex items-center gap-0.5"
+              aria-label={`Complexity: ${data.complexity}`}
+            >
               {Array.from({ length: 5 }, (_, i) => (
                 <span
                   key={i}
                   className={cn(
                     "inline-block w-1.5 h-1.5 rounded-full transition-colors duration-fast",
                     i < dots ? complexityColor : "bg-vsc-text-ghost/20",
-                    i < dots && "opacity-100" ,
+                    i < dots && "opacity-100",
                   )}
                   style={i < dots ? { backgroundColor: "currentColor" } : undefined}
                 />
               ))}
             </div>
-            <span className={cn("text-2xs font-medium", complexityColor)}>
-              {data.complexity}
-            </span>
+            <span className={cn("text-2xs font-medium", complexityColor)}>{data.complexity}</span>
           </div>
 
           {/* File location */}

@@ -74,7 +74,7 @@ export const ViewModeSelector = memo(function ViewModeSelector({
               "hover:bg-vsc-list-hover/50 transition-colors duration-fast focus-ring",
             )}
           >
-            <span className="text-[13px] font-medium text-vsc-fg truncate">
+            <span className="text-md font-medium text-vsc-fg truncate">
               {VIEW_MODE_LABEL[value]}
             </span>
             <Icon name="chevron-down" size={9} className="text-vsc-text-ghost shrink-0" />

@@ -10,7 +10,7 @@ import { Badge, cn, Icon, Text } from "../../shared/ui";
 const IMPACT_STYLES: Record<string, string> = {
   low: "bg-vsc-success",
   medium: "bg-vsc-warning",
-  high: "bg-[var(--vscode-charts-orange,#d18616)]",
+  high: "bg-chart-orange",
   critical: "bg-vsc-error",
 };
 
@@ -18,10 +18,10 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
   feature: { bg: "bg-vsc-info/20", text: "text-vsc-info" },
   bugfix: { bg: "bg-vsc-error/20", text: "text-vsc-error" },
   refactor: { bg: "bg-vsc-warning/20", text: "text-vsc-warning" },
-  style: { bg: "bg-[var(--vscode-charts-purple,#b267e6)]/20", text: "text-[var(--vscode-charts-purple,#b267e6)]" },
+  style: { bg: "bg-chart-purple/20", text: "text-chart-purple" },
   perf: { bg: "bg-vsc-success/20", text: "text-vsc-success" },
   docs: { bg: "bg-vsc-text-ghost/20", text: "text-vsc-text-ghost" },
-  test: { bg: "bg-[var(--vscode-charts-orange,#d18616)]/20", text: "text-[var(--vscode-charts-orange,#d18616)]" },
+  test: { bg: "bg-chart-orange/20", text: "text-chart-orange" },
 };
 
 // ─── Risk Badge ──────────────────────────────────────────────
@@ -49,7 +49,8 @@ interface GroupCardProps {
 }
 
 const SemanticGroupCard = React.memo(function SemanticGroupCard({ group }: GroupCardProps) {
-  const catStyle = CATEGORY_COLORS[group.category] ?? CATEGORY_COLORS.feature ?? { bg: "", text: "" };
+  const catStyle = CATEGORY_COLORS[group.category] ??
+    CATEGORY_COLORS.feature ?? { bg: "", text: "" };
 
   return (
     <div className="rounded-lg border border-vsc-border/40 p-3 space-y-2">
@@ -63,8 +64,12 @@ const SemanticGroupCard = React.memo(function SemanticGroupCard({ group }: Group
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <Text size="sm" weight="medium" truncate className="min-w-0">{group.title}</Text>
-            <span className={cn("px-1.5 py-0.5 rounded text-2xs shrink-0", catStyle.bg, catStyle.text)}>
+            <Text size="sm" weight="medium" truncate className="min-w-0">
+              {group.title}
+            </Text>
+            <span
+              className={cn("px-1.5 py-0.5 rounded text-2xs shrink-0", catStyle.bg, catStyle.text)}
+            >
               {group.category}
             </span>
           </div>
@@ -114,7 +119,9 @@ export const SemanticDiffPanel = React.memo(function SemanticDiffPanel({
         <Icon name="book" tokenSize="sm" className="text-vsc-text-secondary shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Text size="sm" weight="medium">Change Narrative</Text>
+            <Text size="sm" weight="medium">
+              Change Narrative
+            </Text>
             {result.riskAssessment && <RiskBadge level={result.riskAssessment.level} />}
           </div>
           <Text size="xs" tone="secondary" className="mt-1">

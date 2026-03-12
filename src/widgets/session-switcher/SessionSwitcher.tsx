@@ -81,19 +81,13 @@ export const SessionSwitcher = React.memo(function SessionSwitcher() {
   });
 
   // Stable handler for search input changes
-  const handleQueryChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setQuery(e.target.value);
-      setFocusIndex(0);
-    },
-    [],
-  );
+  const handleQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setFocusIndex(0);
+  }, []);
 
   // Stop propagation on inner container click
-  const stopPropagation = useCallback(
-    (e: React.MouseEvent) => e.stopPropagation(),
-    [],
-  );
+  const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
   // Combined keydown handler for the container
   const handleContainerKeyDown = useCallback(
@@ -108,7 +102,7 @@ export const SessionSwitcher = React.memo(function SessionSwitcher() {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[--z-overlay] flex flex-col items-center pt-[12%] bg-vsc-fg/40 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[--z-overlay] flex flex-col items-center pt-[12%] bg-vsc-fg/40 backdrop-blur-[--blur-overlay]"
       onClick={close}
       role="presentation"
       data-testid="session-switcher-backdrop"

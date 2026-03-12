@@ -55,7 +55,7 @@ export const Dialog = React.memo(
     const stableOnClose = handleClose;
 
     const { mounted, exiting, handleTabKeyDown } = useOverlayBehavior({
-      id: `dialog-${  titleId}`,
+      id: `dialog-${titleId}`,
       type: "dialog",
       open,
       onClose: stableOnClose,
@@ -71,7 +71,7 @@ export const Dialog = React.memo(
         {/* Backdrop */}
         <div
           className={cn(
-            "fixed inset-0 z-[--z-modal] flex items-center justify-center bg-vsc-fg/50 backdrop-blur-[2px]",
+            "fixed inset-0 z-[--z-modal] flex items-center justify-center bg-vsc-fg/50 backdrop-blur-[--blur-overlay]",
             exiting ? "animate-[fade-out_150ms_ease]" : "animate-[fade-in_150ms_ease]",
           )}
           onClick={(e) => {

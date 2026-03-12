@@ -86,13 +86,13 @@ const CategoryGroupHeader = React.memo(function CategoryGroupHeader({
       className={cn(
         "w-full flex items-center justify-between px-3 py-1.5",
         "text-2xs font-medium text-vsc-text-ghost/70 uppercase tracking-wider",
-        "hover:text-vsc-text-secondary transition-colors duration-150 cursor-pointer select-none",
+        "hover:text-vsc-text-secondary transition-colors duration-slow cursor-pointer select-none",
       )}
     >
       <div className="flex items-center gap-1.5">
         <span
           className={cn(
-            "codicon codicon-chevron-down text-2xs transition-transform duration-150",
+            "codicon codicon-chevron-down text-2xs transition-transform duration-slow",
             collapsed && "-rotate-90",
           )}
           aria-hidden="true"
@@ -154,7 +154,7 @@ export const SemanticSearchOverlay = React.memo(function SemanticSearchOverlay()
   // ─── Search execution ────────────────────────────────────
   const handleQueryChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const {value} = e.target;
+      const { value } = e.target;
       setQuery(value);
       executeSearch(value);
     },
@@ -255,7 +255,7 @@ export const SemanticSearchOverlay = React.memo(function SemanticSearchOverlay()
         className={cn(
           "fixed inset-0 z-[--z-overlay] bg-black/40 backdrop-blur-sm",
           "transition-opacity",
-          exiting ? "opacity-0 duration-150" : "opacity-100 duration-200",
+          exiting ? "opacity-0 duration-slow" : "opacity-100 duration-slow",
         )}
         aria-hidden="true"
       />
@@ -282,7 +282,10 @@ export const SemanticSearchOverlay = React.memo(function SemanticSearchOverlay()
         >
           {/* Search Input */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-vsc-border/10">
-            <span className="codicon codicon-search text-sm text-vsc-text-ghost" aria-hidden="true" />
+            <span
+              className="codicon codicon-search text-sm text-vsc-text-ghost"
+              aria-hidden="true"
+            />
             <input
               ref={inputRef}
               type="text"
@@ -355,8 +358,7 @@ export const SemanticSearchOverlay = React.memo(function SemanticSearchOverlay()
                 />
                 <p className="text-xs text-vsc-text-secondary">No results found</p>
                 <p className="text-2xs text-vsc-text-ghost/50">
-                  Try a different search term or switch to{" "}
-                  {alternativeModeName(mode)} mode
+                  Try a different search term or switch to {alternativeModeName(mode)} mode
                 </p>
               </div>
             )}

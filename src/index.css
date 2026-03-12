@@ -86,6 +86,25 @@
   --color-lang-html: #953800;
   --color-lang-shell: #1a7f37;
 
+  /* ── Chart / Graph colors ── */
+  --color-chart-blue: var(--vscode-charts-blue, #3794ff);
+  --color-chart-green: var(--vscode-charts-green, #89d185);
+  --color-chart-orange: var(--vscode-charts-orange, #d18616);
+  --color-chart-purple: var(--vscode-charts-purple, #b267e6);
+  --color-chart-red: var(--vscode-charts-red, #f14c4c);
+  --color-chart-yellow: var(--vscode-charts-yellow, #e0af68);
+
+  /* ── Graph diff status colors ── */
+  --color-graph-added: var(--color-vsc-success, #1a7f37);
+  --color-graph-removed: var(--color-vsc-error, #cf222e);
+  --color-graph-modified: var(--color-vsc-warning, #9a6700);
+  --color-graph-unchanged: var(--color-vsc-text-ghost);
+
+  /* ── Causal chain role colors ── */
+  --color-cause-root: #f7768e;
+  --color-cause-propagator: #e0af68;
+  --color-cause-symptom: #7dcfff;
+
   /* ── Tab bar tokens ── */
   --color-vsc-tab-active: var(--vscode-tab-activeBackground, #ffffff);
   --color-vsc-tab-inactive: var(--vscode-tab-inactiveBackground, #f6f8fa);
@@ -160,6 +179,8 @@
   --radius-2xl: 16px;
   --radius-full: 9999px;
 
+  --blur-overlay: 2px;
+
   --z-base: 0;
   --z-sticky: 10;
   --z-floating: 15;
@@ -174,6 +195,7 @@
   --shadow-lg: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-sheet: 0 -4px 16px rgba(0, 0, 0, 0.1);
   --shadow-panel: 0 4px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadow-dock: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-modal: 0 16px 48px -8px rgba(0, 0, 0, 0.2);
   --shadow-glow-error: 0 0 8px rgba(209, 36, 47, 0.25);
   --shadow-glow-error-hover: 0 0 14px rgba(209, 36, 47, 0.4);

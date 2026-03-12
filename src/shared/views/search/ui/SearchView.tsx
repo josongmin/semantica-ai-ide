@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { Icon } from "~shared/ui/primitives/Icon";
+import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
 
 // ─── Mock Data ──────────────────────────────────────────
@@ -22,35 +23,80 @@ function generateMockResults(query: string): SearchResult[] {
     {
       filePath: "src/core/engine/SemanticParser.ts",
       matches: [
-        { line: 14, content: `  const ${query}Handler = createHandler();`, matchStart: 8, matchEnd: 8 + query.length },
-        { line: 47, content: `  return ${query}.process(node);`, matchStart: 9, matchEnd: 9 + query.length },
-        { line: 102, content: `// Initialize ${query} pipeline`, matchStart: 15, matchEnd: 15 + query.length },
+        {
+          line: 14,
+          content: `  const ${query}Handler = createHandler();`,
+          matchStart: 8,
+          matchEnd: 8 + query.length,
+        },
+        {
+          line: 47,
+          content: `  return ${query}.process(node);`,
+          matchStart: 9,
+          matchEnd: 9 + query.length,
+        },
+        {
+          line: 102,
+          content: `// Initialize ${query} pipeline`,
+          matchStart: 15,
+          matchEnd: 15 + query.length,
+        },
       ],
     },
     {
       filePath: "src/features/intent-engine/resolver.ts",
       matches: [
-        { line: 8, content: `import { ${query} } from "../core";`, matchStart: 10, matchEnd: 10 + query.length },
-        { line: 33, content: `  if (${query} !== undefined) {`, matchStart: 6, matchEnd: 6 + query.length },
+        {
+          line: 8,
+          content: `import { ${query} } from "../core";`,
+          matchStart: 10,
+          matchEnd: 10 + query.length,
+        },
+        {
+          line: 33,
+          content: `  if (${query} !== undefined) {`,
+          matchStart: 6,
+          matchEnd: 6 + query.length,
+        },
       ],
     },
     {
       filePath: "src/shared/lib/utils.ts",
       matches: [
-        { line: 71, content: `export function ${query}(input: string): boolean {`, matchStart: 16, matchEnd: 16 + query.length },
+        {
+          line: 71,
+          content: `export function ${query}(input: string): boolean {`,
+          matchStart: 16,
+          matchEnd: 16 + query.length,
+        },
       ],
     },
     {
       filePath: "packages/protocol/src/models/index.ts",
       matches: [
-        { line: 5, content: `export type ${query}Config = {`, matchStart: 12, matchEnd: 12 + query.length },
-        { line: 22, content: `  readonly ${query}: string;`, matchStart: 11, matchEnd: 11 + query.length },
+        {
+          line: 5,
+          content: `export type ${query}Config = {`,
+          matchStart: 12,
+          matchEnd: 12 + query.length,
+        },
+        {
+          line: 22,
+          content: `  readonly ${query}: string;`,
+          matchStart: 11,
+          matchEnd: 11 + query.length,
+        },
       ],
     },
     {
       filePath: "src/widgets/prompt-box/PromptBox.tsx",
       matches: [
-        { line: 156, content: `  const ${query}Ref = useRef<HTMLDivElement>(null);`, matchStart: 8, matchEnd: 8 + query.length },
+        {
+          line: 156,
+          content: `  const ${query}Ref = useRef<HTMLDivElement>(null);`,
+          matchStart: 8,
+          matchEnd: 8 + query.length,
+        },
       ],
     },
   ];
@@ -116,10 +162,10 @@ const MatchLine = memo(function MatchLine({
         "hover:bg-vsc-list-hover/50 transition-colors duration-fast",
       )}
     >
-      <span className="text-3xs text-vsc-text-ghost/50 tabular-nums shrink-0 w-8 text-right pt-px">
+      <Text size="3xs" tone="ghost" mono className="opacity-50 shrink-0 w-8 text-right pt-px">
         {line}
-      </span>
-      <span className="text-2xs text-vsc-fg/80 truncate min-w-0">
+      </Text>
+      <Text size="2xs" truncate className="text-vsc-fg/80">
         {before}
         {match && (
           <span className="bg-vsc-accent/25 text-vsc-accent font-medium rounded-sm px-0.5">
@@ -127,7 +173,7 @@ const MatchLine = memo(function MatchLine({
           </span>
         )}
         {after}
-      </span>
+      </Text>
     </button>
   );
 });
@@ -150,24 +196,21 @@ export const SearchView = React.memo(function SearchView() {
 
   const totalMatches = results.reduce((sum, r) => sum + r.matches.length, 0);
 
-  const doSearch = useCallback(
-    (q: string) => {
-      if (debounceRef.current !== null) clearTimeout(debounceRef.current);
-      if (!q.trim()) {
-        setResults([]);
-        setLoading(false);
-        setSearched(false);
-        return;
-      }
-      setLoading(true);
-      debounceRef.current = setTimeout(() => {
-        setResults(generateMockResults(q));
-        setLoading(false);
-        setSearched(true);
-      }, 300);
-    },
-    [],
-  );
+  const doSearch = useCallback((q: string) => {
+    if (debounceRef.current !== null) clearTimeout(debounceRef.current);
+    if (!q.trim()) {
+      setResults([]);
+      setLoading(false);
+      setSearched(false);
+      return;
+    }
+    setLoading(true);
+    debounceRef.current = setTimeout(() => {
+      setResults(generateMockResults(q));
+      setLoading(false);
+      setSearched(true);
+    }, 300);
+  }, []);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -290,10 +333,10 @@ export const SearchView = React.memo(function SearchView() {
             {loading ? (
               <Icon name="loading" tokenSize="2xs" className="text-vsc-accent/60 animate-spin" />
             ) : (
-              <span className="text-3xs text-vsc-text-tertiary">
+              <Text size="3xs" tone="tertiary">
                 {totalMatches} result{totalMatches !== 1 ? "s" : ""} in {results.length} file
                 {results.length !== 1 ? "s" : ""}
-              </span>
+              </Text>
             )}
           </div>
         )}
@@ -306,18 +349,18 @@ export const SearchView = React.memo(function SearchView() {
         {!searched && !loading && (
           <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
             <Icon name="search" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <span className="text-2xs text-vsc-text-ghost/40 text-center">
+            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
               Search across all files
-            </span>
+            </Text>
           </div>
         )}
 
         {searched && results.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
             <Icon name="search-stop" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <span className="text-2xs text-vsc-text-ghost/40 text-center">
+            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
               No results found for &ldquo;{query}&rdquo;
-            </span>
+            </Text>
           </div>
         )}
 
@@ -365,15 +408,25 @@ const FileResultGroup = memo(function FileResultGroup({
           )}
         />
         <Icon name="file" tokenSize="2xs" className="text-vsc-text-tertiary shrink-0" />
-        <span className="text-2xs text-vsc-fg font-medium truncate">{fileName}</span>
-        <span className="text-3xs text-vsc-text-ghost/40 truncate min-w-0">{dirPath}</span>
-        <span className="ml-auto text-3xs text-vsc-text-ghost/50 tabular-nums shrink-0">
+        <Text size="2xs" weight="medium" truncate>
+          {fileName}
+        </Text>
+        <Text size="3xs" tone="ghost" truncate className="opacity-40">
+          {dirPath}
+        </Text>
+        <Text size="3xs" tone="ghost" mono className="ml-auto opacity-50 shrink-0">
           {result.matches.length}
-        </span>
+        </Text>
       </button>
       {open &&
         result.matches.map((m) => (
-          <MatchLine key={`${m.line}-${m.content}`} filePath={result.filePath} line={m.line} content={m.content} query={query} />
+          <MatchLine
+            key={`${m.line}-${m.content}`}
+            filePath={result.filePath}
+            line={m.line}
+            content={m.content}
+            query={query}
+          />
         ))}
     </div>
   );

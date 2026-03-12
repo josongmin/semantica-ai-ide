@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect } from "react";
 import { useSetAtom } from "jotai";
 
-import { cn, Icon } from "~shared/ui";
+import { cn, Icon, Text } from "~shared/ui";
 
 import {
   ALL_STATUSES,
@@ -49,13 +49,21 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
   }, [setSelectedId]);
 
   const formatDate = (ts: number) =>
-    new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    new Date(ts).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   return (
     <div className="flex flex-col w-full sm:w-[360px] sm:shrink-0 border-l border-vsc-border/40 bg-vsc-surface-0 overflow-y-auto animate-[slideInRight_150ms_ease-out]">
       {/* Header */}
       <div className="flex items-center justify-between h-10 px-4 shrink-0 border-b border-vsc-border/20">
-        <span className="text-xs font-medium text-vsc-text-secondary">Task Details</span>
+        <Text size="xs" weight="medium" tone="secondary">
+          Task Details
+        </Text>
         <button
           type="button"
           onClick={handleClose}
@@ -70,27 +78,43 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
       <div className="flex flex-col p-4 gap-5">
         {/* Title */}
         <div>
-          <h3 className="text-sm font-semibold text-vsc-text-primary leading-snug">{task.title}</h3>
-          <span className="text-2xs text-vsc-text-ghost mt-1 block">{task.id}</span>
+          <Text as="h3" size="sm" weight="semibold" className="leading-snug">
+            {task.title}
+          </Text>
+          <Text size="2xs" tone="ghost" className="mt-1 block">
+            {task.id}
+          </Text>
         </div>
 
         {/* Status + Priority row */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
             <Icon name={statusMeta.icon} tokenSize="xs" className={statusMeta.color} />
-            <span className={cn("text-xs font-medium", statusMeta.color)}>{statusMeta.label}</span>
+            <Text size="xs" weight="medium" className={statusMeta.color}>
+              {statusMeta.label}
+            </Text>
           </div>
           <span className="w-px h-4 bg-vsc-border/30" />
-          <span className={cn("inline-flex items-center h-[20px] px-2 rounded text-2xs font-medium", priorityMeta.bg, priorityMeta.color)}>
+          <Text
+            size="2xs"
+            weight="medium"
+            className={cn(
+              "inline-flex items-center h-[20px] px-2 rounded",
+              priorityMeta.bg,
+              priorityMeta.color,
+            )}
+          >
             {priorityMeta.label} priority
-          </span>
+          </Text>
         </div>
 
         {/* Description */}
         {task.description !== "" && (
           <div>
             <DetailLabel>Description</DetailLabel>
-            <p className="text-xs text-vsc-text-secondary leading-relaxed mt-1">{task.description}</p>
+            <Text as="p" size="xs" tone="secondary" className="leading-relaxed mt-1">
+              {task.description}
+            </Text>
           </div>
         )}
 
@@ -99,7 +123,9 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
           <DetailLabel>Source</DetailLabel>
           <div className="flex items-center gap-1.5 mt-1">
             <Icon name={sourceMeta.icon} tokenSize="xs" className={sourceMeta.color} />
-            <span className="text-xs text-vsc-text-secondary">{sourceMeta.label}</span>
+            <Text size="xs" tone="secondary">
+              {sourceMeta.label}
+            </Text>
           </div>
         </div>
 
@@ -109,7 +135,9 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
             <DetailLabel>Assignee</DetailLabel>
             <div className="flex items-center gap-1.5 mt-1">
               <Icon name="person" tokenSize="xs" className="text-vsc-text-tertiary" />
-              <span className="text-xs text-vsc-text-secondary">{task.assignee}</span>
+              <Text size="xs" tone="secondary">
+                {task.assignee}
+              </Text>
             </div>
           </div>
         )}
@@ -120,14 +148,16 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
             <DetailLabel>Files</DetailLabel>
             <div className="flex flex-col gap-1 mt-1">
               {task.filePaths.map((fp) => (
-                <span
+                <Text
                   key={fp}
-                  className="inline-flex items-center gap-1.5 text-xs text-vsc-accent hover:text-vsc-accent/80 cursor-pointer transition-colors duration-fast truncate"
+                  size="xs"
+                  truncate
+                  className="inline-flex items-center gap-1.5 text-vsc-accent hover:text-vsc-accent/80 cursor-pointer transition-colors duration-fast"
                   title={fp}
                 >
                   <Icon name="file" tokenSize="2xs" className="shrink-0 opacity-60" />
-                  <span className="truncate">{fp}</span>
-                </span>
+                  <Text truncate>{fp}</Text>
+                </Text>
               ))}
             </div>
           </div>
@@ -139,12 +169,14 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
             <DetailLabel>Labels</DetailLabel>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {task.labels.map((label) => (
-                <span
+                <Text
                   key={label}
-                  className="inline-flex h-[22px] px-2 rounded-full bg-vsc-surface-2 text-xs text-vsc-text-secondary items-center"
+                  size="xs"
+                  tone="secondary"
+                  className="inline-flex h-[22px] px-2 rounded-full bg-vsc-surface-2 items-center"
                 >
                   {label}
-                </span>
+                </Text>
               ))}
             </div>
           </div>
@@ -156,10 +188,10 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
             <DetailLabel>Blocked By</DetailLabel>
             <div className="flex flex-col gap-1 mt-1">
               {task.blockedBy.map((bid) => (
-                <span key={bid} className="flex items-center gap-1.5 text-xs text-vsc-error/80">
+                <Text key={bid} size="xs" className="flex items-center gap-1.5 text-vsc-error/80">
                   <Icon name="debug-disconnect" tokenSize="2xs" />
-                  <span>{bid}</span>
-                </span>
+                  <Text>{bid}</Text>
+                </Text>
               ))}
             </div>
           </div>
@@ -169,11 +201,11 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
         {task.estimatedMinutes !== undefined && (
           <div>
             <DetailLabel>Estimated Time</DetailLabel>
-            <span className="text-xs text-vsc-text-secondary mt-1 block">
+            <Text size="xs" tone="secondary" className="mt-1 block">
               {task.estimatedMinutes >= 60
                 ? `${Math.floor(task.estimatedMinutes / 60)}h ${task.estimatedMinutes % 60}m`
                 : `${task.estimatedMinutes}m`}
-            </span>
+            </Text>
           </div>
         )}
 
@@ -181,7 +213,9 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
         <div className="flex flex-col gap-1.5 pt-3 border-t border-vsc-border/20">
           <TimestampRow label="Created" value={formatDate(task.createdAt)} />
           <TimestampRow label="Updated" value={formatDate(task.updatedAt)} />
-          {task.completedAt !== undefined && <TimestampRow label="Completed" value={formatDate(task.completedAt)} />}
+          {task.completedAt !== undefined && (
+            <TimestampRow label="Completed" value={formatDate(task.completedAt)} />
+          )}
         </div>
 
         {/* Actions */}
@@ -246,14 +280,22 @@ export const TaskDetailPanel = memo(function TaskDetailPanel({ task }: { task: P
 // ─── Sub-components ─────────────────────────────────────
 
 function DetailLabel({ children }: { children: React.ReactNode }) {
-  return <span className="text-2xs text-vsc-text-ghost uppercase tracking-wider font-medium">{children}</span>;
+  return (
+    <Text size="2xs" tone="ghost" weight="medium" className="uppercase tracking-wider">
+      {children}
+    </Text>
+  );
 }
 
 function TimestampRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-2xs text-vsc-text-ghost">{label}</span>
-      <span className="text-2xs text-vsc-text-tertiary">{value}</span>
+      <Text size="2xs" tone="ghost">
+        {label}
+      </Text>
+      <Text size="2xs" tone="tertiary">
+        {value}
+      </Text>
     </div>
   );
 }

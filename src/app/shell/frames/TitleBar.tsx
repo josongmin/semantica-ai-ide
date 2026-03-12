@@ -133,8 +133,8 @@ export const TitleBar = React.memo(function TitleBar() {
       >
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 px-2 h-7 rounded-md text-[12px] font-medium
-                     cursor-pointer border-none focus-ring transition-colors duration-150"
+          className="inline-flex items-center gap-1.5 px-2 h-7 rounded-md text-sm font-medium
+                     cursor-pointer border-none focus-ring transition-colors duration-slow"
           style={{ color: gnb.text }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = gnb.hover;
@@ -144,8 +144,8 @@ export const TitleBar = React.memo(function TitleBar() {
           }}
         >
           <span
-            className="inline-flex items-center justify-center w-6 h-6 rounded text-[13px] font-bold shrink-0"
-            style={{ backgroundColor: "rgba(139,92,246,0.25)", color: gnb.accent }}
+            className="inline-flex items-center justify-center w-6 h-6 rounded text-md font-bold shrink-0"
+            style={{ backgroundColor: gnb.glow, color: gnb.accent }}
           >
             S
           </span>
@@ -173,8 +173,8 @@ export const TitleBar = React.memo(function TitleBar() {
       <div ref={rightRef} className="flex items-center gap-1 px-3 shrink-0 z-10">
         <button
           type="button"
-          className="inline-flex items-center gap-1 px-2 h-7 rounded-md text-[12px]
-                     cursor-pointer border-none focus-ring transition-colors duration-150"
+          className="inline-flex items-center gap-1 px-2 h-7 rounded-md text-sm
+                     cursor-pointer border-none focus-ring transition-colors duration-slow"
           style={{ color: gnb.textDim }}
           onMouseEnter={(e) => {
             e.currentTarget.style.color = gnb.text;
@@ -199,8 +199,8 @@ export const TitleBar = React.memo(function TitleBar() {
         <button
           type="button"
           className="flex items-center justify-center w-6 h-6 rounded-full shrink-0
-                     text-[10px] font-bold cursor-pointer border-none focus-ring transition-colors duration-150"
-          style={{ backgroundColor: "rgba(139,92,246,0.2)", color: gnb.accent }}
+                     text-2xs font-bold cursor-pointer border-none focus-ring transition-colors duration-slow"
+          style={{ backgroundColor: gnb.glow, color: gnb.accent }}
           title="Account"
           aria-label="Account"
         >
@@ -321,7 +321,7 @@ function ResponsiveNavGroup({
             aria-label="More features"
             aria-expanded={overflowOpen}
             className="inline-flex items-center justify-center w-7 h-7 rounded-md shrink-0
-                       cursor-pointer bg-transparent border-none transition-colors duration-fast focus-ring text-[12px]"
+                       cursor-pointer bg-transparent border-none transition-colors duration-fast focus-ring text-sm"
             style={{
               color: overflowOpen ? gnb.text : gnb.textDim,
               backgroundColor: overflowOpen ? gnb.hover : "transparent",
@@ -340,7 +340,7 @@ function ResponsiveNavGroup({
           style={{
             background: `linear-gradient(160deg, ${gnb.from}, ${gnb.via})`,
             border: `1px solid ${gnb.border}`,
-            boxShadow: "0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04)",
+            boxShadow: "var(--shadow-panel)",
           }}
         >
           {overflow.map((item) => {
@@ -354,7 +354,7 @@ function ResponsiveNavGroup({
                   handleItemClick(item);
                   setOverflowOpen(false);
                 }}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-[12px] w-full text-left
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-md text-sm w-full text-left
                            cursor-pointer border-none transition-all duration-fast"
                 style={{
                   color: isItemActive ? gnb.text : gnb.textDim,
@@ -439,7 +439,7 @@ function GnbNavButton({
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "relative inline-flex items-center gap-1.5 px-2 h-6 rounded-md shrink-0",
-        "cursor-pointer border-none transition-colors duration-150 focus-ring text-[12px]",
+        "cursor-pointer border-none transition-colors duration-slow focus-ring text-sm",
         !isActive && "bg-transparent",
       )}
       style={

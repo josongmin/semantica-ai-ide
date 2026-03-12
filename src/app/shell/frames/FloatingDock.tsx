@@ -31,7 +31,7 @@ export const FloatingDock = React.memo(function FloatingDock() {
         "absolute bottom-2 left-1/2 -translate-x-1/2 z-(--z-floating-dock) pointer-events-auto",
         "flex items-center gap-1 px-2 py-1 rounded-lg max-w-[90vw] overflow-x-auto",
         "border border-vsc-border/40",
-        "shadow-[0_4px_20px_rgba(0,0,0,0.3)]",
+        "shadow-dock",
         // Glass
         "bg-[color-mix(in_srgb,var(--color-vsc-bg)_85%,transparent)]",
         "backdrop-blur-md backdrop-saturate-150",

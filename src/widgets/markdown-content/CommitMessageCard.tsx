@@ -70,7 +70,7 @@ export const CommitMessageCard = React.memo(function CommitMessageCard({
           <span
             className={cn(
               "inline-flex items-center gap-1 shrink-0 px-1.5 h-4 rounded",
-              "text-[9px] font-semibold tracking-wide uppercase",
+              "text-3xs font-semibold tracking-wide uppercase",
               "bg-vsc-surface-2/60",
               style.color,
             )}
@@ -84,7 +84,7 @@ export const CommitMessageCard = React.memo(function CommitMessageCard({
 
         {/* Body bullets */}
         {bodyLines.length > 0 && (
-          <ul className="mt-1 space-y-px text-[11px] text-vsc-text-secondary leading-snug">
+          <ul className="mt-1 space-y-px text-xs text-vsc-text-secondary leading-snug">
             {bodyLines.map((line) => {
               const bullet = line.replace(/^[-*]\s*/, "");
               return (

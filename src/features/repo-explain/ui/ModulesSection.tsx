@@ -3,6 +3,8 @@ import { memo, useState } from "react";
 /**
  * ModulesSection — displays the module list with dependency counts and descriptions.
  */
+import { Text } from "~shared/ui";
+
 import type { ModuleInfo as BaseModuleInfo } from "../model/repoExplainAtoms";
 
 // ─── Types ─────────────────────────────────────────────────
@@ -33,31 +35,51 @@ const ModuleCard = memo(function ModuleCard({ module }: { module: ModuleInfo }) 
         aria-expanded={expanded}
       >
         <div className="min-w-0 flex-1">
-          <span className="text-sm font-medium text-vsc-text-primary">{module.name}</span>
-          <span className="ml-2 text-xs text-vsc-text-ghost">{module.path}</span>
+          <Text size="sm" weight="medium">
+            {module.name}
+          </Text>
+          <Text size="xs" tone="ghost" className="ml-2">
+            {module.path}
+          </Text>
         </div>
-        <div className="flex shrink-0 items-center gap-3 text-xs text-vsc-text-tertiary">
-          <span>{module.fileCount} files</span>
-          {module.dependencyCount != null && <span>{module.dependencyCount} deps</span>}
-          <span className="text-vsc-text-ghost">{expanded ? "\u25B2" : "\u25BC"}</span>
+        <div className="flex shrink-0 items-center gap-3">
+          <Text size="xs" tone="tertiary">
+            {module.fileCount} files
+          </Text>
+          {module.dependencyCount != null && (
+            <Text size="xs" tone="tertiary">
+              {module.dependencyCount} deps
+            </Text>
+          )}
+          <Text size="xs" tone="ghost">
+            {expanded ? "\u25B2" : "\u25BC"}
+          </Text>
         </div>
       </button>
 
       {expanded && (
         <div className="border-t border-vsc-border/30 px-3 py-2 text-xs">
-          <p className="mb-2 text-vsc-text-secondary">{module.description}</p>
+          <Text as="p" size="xs" tone="secondary" className="mb-2">
+            {module.description}
+          </Text>
 
           {module.entryPoints && module.entryPoints.length > 0 && (
             <div className="mb-1.5">
-              <span className="font-medium text-vsc-text-tertiary">Entry points: </span>
-              <span className="font-mono text-vsc-accent">{module.entryPoints.join(", ")}</span>
+              <Text weight="medium" tone="tertiary">
+                Entry points:{" "}
+              </Text>
+              <Text tone="info" className="font-mono">
+                {module.entryPoints.join(", ")}
+              </Text>
             </div>
           )}
 
           {module.dependents && module.dependents.length > 0 && (
             <div>
-              <span className="font-medium text-vsc-text-tertiary">Used by: </span>
-              <span className="text-vsc-text-secondary">{module.dependents.join(", ")}</span>
+              <Text weight="medium" tone="tertiary">
+                Used by:{" "}
+              </Text>
+              <Text tone="secondary">{module.dependents.join(", ")}</Text>
             </div>
           )}
         </div>
@@ -73,7 +95,11 @@ export const ModulesSection = memo(function ModulesSection({
   className,
 }: ModulesSectionProps) {
   if (modules.length === 0) {
-    return <p className="text-sm text-vsc-text-ghost">No modules detected.</p>;
+    return (
+      <Text as="p" size="sm" tone="ghost">
+        No modules detected.
+      </Text>
+    );
   }
 
   return (

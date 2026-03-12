@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { Icon } from "~shared/ui/primitives/Icon";
+import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
 
 // ─── Types ──────────────────────────────────────────────
@@ -30,18 +31,102 @@ const SEVERITY_CONFIG: Record<Severity, { icon: string; color: string; label: st
 // ─── Mock Data ──────────────────────────────────────────
 
 const MOCK_FINDINGS: Finding[] = [
-  { severity: "error", message: "Type 'string' is not assignable to type 'number'", filePath: "src/core/engine/SemanticParser.ts", line: 47, col: 12, source: "ts(2322)" },
-  { severity: "error", message: "Property 'resolve' does not exist on type 'INodeVisitor'", filePath: "src/core/engine/SemanticParser.ts", line: 102, col: 8, source: "ts(2339)" },
-  { severity: "error", message: "Cannot find module '../core/missing'", filePath: "src/features/intent-engine/resolver.ts", line: 3, col: 1, source: "ts(2307)" },
-  { severity: "warning", message: "'parseResult' is declared but never used", filePath: "src/core/engine/SemanticParser.ts", line: 15, col: 7, source: "ts(6133)" },
-  { severity: "warning", message: "This comparison appears to be unintentional", filePath: "src/features/intent-engine/resolver.ts", line: 33, col: 14, source: "ts(2367)" },
-  { severity: "warning", message: "Unexpected 'any'. Specify a different type", filePath: "src/shared/lib/utils.ts", line: 71, col: 29, source: "@typescript-eslint" },
-  { severity: "warning", message: "Missing return type on function", filePath: "src/shared/lib/utils.ts", line: 85, col: 1, source: "@typescript-eslint" },
-  { severity: "warning", message: "Prefer 'const' over 'let' when variable is never reassigned", filePath: "packages/protocol/src/models/index.ts", line: 22, col: 3, source: "prefer-const" },
-  { severity: "info", message: "This async function has no 'await' expression", filePath: "src/features/intent-engine/resolver.ts", line: 58, col: 1, source: "require-await" },
-  { severity: "info", message: "File has too many lines (320). Maximum allowed is 300", filePath: "src/core/engine/SemanticParser.ts", line: 1, col: 1, source: "max-lines" },
-  { severity: "info", message: "Consider extracting this logic into a separate function", filePath: "src/widgets/prompt-box/PromptBox.tsx", line: 156, col: 3, source: "complexity" },
-  { severity: "warning", message: "React Hook useEffect has a missing dependency", filePath: "src/widgets/prompt-box/PromptBox.tsx", line: 89, col: 5, source: "react-hooks/exhaustive-deps" },
+  {
+    severity: "error",
+    message: "Type 'string' is not assignable to type 'number'",
+    filePath: "src/core/engine/SemanticParser.ts",
+    line: 47,
+    col: 12,
+    source: "ts(2322)",
+  },
+  {
+    severity: "error",
+    message: "Property 'resolve' does not exist on type 'INodeVisitor'",
+    filePath: "src/core/engine/SemanticParser.ts",
+    line: 102,
+    col: 8,
+    source: "ts(2339)",
+  },
+  {
+    severity: "error",
+    message: "Cannot find module '../core/missing'",
+    filePath: "src/features/intent-engine/resolver.ts",
+    line: 3,
+    col: 1,
+    source: "ts(2307)",
+  },
+  {
+    severity: "warning",
+    message: "'parseResult' is declared but never used",
+    filePath: "src/core/engine/SemanticParser.ts",
+    line: 15,
+    col: 7,
+    source: "ts(6133)",
+  },
+  {
+    severity: "warning",
+    message: "This comparison appears to be unintentional",
+    filePath: "src/features/intent-engine/resolver.ts",
+    line: 33,
+    col: 14,
+    source: "ts(2367)",
+  },
+  {
+    severity: "warning",
+    message: "Unexpected 'any'. Specify a different type",
+    filePath: "src/shared/lib/utils.ts",
+    line: 71,
+    col: 29,
+    source: "@typescript-eslint",
+  },
+  {
+    severity: "warning",
+    message: "Missing return type on function",
+    filePath: "src/shared/lib/utils.ts",
+    line: 85,
+    col: 1,
+    source: "@typescript-eslint",
+  },
+  {
+    severity: "warning",
+    message: "Prefer 'const' over 'let' when variable is never reassigned",
+    filePath: "packages/protocol/src/models/index.ts",
+    line: 22,
+    col: 3,
+    source: "prefer-const",
+  },
+  {
+    severity: "info",
+    message: "This async function has no 'await' expression",
+    filePath: "src/features/intent-engine/resolver.ts",
+    line: 58,
+    col: 1,
+    source: "require-await",
+  },
+  {
+    severity: "info",
+    message: "File has too many lines (320). Maximum allowed is 300",
+    filePath: "src/core/engine/SemanticParser.ts",
+    line: 1,
+    col: 1,
+    source: "max-lines",
+  },
+  {
+    severity: "info",
+    message: "Consider extracting this logic into a separate function",
+    filePath: "src/widgets/prompt-box/PromptBox.tsx",
+    line: 156,
+    col: 3,
+    source: "complexity",
+  },
+  {
+    severity: "warning",
+    message: "React Hook useEffect has a missing dependency",
+    filePath: "src/widgets/prompt-box/PromptBox.tsx",
+    line: 89,
+    col: 5,
+    source: "react-hooks/exhaustive-deps",
+  },
 ];
 
 // ─── Finding Row ────────────────────────────────────────
@@ -68,13 +153,17 @@ const FindingRow = memo(function FindingRow({ finding }: { finding: Finding }) {
     >
       <Icon name={config.icon} tokenSize="2xs" className={cn("shrink-0 mt-0.5", config.color)} />
       <div className="flex flex-col min-w-0 flex-1 gap-0.5">
-        <span className="text-2xs text-vsc-fg/90 leading-tight">{finding.message}</span>
+        <Text size="2xs" className="text-vsc-fg/90 leading-tight">
+          {finding.message}
+        </Text>
         <div className="flex items-center gap-1.5">
-          <span className="text-3xs text-vsc-text-ghost/50 tabular-nums">
+          <Text size="3xs" tone="ghost" mono className="opacity-50">
             {finding.line}:{finding.col}
-          </span>
+          </Text>
           {finding.source && (
-            <span className="text-3xs text-vsc-text-ghost/35">{finding.source}</span>
+            <Text size="3xs" tone="ghost" className="opacity-35">
+              {finding.source}
+            </Text>
           )}
         </div>
       </div>
@@ -115,11 +204,15 @@ const FileGroup = memo(function FileGroup({
           )}
         />
         <Icon name="file" tokenSize="2xs" className="text-vsc-text-tertiary shrink-0" />
-        <span className="text-2xs text-vsc-fg font-medium truncate">{fileName}</span>
-        <span className="text-3xs text-vsc-text-ghost/40 truncate min-w-0">{dirPath}</span>
-        <span className="ml-auto text-3xs text-vsc-text-ghost/50 tabular-nums shrink-0">
+        <Text size="2xs" weight="medium" truncate>
+          {fileName}
+        </Text>
+        <Text size="3xs" tone="ghost" truncate className="opacity-40">
+          {dirPath}
+        </Text>
+        <Text size="3xs" tone="ghost" mono className="ml-auto opacity-50 shrink-0">
           {findings.length}
-        </span>
+        </Text>
       </button>
       {open && findings.map((f, i) => <FindingRow key={`${f.line}-${f.col}-${i}`} finding={f} />)}
     </div>
@@ -192,7 +285,9 @@ export const FindingsView = React.memo(function FindingsView() {
       {/* ── Header ── */}
       <div className="shrink-0 px-2 pt-2.5 pb-2 space-y-1.5">
         <div className="flex items-center justify-between px-0.5">
-          <span className="text-2xs font-semibold text-vsc-fg">Findings</span>
+          <Text size="2xs" weight="semibold">
+            Findings
+          </Text>
         </div>
 
         {/* Filter tabs */}
@@ -230,15 +325,21 @@ export const FindingsView = React.memo(function FindingsView() {
         <div className="flex items-center gap-2 px-0.5">
           <div className="flex items-center gap-1">
             <Icon name="error" tokenSize="2xs" className="text-vsc-error" />
-            <span className="text-3xs text-vsc-text-ghost/60 tabular-nums">{counts.error}</span>
+            <Text size="3xs" tone="ghost" mono className="opacity-60">
+              {counts.error}
+            </Text>
           </div>
           <div className="flex items-center gap-1">
             <Icon name="warning" tokenSize="2xs" className="text-vsc-warning" />
-            <span className="text-3xs text-vsc-text-ghost/60 tabular-nums">{counts.warning}</span>
+            <Text size="3xs" tone="ghost" mono className="opacity-60">
+              {counts.warning}
+            </Text>
           </div>
           <div className="flex items-center gap-1">
             <Icon name="info" tokenSize="2xs" className="text-vsc-info" />
-            <span className="text-3xs text-vsc-text-ghost/60 tabular-nums">{counts.info}</span>
+            <Text size="3xs" tone="ghost" mono className="opacity-60">
+              {counts.info}
+            </Text>
           </div>
         </div>
       </div>
@@ -250,9 +351,13 @@ export const FindingsView = React.memo(function FindingsView() {
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
             <Icon name="check" tokenSize="lg" className="text-vsc-success/30" />
-            <span className="text-2xs text-vsc-text-ghost/40 text-center">
-              No {activeTab === "all" ? "findings" : SEVERITY_CONFIG[activeTab as Severity].label.toLowerCase()} found
-            </span>
+            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
+              No{" "}
+              {activeTab === "all"
+                ? "findings"
+                : SEVERITY_CONFIG[activeTab as Severity].label.toLowerCase()}{" "}
+              found
+            </Text>
           </div>
         ) : (
           Array.from(groupedByFile.entries()).map(([filePath, findings]) => (

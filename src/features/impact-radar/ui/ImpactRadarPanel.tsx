@@ -43,11 +43,7 @@ const AnalysisContextBar = React.memo(function AnalysisContextBar({
 
 // ─── Summary Card ────────────────────────────────────────
 
-const SummaryCard = React.memo(function SummaryCard({
-  summary,
-}: {
-  summary: ImpactSummary;
-}) {
+const SummaryCard = React.memo(function SummaryCard({ summary }: { summary: ImpactSummary }) {
   return (
     <div className="flex flex-col gap-3 p-3 backdrop-blur-md bg-vsc-surface-0/80 border border-vsc-border/30 rounded-md">
       {/* Severity counts */}
@@ -134,8 +130,7 @@ const EmptyState = React.memo(function EmptyState() {
         No impact analysis result
       </Text>
       <Text size="2xs" tone="ghost">
-        Select a symbol in the editor and press{" "}
-        <Kbd>{IS_MAC ? "Cmd" : "Ctrl"}+Shift+I</Kbd>
+        Select a symbol in the editor and press <Kbd>{IS_MAC ? "Cmd" : "Ctrl"}+Shift+I</Kbd>
       </Text>
     </div>
   );
@@ -153,15 +148,17 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
 
   const navigateToFile = useNavigateToFile();
 
-  const handleNodeClick = useCallback((filePath: string, line: number) => {
-    navigateToFile(filePath, line);
-  }, [navigateToFile]);
+  const handleNodeClick = useCallback(
+    (filePath: string, line: number) => {
+      navigateToFile(filePath, line);
+    },
+    [navigateToFile],
+  );
 
   const handleRunTests = useCallback(() => {
     // Trigger affected test run via VSCode task
-    const affectedFiles = result?.nodes
-      .filter((n) => n.category === "test")
-      .map((n) => n.filePath) ?? [];
+    const affectedFiles =
+      result?.nodes.filter((n) => n.category === "test").map((n) => n.filePath) ?? [];
     if (affectedFiles.length > 0) {
       for (const file of affectedFiles) {
         getVscodeApi().postMessage({
@@ -181,13 +178,7 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
   if (loading) {
     return (
       <div className="flex flex-col h-full bg-vsc-surface-0">
-        <Header
-          triggerSymbol="..."
-          triggerFile=""
-          triggerLine={0}
-          onClose={close}
-          isLoading
-        />
+        <Header triggerSymbol="..." triggerFile="" triggerLine={0} onClose={close} isLoading />
         <LoadingBar />
       </div>
     );
@@ -212,12 +203,9 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
         onClose={close}
       />
 
-      <AnalysisContextBar
-        triggerFile={result.triggerFile}
-        triggerSymbol={result.triggerSymbol}
-      />
+      <AnalysisContextBar triggerFile={result.triggerFile} triggerSymbol={result.triggerSymbol} />
 
-      <div className="flex flex-1 min-h-0 overflow-hidden animate-in fade-in duration-200">
+      <div className="flex flex-1 min-h-0 overflow-hidden animate-in fade-in duration-slow">
         {/* Left sidebar — summary */}
         {summary && (
           <div className="hidden sm:flex w-48 shrink-0 flex-col p-2 border-r border-vsc-border/15 overflow-y-auto">
@@ -226,11 +214,7 @@ export const ImpactRadarPanel = React.memo(function ImpactRadarPanel() {
         )}
 
         {/* Right main — node list */}
-        <ImpactNodeList
-          nodes={result.nodes}
-          onNodeClick={handleNodeClick}
-          className="flex-1"
-        />
+        <ImpactNodeList nodes={result.nodes} onNodeClick={handleNodeClick} className="flex-1" />
       </div>
 
       {/* Bottom action bar */}
@@ -276,10 +260,9 @@ const Header = React.memo(function Header({
         Impact Radar
         {triggerSymbol && !isLoading && (
           <span className="text-vsc-text-ghost font-normal">
-            {" "}&mdash; {triggerSymbol}
-            {subtitle && (
-              <span className="text-vsc-text-ghost"> ({subtitle})</span>
-            )}
+            {" "}
+            &mdash; {triggerSymbol}
+            {subtitle && <span className="text-vsc-text-ghost"> ({subtitle})</span>}
           </span>
         )}
       </Text>

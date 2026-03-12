@@ -52,21 +52,14 @@ const SectionHeader = memo(function SectionHeader({
       <Icon
         name="chevron-right"
         tokenSize="2xs"
-        className={cn(
-          "transition-transform duration-fast shrink-0",
-          expanded && "rotate-90",
-        )}
+        className={cn("transition-transform duration-fast shrink-0", expanded && "rotate-90")}
       />
       {label} ({count} {count === 1 ? "path" : "paths"})
     </button>
   );
 });
 
-const SecurityFooter = memo(function SecurityFooter({
-  notes,
-}: {
-  notes: readonly string[];
-}) {
+const SecurityFooter = memo(function SecurityFooter({ notes }: { notes: readonly string[] }) {
   if (notes.length === 0) return null;
 
   const hasDanger = notes.some((n) => n.startsWith("DANGER"));
@@ -101,9 +94,7 @@ const SecurityFooter = memo(function SecurityFooter({
             key={`note-${note.slice(0, 30)}`}
             className={cn(
               "text-3xs",
-              note.startsWith("DANGER")
-                ? "text-vsc-error font-medium"
-                : "text-vsc-text-secondary",
+              note.startsWith("DANGER") ? "text-vsc-error font-medium" : "text-vsc-text-secondary",
             )}
           >
             {note}
@@ -226,7 +217,7 @@ export const DataflowPanel = memo(function DataflowPanel({
               onToggle={toggleInbound}
             />
             {inboundExpanded && (
-              <div className="mt-1 space-y-1 animate-in fade-in duration-150">
+              <div className="mt-1 space-y-1 animate-in fade-in duration-slow">
                 {analysis.inbound.map((path) => (
                   <DataflowPathView
                     key={path.id}
@@ -252,7 +243,7 @@ export const DataflowPanel = memo(function DataflowPanel({
               onToggle={toggleOutbound}
             />
             {outboundExpanded && (
-              <div className="mt-1 space-y-1 animate-in fade-in duration-150">
+              <div className="mt-1 space-y-1 animate-in fade-in duration-slow">
                 {analysis.outbound.map((path) => (
                   <DataflowPathView
                     key={path.id}

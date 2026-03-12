@@ -66,7 +66,7 @@ export const SlideDrawer = React.memo(
     const stableOnClose = useCallback(() => onClose(), [onClose]);
 
     const { mounted, exiting, handleTabKeyDown } = useOverlayBehavior({
-      id: `drawer-${  titleId}`,
+      id: `drawer-${titleId}`,
       type: "drawer",
       open,
       onClose: stableOnClose,
@@ -93,7 +93,10 @@ export const SlideDrawer = React.memo(
           data-testid="drawer-backdrop"
         >
           {/* Frosted backdrop */}
-          <div className="absolute inset-0 bg-vsc-fg/40 backdrop-blur-[2px]" aria-hidden />
+          <div
+            className="absolute inset-0 bg-vsc-fg/40 backdrop-blur-[--blur-overlay]"
+            aria-hidden
+          />
 
           {/* Drawer panel */}
           <div

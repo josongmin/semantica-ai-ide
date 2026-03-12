@@ -34,24 +34,19 @@ function formatKind(kind: string): string {
 
 // ─── Component ─────────────────────────────────────────────
 
-export const GraphTooltip = memo(function GraphTooltip({
-  node,
-  className,
-}: GraphTooltipProps) {
+export const GraphTooltip = memo(function GraphTooltip({ node, className }: GraphTooltipProps) {
   if (!node) return null;
 
   const badgeClass = STATUS_BADGE_COLORS[node.diffStatus];
 
   return (
     <div
-      className={`w-64 rounded-lg border border-[var(--color-zinc-700,#3f3f46)] bg-[var(--color-zinc-800,#27272a)] p-3 shadow-lg ${className ?? ""}`}
+      className={`w-64 rounded-lg border border-vsc-border bg-vsc-surface-2 p-3 shadow-lg ${className ?? ""}`}
       role="tooltip"
     >
       {/* Header */}
       <div className="mb-2 flex items-center justify-between">
-        <span className="truncate text-sm font-medium text-[var(--color-zinc-100,#f4f4f5)]">
-          {node.name}
-        </span>
+        <span className="truncate text-sm font-medium text-vsc-fg">{node.name}</span>
         <span className={`rounded px-1.5 py-0.5 text-xs font-medium ${badgeClass}`}>
           {STATUS_LABELS[node.diffStatus]}
         </span>
@@ -60,32 +55,32 @@ export const GraphTooltip = memo(function GraphTooltip({
       {/* Details */}
       <dl className="space-y-1 text-xs">
         <div className="flex justify-between">
-          <dt className="text-[var(--color-zinc-400,#a1a1aa)]">Kind</dt>
-          <dd className="text-[var(--color-zinc-200,#e4e4e7)]">{formatKind(node.kind)}</dd>
+          <dt className="text-vsc-text-tertiary">Kind</dt>
+          <dd className="text-vsc-text-secondary">{formatKind(node.kind)}</dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-[var(--color-zinc-400,#a1a1aa)]">File</dt>
-          <dd className="max-w-[160px] truncate text-[var(--color-zinc-200,#e4e4e7)]" title={node.filePath}>
+          <dt className="text-vsc-text-tertiary">File</dt>
+          <dd className="max-w-[160px] truncate text-vsc-text-secondary" title={node.filePath}>
             {node.filePath}
           </dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-[var(--color-zinc-400,#a1a1aa)]">Line</dt>
-          <dd className="text-[var(--color-zinc-200,#e4e4e7)]">{node.line}</dd>
+          <dt className="text-vsc-text-tertiary">Line</dt>
+          <dd className="text-vsc-text-secondary">{node.line}</dd>
         </div>
         <div className="flex justify-between">
-          <dt className="text-[var(--color-zinc-400,#a1a1aa)]">Connections</dt>
-          <dd className="text-[var(--color-zinc-200,#e4e4e7)]">{node.connections.length}</dd>
+          <dt className="text-vsc-text-tertiary">Connections</dt>
+          <dd className="text-vsc-text-secondary">{node.connections.length}</dd>
         </div>
         {node.metrics && (
           <>
             <div className="flex justify-between">
-              <dt className="text-[var(--color-zinc-400,#a1a1aa)]">Complexity</dt>
-              <dd className="text-[var(--color-zinc-200,#e4e4e7)]">{node.metrics.complexity}</dd>
+              <dt className="text-vsc-text-tertiary">Complexity</dt>
+              <dd className="text-vsc-text-secondary">{node.metrics.complexity}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-[var(--color-zinc-400,#a1a1aa)]">Change freq</dt>
-              <dd className="text-[var(--color-zinc-200,#e4e4e7)]">{node.metrics.changeFreq}</dd>
+              <dt className="text-vsc-text-tertiary">Change freq</dt>
+              <dd className="text-vsc-text-secondary">{node.metrics.changeFreq}</dd>
             </div>
           </>
         )}

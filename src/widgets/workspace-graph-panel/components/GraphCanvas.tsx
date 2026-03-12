@@ -90,7 +90,9 @@ export const GraphCanvas = React.memo(function GraphCanvas() {
     if (layout.size === 0) return;
 
     // Edges
-    const edgeColor = getVscodeColor("--vscode-charts-blue", "#8b5cf6");
+    const edgeColor =
+      getComputedStyle(canvasRef.current).getPropertyValue("--color-chart-blue").trim() ||
+      "#3794ff";
     ctx.strokeStyle = `${edgeColor}33`; // ~0.2 alpha
     ctx.lineWidth = 1;
     for (const edge of edges) {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { cn } from "../../shared/ui";
+import { Badge, cn } from "../../shared/ui";
 
 /** Shared toolbar button style */
 // eslint-disable-next-line react-refresh/only-export-components
@@ -22,13 +22,13 @@ export const ToolbarSep = React.memo(function ToolbarSep() {
 export const BadgeIndicator = React.memo(function BadgeIndicator({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
-    <span
-      className="inline-flex items-center justify-center min-w-[14px] h-3.5 px-1 rounded-full bg-vsc-badge-bg text-vsc-badge-fg text-2xs font-semibold leading-none tabular-nums shrink-0"
+    <Badge
+      text={count}
+      size="sm"
+      className="tabular-nums"
       aria-label={`${count} active`}
       data-testid="feature-badge"
-    >
-      {count}
-    </span>
+    />
   );
 });
 

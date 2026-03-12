@@ -38,10 +38,10 @@ interface GraphCanvasProps {
 // ─── Constants ─────────────────────────────────────────────
 
 const STATUS_COLORS: Record<DiffStatus, string> = {
-  added: "var(--color-vsc-success, #1a7f37)",
-  removed: "var(--color-vsc-error, #cf222e)",
-  modified: "var(--color-vsc-warning, #9a6700)",
-  unchanged: "var(--color-vsc-text-ghost)",
+  added: "var(--color-graph-added)",
+  removed: "var(--color-graph-removed)",
+  modified: "var(--color-graph-modified)",
+  unchanged: "var(--color-graph-unchanged)",
 };
 
 const NODE_RADIUS = 18;

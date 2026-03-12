@@ -69,13 +69,13 @@ export const AICommandInput = memo(function AICommandInput({
   return (
     <div
       className={cn(
-        "absolute bottom-2 left-4 right-4 z-[22]",
+        "absolute bottom-2 left-4 right-4 z-[--z-overlay]",
         "pointer-events-auto",
         "rounded-lg overflow-hidden",
         "border border-vsc-accent/30",
         "bg-vsc-surface-1/95 backdrop-blur-md",
         "shadow-lg shadow-black/20",
-        "animate-in slide-in-from-bottom-2 fade-in duration-150",
+        "animate-in slide-in-from-bottom-2 fade-in duration-slow",
         className,
       )}
       data-testid="ai-command-input"
@@ -115,9 +115,7 @@ export const AICommandInput = memo(function AICommandInput({
         <div className="border-t border-vsc-border/20">
           <div className="flex items-center gap-2 px-3 py-2">
             <Icon name="terminal" size={12} className="text-vsc-text-ghost shrink-0" />
-            <code className="flex-1 text-xs font-mono text-vsc-accent">
-              {state.result.command}
-            </code>
+            <code className="flex-1 text-xs font-mono text-vsc-accent">{state.result.command}</code>
             <div className="flex items-center gap-1 shrink-0">
               <ConfidenceBadge confidence={state.result.confidence} />
               <button
@@ -138,9 +136,7 @@ export const AICommandInput = memo(function AICommandInput({
             </div>
           </div>
           {state.result.explanation && (
-            <div className="px-3 pb-2 text-3xs text-vsc-text-ghost">
-              {state.result.explanation}
-            </div>
+            <div className="px-3 pb-2 text-3xs text-vsc-text-ghost">{state.result.explanation}</div>
           )}
           {state.result.alternatives && state.result.alternatives.length > 0 && (
             <div className="flex items-center gap-1 px-3 pb-2 flex-wrap">
@@ -167,7 +163,7 @@ export const AICommandInput = memo(function AICommandInput({
       )}
 
       {/* Footer hint */}
-      <div className="flex items-center justify-between px-3 py-1 border-t border-vsc-border/10 text-[10px] text-vsc-text-ghost">
+      <div className="flex items-center justify-between px-3 py-1 border-t border-vsc-border/10 text-2xs text-vsc-text-ghost">
         <span>Enter to run · Esc to close</span>
         <span className="font-mono opacity-50">⌘I</span>
       </div>
@@ -184,9 +180,5 @@ function ConfidenceBadge({ confidence }: { confidence: number }) {
   else if (confidence >= 0.5) color = "text-vsc-warning";
   else color = "text-vsc-error";
 
-  return (
-    <span className={cn("text-3xs tabular-nums", color)}>
-      {pct}%
-    </span>
-  );
+  return <span className={cn("text-3xs tabular-nums", color)}>{pct}%</span>;
 }

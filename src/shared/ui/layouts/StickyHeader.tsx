@@ -18,7 +18,7 @@ export const StickyHeader = React.memo(function StickyHeader({
   return (
     <div
       className={cn(
-        "sticky top-0 bg-vsc-bg/80 backdrop-blur-sm z-[--z-sticky] border-b border-vsc-border shadow-[0_1px_0_var(--color-vsc-border)]",
+        "sticky top-0 bg-vsc-bg/80 backdrop-blur-sm z-[--z-sticky] border-b border-vsc-border shadow-sm",
         className,
       )}
     >

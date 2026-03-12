@@ -1,6 +1,6 @@
 import React from "react";
 
-import { cn } from "~shared/ui";
+import { cn, Text } from "~shared/ui";
 
 /**
  * Small floating legend overlay for the graph diff visualization.
@@ -17,9 +17,14 @@ export const DiffLegend = React.memo(function DiffLegend() {
         "animate-in fade-in slide-in-from-bottom-1 duration-300",
       )}
     >
-      <span className="text-2xs font-medium text-vsc-text-tertiary uppercase tracking-wider block mb-1.5">
+      <Text
+        size="2xs"
+        tone="tertiary"
+        weight="medium"
+        className="uppercase tracking-wider block mb-1.5"
+      >
         Legend
-      </span>
+      </Text>
 
       <div className="grid grid-cols-2 gap-x-5 gap-y-1">
         {/* Nodes column */}
@@ -37,7 +42,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
                 strokeWidth="1.5"
               />
             </svg>
-            <span className="text-vsc-text-secondary">changed</span>
+            <Text tone="secondary">changed</Text>
           </LegendItem>
 
           <LegendItem>
@@ -53,7 +58,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
                 strokeWidth="1"
               />
             </svg>
-            <span className="text-vsc-text-secondary">affected</span>
+            <Text tone="secondary">affected</Text>
           </LegendItem>
 
           <LegendItem>
@@ -71,7 +76,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
                 opacity="0.5"
               />
             </svg>
-            <span className="text-vsc-text-ghost">unchanged</span>
+            <Text tone="ghost">unchanged</Text>
           </LegendItem>
         </div>
 
@@ -89,7 +94,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
               />
               <polygon points="18,3 22,6 18,9" fill="var(--color-vsc-text-ghost)" />
             </svg>
-            <span className="text-vsc-text-secondary">normal</span>
+            <Text tone="secondary">normal</Text>
           </LegendItem>
 
           <LegendItem>
@@ -105,7 +110,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
               />
               <polygon points="18,3 22,6 18,9" fill="var(--color-vsc-warning)" />
             </svg>
-            <span className="text-vsc-text-secondary">impacted</span>
+            <Text tone="secondary">impacted</Text>
           </LegendItem>
 
           <LegendItem>
@@ -121,7 +126,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
               />
               <polygon points="18,3 22,6 18,9" fill="var(--color-vsc-success)" />
             </svg>
-            <span className="text-vsc-text-secondary">new</span>
+            <Text tone="secondary">new</Text>
           </LegendItem>
 
           <LegendItem>
@@ -138,7 +143,7 @@ export const DiffLegend = React.memo(function DiffLegend() {
               />
               <polygon points="18,3 22,6 18,9" fill="var(--color-vsc-error)" opacity="0.4" />
             </svg>
-            <span className="text-vsc-text-ghost">removed</span>
+            <Text tone="ghost">removed</Text>
           </LegendItem>
         </div>
       </div>

@@ -195,7 +195,7 @@ export const OutputView = React.memo(function OutputView() {
                 type="button"
                 onClick={() => setActiveChannel(ch)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-2 h-[22px] rounded-md text-[11px] cursor-pointer border-none",
+                  "inline-flex items-center gap-1 px-2 h-[22px] rounded-md text-xs cursor-pointer border-none",
                   isActive
                     ? "bg-vsc-surface-2 text-vsc-fg font-medium"
                     : "bg-transparent text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-1",
@@ -206,7 +206,7 @@ export const OutputView = React.memo(function OutputView() {
                 {count > 0 && (
                   <span
                     className={cn(
-                      "ml-0.5 min-w-[16px] h-[14px] inline-flex items-center justify-center rounded-full text-[9px] font-medium leading-none px-1",
+                      "ml-0.5 min-w-[16px] h-[14px] inline-flex items-center justify-center rounded-full text-3xs font-medium leading-none px-1",
                       isActive
                         ? "bg-vsc-fg/10 text-vsc-text-secondary"
                         : "bg-vsc-surface-2/60 text-vsc-text-ghost",
@@ -234,7 +234,7 @@ export const OutputView = React.memo(function OutputView() {
                 onClick={() => toggleLevel(level)}
                 title={`${level} (${count})`}
                 className={cn(
-                  "inline-flex items-center gap-0.5 h-[20px] px-1.5 rounded-md text-[10px] cursor-pointer border-none",
+                  "inline-flex items-center gap-0.5 h-[20px] px-1.5 rounded-md text-2xs cursor-pointer border-none",
                   isActive
                     ? cn(LEVEL_COLOR[level], "bg-vsc-surface-2")
                     : "text-vsc-text-ghost/40 bg-transparent hover:text-vsc-text-ghost",
@@ -276,10 +276,10 @@ export const OutputView = React.memo(function OutputView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter output..."
-            className="flex-1 bg-transparent border-none outline-none text-[12px] text-vsc-fg placeholder:text-vsc-text-ghost/40"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-vsc-fg placeholder:text-vsc-text-ghost/40"
           />
           {searchQuery && (
-            <span className="text-[10px] text-vsc-text-ghost tabular-nums">
+            <span className="text-2xs text-vsc-text-ghost tabular-nums">
               {filtered.length} match{filtered.length !== 1 ? "es" : ""}
             </span>
           )}
@@ -300,7 +300,7 @@ export const OutputView = React.memo(function OutputView() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-[11.5px] leading-[22px]"
+        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-xs leading-[22px]"
         role="log"
       >
         {filtered.length === 0 ? (
@@ -350,7 +350,7 @@ export const OutputView = React.memo(function OutputView() {
           className={cn(
             "absolute bottom-3 left-1/2 -translate-x-1/2",
             "inline-flex items-center gap-1.5 px-3 h-[26px] rounded-full",
-            "bg-vsc-surface-2/95 text-vsc-text-secondary text-[11px]",
+            "bg-vsc-surface-2/95 text-vsc-text-secondary text-xs",
             "border border-vsc-border/20 shadow-lg shadow-black/10",
             "cursor-pointer backdrop-blur-sm",
             "hover:text-vsc-fg hover:bg-vsc-surface-3/95",
@@ -426,7 +426,7 @@ const LogRow = React.memo(function LogRow({
       {showChannel && (
         <span
           className={cn(
-            "shrink-0 w-[64px] truncate text-[10px] leading-[22px] uppercase tracking-wider font-medium",
+            "shrink-0 w-[64px] truncate text-2xs leading-[22px] uppercase tracking-wider font-medium",
             LEVEL_COLOR[line.level],
             "opacity-50",
           )}
@@ -521,7 +521,7 @@ function EmptyState({
       <Icon name="output" size={32} className="text-vsc-text-ghost/15" />
       <div className="flex flex-col items-center gap-1">
         <span className="text-xs text-vsc-text-ghost/60">Waiting for output...</span>
-        <span className="text-[10.5px] text-vsc-text-ghost/30">
+        <span className="text-2xs text-vsc-text-ghost/30">
           Agent, Build, LSP, Extension logs will appear here
         </span>
       </div>

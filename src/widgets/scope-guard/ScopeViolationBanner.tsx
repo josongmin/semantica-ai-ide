@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 
 import { isScopeViolationAtom } from "~shared/bootstrap/scope-guard";
 
-import { Button, Icon, Text } from "../../shared/ui";
+import { Button, InlineBanner, Text } from "../../shared/ui";
 
 interface ScopeViolationBannerProps {
   readonly filePath: string;
@@ -33,25 +33,26 @@ export const ScopeViolationBanner = React.memo(function ScopeViolationBanner({
   if (!isViolation) return null;
 
   return (
-    <div
-      className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-vsc-warning/30 bg-vsc-warning/5"
-      role="alert"
-      data-testid="scope-violation-banner"
+    <InlineBanner
+      variant="warning"
+      icon="shield"
+      bordered
+      actions={
+        <>
+          {onAllow && (
+            <Button variant="ghost" size="sm" onClick={handleAllow}>
+              Allow
+            </Button>
+          )}
+          {onDeny && (
+            <Button variant="ghost" size="sm" onClick={handleDeny}>
+              Deny
+            </Button>
+          )}
+        </>
+      }
     >
-      <Icon name="shield" tokenSize="sm" className="text-vsc-warning shrink-0" />
-      <Text size="xs" className="flex-1">
-        This file is outside the allowed scope.
-      </Text>
-      {onAllow && (
-        <Button variant="ghost" size="sm" onClick={handleAllow}>
-          Allow
-        </Button>
-      )}
-      {onDeny && (
-        <Button variant="ghost" size="sm" onClick={handleDeny}>
-          Deny
-        </Button>
-      )}
-    </div>
+      <Text size="xs">This file is outside the allowed scope.</Text>
+    </InlineBanner>
   );
 });

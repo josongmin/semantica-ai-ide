@@ -40,7 +40,7 @@ export const AlertDialog = React.memo(
     // --- Overlay hooks ---
     // dismiss: null → AlertDialog can't be dismissed from the stack
     const { mounted, exiting, handleTabKeyDown } = useOverlayBehavior({
-      id: `alertdialog-${  titleId}`,
+      id: `alertdialog-${titleId}`,
       type: "alert-dialog",
       open,
       onClose: null,
@@ -69,7 +69,7 @@ export const AlertDialog = React.memo(
       <OverlayPortal>
         <div
           className={cn(
-            "fixed inset-0 z-[--z-modal] flex items-center justify-center bg-vsc-fg/50 backdrop-blur-[2px]",
+            "fixed inset-0 z-[--z-modal] flex items-center justify-center bg-vsc-fg/50 backdrop-blur-[--blur-overlay]",
             exiting ? "animate-[fade-out_150ms_ease]" : "animate-[fade-in_150ms_ease]",
           )}
           data-testid="alertdialog-backdrop"

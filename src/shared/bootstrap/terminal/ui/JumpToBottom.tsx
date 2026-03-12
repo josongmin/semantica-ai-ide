@@ -27,7 +27,7 @@ export const JumpToBottom = memo(function JumpToBottom({
     <button
       type="button"
       className={cn(
-        "absolute bottom-4 left-1/2 -translate-x-1/2 z-[15]",
+        "absolute bottom-4 left-1/2 -translate-x-1/2 z-[--z-floating]",
         "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full",
         "bg-vsc-surface-2/95 backdrop-blur-sm",
         "border border-vsc-border/40",

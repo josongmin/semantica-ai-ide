@@ -12,15 +12,15 @@ const PADDING_X = 40;
 const PADDING_Y = 32;
 
 const ROLE_COLOR: Record<CausalRole, string> = {
-  "root-cause": "var(--color-cause-root, #f7768e)",
-  propagator: "var(--color-cause-propagator, #e0af68)",
-  symptom: "var(--color-cause-symptom, #7dcfff)",
+  "root-cause": "var(--color-cause-root)",
+  propagator: "var(--color-cause-propagator)",
+  symptom: "var(--color-cause-symptom)",
 };
 
 const ROLE_FILL: Record<CausalRole, string> = {
-  "root-cause": "rgba(247,118,142,0.12)",
-  propagator: "rgba(224,175,104,0.12)",
-  symptom: "rgba(125,207,255,0.12)",
+  "root-cause": "color-mix(in srgb, var(--color-cause-root) 12%, transparent)",
+  propagator: "color-mix(in srgb, var(--color-cause-propagator) 12%, transparent)",
+  symptom: "color-mix(in srgb, var(--color-cause-symptom) 12%, transparent)",
 };
 
 // ─── Props ───────────────────────────────────────────────
@@ -72,7 +72,7 @@ const EdgePath = React.memo(function EdgePath({
       <path
         d={d}
         fill="none"
-        stroke="var(--vsc-border)"
+        stroke="var(--color-vsc-border)"
         strokeWidth={1.5}
         markerEnd="url(#arrowhead)"
       />
@@ -82,7 +82,7 @@ const EdgePath = React.memo(function EdgePath({
           y={midY}
           textAnchor="middle"
           dominantBaseline="middle"
-          fill="var(--vsc-text-ghost)"
+          fill="var(--color-vsc-text-ghost)"
           fontSize={10}
           className="pointer-events-none select-none"
         >
@@ -131,14 +131,12 @@ const NodeRect = React.memo(function NodeRect({
         y={y + 22}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="var(--vsc-fg)"
+        fill="var(--color-vsc-fg)"
         fontSize={12}
         fontWeight={600}
         className="pointer-events-none select-none"
       >
-        {node.symbolName.length > 24
-          ? `${node.symbolName.slice(0, 22)  }...`
-          : node.symbolName}
+        {node.symbolName.length > 24 ? `${node.symbolName.slice(0, 22)}...` : node.symbolName}
       </text>
       {/* Description */}
       <text
@@ -146,13 +144,11 @@ const NodeRect = React.memo(function NodeRect({
         y={y + 44}
         textAnchor="middle"
         dominantBaseline="middle"
-        fill="var(--vsc-text-secondary)"
+        fill="var(--color-vsc-text-secondary)"
         fontSize={10}
         className="pointer-events-none select-none"
       >
-        {node.description.length > 30
-          ? `${node.description.slice(0, 28)  }...`
-          : node.description}
+        {node.description.length > 30 ? `${node.description.slice(0, 28)}...` : node.description}
       </text>
     </g>
   );
@@ -209,18 +205,8 @@ export const CausalChainGraph = React.memo(function CausalChainGraph({
         className="block"
       >
         <defs>
-          <marker
-            id="arrowhead"
-            markerWidth={8}
-            markerHeight={6}
-            refX={8}
-            refY={3}
-            orient="auto"
-          >
-            <polygon
-              points="0 0, 8 3, 0 6"
-              fill="var(--vsc-border)"
-            />
+          <marker id="arrowhead" markerWidth={8} markerHeight={6} refX={8} refY={3} orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="var(--color-vsc-border)" />
           </marker>
         </defs>
 
@@ -244,11 +230,7 @@ export const CausalChainGraph = React.memo(function CausalChainGraph({
           <NodeRect
             key={layout.node.id}
             layout={layout}
-            onClick={
-              onNodeClick
-                ? () => handleNodeClick(layout.node)
-                : undefined
-            }
+            onClick={onNodeClick ? () => handleNodeClick(layout.node) : undefined}
           />
         ))}
       </svg>

@@ -66,7 +66,8 @@ const RiskMeter = React.memo(function RiskMeter({
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: "linear-gradient(to right, var(--vsc-success), var(--vsc-info), var(--vsc-warning), var(--vsc-error))",
+            background:
+              "linear-gradient(to right, var(--vsc-success), var(--vsc-info), var(--vsc-warning), var(--vsc-error))",
           }}
         />
         {/* Position indicator */}
@@ -83,7 +84,7 @@ const RiskMeter = React.memo(function RiskMeter({
             key={level}
             size="2xs"
             className={cn(
-              level === risk ? `${RISK_TEXT_COLOR[level]  } font-medium` : "text-vsc-text-ghost",
+              level === risk ? `${RISK_TEXT_COLOR[level]} font-medium` : "text-vsc-text-ghost",
             )}
           >
             {level}
@@ -112,9 +113,12 @@ const ResultsView = React.memo(function ResultsView({
     [result.affectedPaths],
   );
 
-  const handlePathClick = useCallback((path: AffectedPath) => {
-    onPathClick(path.filePath, path.line);
-  }, [onPathClick]);
+  const handlePathClick = useCallback(
+    (path: AffectedPath) => {
+      onPathClick(path.filePath, path.line);
+    },
+    [onPathClick],
+  );
 
   return (
     <div className="flex flex-col gap-3">
@@ -125,7 +129,12 @@ const ResultsView = React.memo(function ResultsView({
           {result.targetSymbol}
         </Text>
         <Text size="2xs" tone="ghost">
-          &mdash; {result.scoreCards.reduce((sum, c) => sum + (typeof c.value === "number" ? c.value : 0), 0)} changes detected
+          &mdash;{" "}
+          {result.scoreCards.reduce(
+            (sum, c) => sum + (typeof c.value === "number" ? c.value : 0),
+            0,
+          )}{" "}
+          changes detected
         </Text>
       </div>
 
@@ -135,9 +144,11 @@ const ResultsView = React.memo(function ResultsView({
           <ImpactScoreCard
             key={card.label}
             label={card.label}
-            value={card.label === "Latency Risk" || card.label === "Security Risk"
-              ? card.severity
-              : card.value}
+            value={
+              card.label === "Latency Risk" || card.label === "Security Risk"
+                ? card.severity
+                : card.value
+            }
             severity={card.severity}
             detail={card.detail}
           />
@@ -219,40 +230,45 @@ export const ImpactPreviewPanel = React.memo(function ImpactPreviewPanel() {
   const error = useAtomValue(impactErrorAtom);
   const navigateToFile = useNavigateToFile();
 
-  const handlePathClick = useCallback((filePath: string, line: number) => {
-    navigateToFile(filePath, line);
-  }, [navigateToFile]);
+  const handlePathClick = useCallback(
+    (filePath: string, line: number) => {
+      navigateToFile(filePath, line);
+    },
+    [navigateToFile],
+  );
 
   const isScanning = loading || (!result && !error && phasesDone > 0);
 
   return (
     <div className="flex flex-col h-full bg-vsc-surface-0 overflow-hidden">
       <div className="flex-1 min-h-0 overflow-y-auto">
-      {isScanning && !result && (
-        <PhaseProgress phases={phases} progress={progress} phasesDone={phasesDone} />
-      )}
-      {result && (
-        <div className="animate-in fade-in duration-200">
-          <ResultsView result={result} onPathClick={handlePathClick} />
-        </div>
-      )}
-      {error && (
-        <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-error px-4">
-          <Icon name="error" tokenSize="lg" className="opacity-60" />
-          <Text size="xs" className="font-medium">Analysis failed</Text>
-          <Text size="2xs" tone="ghost" className="text-center max-w-[280px]">
-            {error}
-          </Text>
-        </div>
-      )}
-      {!isScanning && !result && !error && (
-        <div className="flex flex-col items-center justify-center h-full gap-1 text-vsc-text-ghost">
-          <Icon name="graph" tokenSize="lg" className="opacity-30" />
-          <Text size="xs" tone="ghost">
-            Run impact analysis to preview change effects
-          </Text>
-        </div>
-      )}
+        {isScanning && !result && (
+          <PhaseProgress phases={phases} progress={progress} phasesDone={phasesDone} />
+        )}
+        {result && (
+          <div className="animate-in fade-in duration-slow">
+            <ResultsView result={result} onPathClick={handlePathClick} />
+          </div>
+        )}
+        {error && (
+          <div className="flex flex-col items-center justify-center h-full gap-2 text-vsc-error px-4">
+            <Icon name="error" tokenSize="lg" className="opacity-60" />
+            <Text size="xs" className="font-medium">
+              Analysis failed
+            </Text>
+            <Text size="2xs" tone="ghost" className="text-center max-w-[280px]">
+              {error}
+            </Text>
+          </div>
+        )}
+        {!isScanning && !result && !error && (
+          <div className="flex flex-col items-center justify-center h-full gap-1 text-vsc-text-ghost">
+            <Icon name="graph" tokenSize="lg" className="opacity-30" />
+            <Text size="xs" tone="ghost">
+              Run impact analysis to preview change effects
+            </Text>
+          </div>
+        )}
       </div>
     </div>
   );

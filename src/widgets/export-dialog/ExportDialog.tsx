@@ -2,7 +2,15 @@ import React, { useCallback } from "react";
 
 import { useExport } from "../../features/export";
 import type { ExportFormat } from "../../shared/protocol";
-import { Button, cn, Dialog, Icon, ProgressBar, SegmentedControl, Text } from "../../shared/ui";
+import {
+  Button,
+  Dialog,
+  Icon,
+  InlineBanner,
+  ProgressBar,
+  SegmentedControl,
+  Text,
+} from "../../shared/ui";
 
 const FORMAT_OPTIONS: { value: ExportFormat; label: string }[] = [
   { value: "html", label: "HTML" },
@@ -147,31 +155,20 @@ export const ExportDialog = React.memo(function ExportDialog() {
 
         {/* Done state */}
         {isDone && (
-          <div
-            className="flex items-center gap-2 px-3 py-2 rounded bg-vsc-success/10 border border-vsc-success/30"
-            data-testid="export-done"
-          >
-            <Icon name="check" tokenSize="sm" className="text-vsc-success" />
+          <InlineBanner variant="success" icon="check" bordered>
             <Text size="xs" tone="success">
               Export completed successfully
             </Text>
-          </div>
+          </InlineBanner>
         )}
 
         {/* Error state */}
         {isError && (
-          <div
-            className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded",
-              "bg-vsc-error/10 border border-vsc-error/30",
-            )}
-            data-testid="export-error"
-          >
-            <Icon name="error" tokenSize="sm" className="text-vsc-error" />
+          <InlineBanner variant="error" bordered>
             <Text size="xs" tone="error">
               {errorMessage ?? "Export failed"}
             </Text>
-          </div>
+          </InlineBanner>
         )}
 
         {/* Actions */}

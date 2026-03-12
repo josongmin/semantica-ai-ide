@@ -34,7 +34,11 @@ interface RiskBlock {
   readonly label: string;
 }
 
-const RISK_FALLBACK: RiskBlock = { filled: 0, color: "text-[var(--color-risk-none)]", label: "None" } as const;
+const RISK_FALLBACK: RiskBlock = {
+  filled: 0,
+  color: "text-[var(--color-risk-none)]",
+  label: "None",
+} as const;
 
 const RISK_BLOCKS: Record<string, RiskBlock> = {
   none: RISK_FALLBACK,
@@ -64,12 +68,7 @@ interface LensHoverCardProps {
 // ─── Sub-components ──────────────────────────────────────
 
 const SkeletonLine = memo(function SkeletonLine({ width }: { width: string }) {
-  return (
-    <div
-      className="h-3 rounded bg-vsc-surface-2 animate-pulse"
-      style={{ width }}
-    />
-  );
+  return <div className="h-3 rounded bg-vsc-surface-2 animate-pulse" style={{ width }} />;
 });
 
 const RefList = memo(function RefList({
@@ -103,9 +102,7 @@ const RefList = memo(function RefList({
               </button>
             </li>
           ))}
-          {remaining > 0 && (
-            <li className="text-3xs text-vsc-text-ghost">+{remaining} more</li>
-          )}
+          {remaining > 0 && <li className="text-3xs text-vsc-text-ghost">+{remaining} more</li>}
         </ul>
       )}
     </div>
@@ -180,7 +177,7 @@ export const LensHoverCard = memo(function LensHoverCard({
         "backdrop-blur-md bg-vsc-surface-0/90 border border-vsc-border/40",
         "rounded-lg shadow-xl",
         "p-3 space-y-2",
-        "animate-in fade-in zoom-in-95 duration-150",
+        "animate-in fade-in zoom-in-95 duration-slow",
         className,
       )}
       style={{ left: position.x, top: position.y }}
@@ -196,9 +193,7 @@ export const LensHoverCard = memo(function LensHoverCard({
         <span className="text-xs font-semibold text-vsc-text-primary truncate">
           {detail.symbolName}
         </span>
-        <span className="text-3xs text-vsc-text-ghost ml-auto shrink-0">
-          {detail.symbolKind}
-        </span>
+        <span className="text-3xs text-vsc-text-ghost ml-auto shrink-0">{detail.symbolKind}</span>
       </div>
 
       {/* Location */}
@@ -252,9 +247,7 @@ export const LensHoverCard = memo(function LensHoverCard({
             <span className={cn("font-mono text-3xs tracking-wider", riskInfo.color)}>
               {riskBar}
             </span>
-            <span className={cn("text-3xs font-semibold", riskInfo.color)}>
-              {riskInfo.label}
-            </span>
+            <span className={cn("text-3xs font-semibold", riskInfo.color)}>{riskInfo.label}</span>
           </div>
 
           {/* Action buttons */}
@@ -262,7 +255,11 @@ export const LensHoverCard = memo(function LensHoverCard({
             <ActionPill icon="graph" label="Graph" onClick={handleAction("graph")} />
             <ActionPill icon="arrow-both" label="Dataflow" onClick={handleAction("dataflow")} />
             <ActionPill icon="eye" label="Impact" onClick={handleAction("impact")} />
-            <ActionPill icon="comment-discussion" label="Explain" onClick={handleAction("explain")} />
+            <ActionPill
+              icon="comment-discussion"
+              label="Explain"
+              onClick={handleAction("explain")}
+            />
           </div>
         </>
       )}

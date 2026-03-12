@@ -42,16 +42,14 @@ export const DiffNodeCard = React.memo(function DiffNodeCard({
         "w-full sm:w-[260px] rounded-lg shadow-lg",
         "bg-vsc-surface-1/95 backdrop-blur-sm",
         "border border-vsc-border",
-        "animate-in fade-in zoom-in-95 duration-150",
+        "animate-in fade-in zoom-in-95 duration-slow",
         "overflow-hidden",
       )}
       style={{ left: position.x, top: position.y }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-vsc-border bg-vsc-surface-2/50">
-        <span className="text-xs font-semibold font-mono text-vsc-fg truncate">
-          {node.label}
-        </span>
+        <span className="text-xs font-semibold font-mono text-vsc-fg truncate">{node.label}</span>
         <span
           className={cn(
             "text-2xs font-medium px-1.5 py-0.5 rounded",
@@ -69,9 +67,7 @@ export const DiffNodeCard = React.memo(function DiffNodeCard({
         <div className="flex items-center gap-1.5 text-2xs text-vsc-text-tertiary">
           <Icon name="file" tokenSize="2xs" className="shrink-0" />
           <span className="font-mono truncate">{node.filePath}</span>
-          {node.line !== undefined && (
-            <span className="text-vsc-text-ghost">:{node.line}</span>
-          )}
+          {node.line !== undefined && <span className="text-vsc-text-ghost">:{node.line}</span>}
         </div>
 
         {/* Changes list */}

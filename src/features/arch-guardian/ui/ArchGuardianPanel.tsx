@@ -96,12 +96,7 @@ const ViolationRow = memo(function ViolationRow({
       {/* Top row: severity icon + kind badge + file path */}
       <div className="flex items-center gap-2">
         <Icon name={style.icon.name} className={style.icon.className} tokenSize="sm" />
-        <span
-          className={cn(
-            "rounded px-1.5 py-0.5 text-2xs font-medium",
-            style.badge,
-          )}
-        >
+        <span className={cn("rounded px-1.5 py-0.5 text-2xs font-medium", style.badge)}>
           {KIND_LABELS[violation.kind] ?? violation.kind}
         </span>
         <span className="ml-auto font-mono text-2xs text-vsc-text-2">
@@ -115,9 +110,7 @@ const ViolationRow = memo(function ViolationRow({
       {/* Suggested fix + actions */}
       {violation.suggestedFix && (
         <div className="mt-1.5 flex items-center gap-2">
-          <span className="text-2xs text-vsc-text-2">
-            Fix: {violation.suggestedFix}
-          </span>
+          <span className="text-2xs text-vsc-text-2">Fix: {violation.suggestedFix}</span>
           {violation.autoFixable && (
             <button
               type="button"
@@ -209,11 +202,7 @@ export const ArchGuardianPanel = memo(function ArchGuardianPanel() {
               loading && "cursor-not-allowed opacity-50",
             )}
           >
-            <Icon
-              name="sync"
-              tokenSize="xs"
-              className={cn(loading && "animate-spin")}
-            />
+            <Icon name="sync" tokenSize="xs" className={cn(loading && "animate-spin")} />
             {loading ? "Scanning…" : "Scan"}
           </button>
         </div>
@@ -269,7 +258,7 @@ export const ArchGuardianPanel = memo(function ArchGuardianPanel() {
           )}
 
           {analysis && analysis.violations.length > 0 && (
-            <div className="animate-in fade-in duration-200">
+            <div className="animate-in fade-in duration-slow">
               {analysis.violations.map((v, i) => (
                 <ViolationRow key={v.id} violation={v} onDismiss={handleDismiss} index={i} />
               ))}

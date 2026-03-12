@@ -2,7 +2,12 @@ import React from "react";
 
 import { cn, Icon, ProgressBar, Spinner, Text } from "~shared/ui";
 
-import { IMPACT_PHASES, type ImpactPhase, type ImpactPhaseStatus, PHASE_LABELS } from "../model/impactPreviewAtoms";
+import {
+  IMPACT_PHASES,
+  type ImpactPhase,
+  type ImpactPhaseStatus,
+  PHASE_LABELS,
+} from "../model/impactPreviewAtoms";
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -33,13 +38,11 @@ const PhaseIndicator = React.memo(function PhaseIndicator({
         <Icon
           name="check"
           tokenSize="2xs"
-          className="text-vsc-success animate-in zoom-in-50 duration-200"
+          className="text-vsc-success animate-in zoom-in-50 duration-slow"
         />
       )}
       {status === "running" && <Spinner size="sm" className="text-vsc-accent" />}
-      {status === "pending" && (
-        <span className="text-2xs text-vsc-text-ghost">&#9676;</span>
-      )}
+      {status === "pending" && <span className="text-2xs text-vsc-text-ghost">&#9676;</span>}
       <Text
         size="2xs"
         tone={phaseIndicatorTone(status)}

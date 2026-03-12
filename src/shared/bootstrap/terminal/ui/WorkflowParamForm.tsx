@@ -95,7 +95,15 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
     };
 
     runNextStep();
-  }, [template, params, setActiveExecution, setUpdateStep, setAdvanceStep, setCompleteWorkflow, onExecuteCommand]);
+  }, [
+    template,
+    params,
+    setActiveExecution,
+    setUpdateStep,
+    setAdvanceStep,
+    setCompleteWorkflow,
+    onExecuteCommand,
+  ]);
 
   // Preview resolved steps
   const previewSteps = useMemo(
@@ -110,7 +118,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
         <button
           type="button"
           onClick={onBack}
-          className="shrink-0 p-0.5 rounded hover:bg-vsc-surface-2 transition-colors duration-100"
+          className="shrink-0 p-0.5 rounded hover:bg-vsc-surface-2 transition-colors duration-normal"
           aria-label="Back to templates"
         >
           <Icon name="arrow-left" size={14} className="text-vsc-text-secondary" />
@@ -125,9 +133,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
 
       <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-4">
         {/* Description */}
-        <p className="text-2xs text-vsc-text-secondary leading-relaxed">
-          {template.description}
-        </p>
+        <p className="text-2xs text-vsc-text-secondary leading-relaxed">{template.description}</p>
 
         {/* Params */}
         {template.params.length > 0 && (
@@ -150,10 +156,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
         {errors.length > 0 && (
           <div className="space-y-1">
             {errors.map((err) => (
-              <div
-                key={err}
-                className="flex items-center gap-1.5 text-3xs text-vsc-error"
-              >
+              <div key={err} className="flex items-center gap-1.5 text-3xs text-vsc-error">
                 <Icon name="error" size={11} />
                 {err}
               </div>
@@ -176,9 +179,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
               </span>
               <div className="flex-1 min-w-0">
                 <div className="text-3xs text-vsc-text-secondary">{step.label}</div>
-                <code className="text-3xs text-vsc-fg/80 font-mono break-all">
-                  {step.command}
-                </code>
+                <code className="text-3xs text-vsc-fg/80 font-mono break-all">{step.command}</code>
               </div>
             </div>
           ))}
@@ -194,7 +195,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
             "px-3 py-1.5 rounded text-2xs font-medium",
             "text-vsc-text-secondary hover:text-vsc-fg",
             "bg-vsc-surface-2 hover:bg-vsc-surface-2/80",
-            "transition-colors duration-100",
+            "transition-colors duration-normal",
           )}
         >
           Cancel
@@ -205,7 +206,7 @@ export const WorkflowParamForm = memo(function WorkflowParamForm({
           className={cn(
             "flex items-center gap-1.5 px-3 py-1.5 rounded text-2xs font-medium",
             "text-white bg-vsc-accent hover:bg-vsc-accent/90",
-            "transition-colors duration-100",
+            "transition-colors duration-normal",
             "focus-ring",
           )}
         >
@@ -234,9 +235,7 @@ const ParamInput = memo(function ParamInput({ param, value, onChange }: ParamInp
         {param.label}
         {param.required !== false && <span className="text-vsc-error">*</span>}
       </label>
-      {param.description && (
-        <p className="text-3xs text-vsc-text-ghost">{param.description}</p>
-      )}
+      {param.description && <p className="text-3xs text-vsc-text-ghost">{param.description}</p>}
 
       <ParamField param={param} value={value} onChange={onChange} id={id} />
     </div>
@@ -269,7 +268,7 @@ function ParamField({
           "w-full px-2 py-1.5 rounded text-2xs font-mono",
           "bg-vsc-surface-2 text-vsc-fg border border-vsc-border/40",
           "outline-none focus:border-vsc-accent/60",
-          "transition-colors duration-100",
+          "transition-colors duration-normal",
         )}
       >
         {param.options.map((opt) => (
@@ -291,7 +290,7 @@ function ParamField({
         onClick={() => onChange(!isChecked)}
         className={cn(
           "relative inline-flex h-5 w-9 shrink-0 rounded-full",
-          "transition-colors duration-200",
+          "transition-colors duration-slow",
           "border border-vsc-border/40",
           isChecked ? "bg-vsc-accent" : "bg-vsc-surface-2",
         )}
@@ -299,7 +298,7 @@ function ParamField({
         <span
           className={cn(
             "inline-block h-4 w-4 rounded-full bg-white shadow-sm",
-            "transition-transform duration-200",
+            "transition-transform duration-slow",
             isChecked ? "translate-x-4" : "translate-x-0",
           )}
         />
@@ -320,7 +319,7 @@ function ParamField({
           "bg-vsc-surface-2 text-vsc-fg border border-vsc-border/40",
           "outline-none focus:border-vsc-accent/60",
           "placeholder:text-vsc-text-ghost/50",
-          "transition-colors duration-100",
+          "transition-colors duration-normal",
         )}
       />
     );
@@ -338,7 +337,7 @@ function ParamField({
         "bg-vsc-surface-2 text-vsc-fg border border-vsc-border/40",
         "outline-none focus:border-vsc-accent/60",
         "placeholder:text-vsc-text-ghost/50",
-        "transition-colors duration-100",
+        "transition-colors duration-normal",
       )}
     />
   );

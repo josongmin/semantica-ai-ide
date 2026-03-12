@@ -182,10 +182,10 @@ export const ExplorerView = React.memo(function ExplorerView() {
                 treeOpen && "rotate-90",
               )}
             />
-            <span className="text-[13px] font-bold text-vsc-fg truncate">
+            <span className="text-md font-bold text-vsc-fg truncate">
               {workspaceName || "Project"}
             </span>
-            <span className="text-[11px] text-vsc-text-ghost truncate ml-0.5">~/...</span>
+            <span className="text-xs text-vsc-text-ghost truncate ml-0.5">~/...</span>
           </button>
         )}
 

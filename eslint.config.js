@@ -5,6 +5,8 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tseslint from "typescript-eslint";
 
+import designTokens from "./eslint-rules/design-tokens.js";
+
 export default tseslint.config(
   /* ── global ignores ── */
   { ignores: ["dist/", "node_modules/", "*.cjs"] },
@@ -258,6 +260,19 @@ export default tseslint.config(
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/require-await": "off",
       "no-nested-ternary": "off",
+    },
+  },
+
+  /* ── Design token guardrails (RFC-017) ── */
+  {
+    files: ["src/**/*.tsx"],
+    plugins: {
+      "design-tokens": designTokens,
+    },
+    rules: {
+      "design-tokens/no-hardcoded-color": "warn",
+      "design-tokens/no-arbitrary-text-size": "warn",
+      "design-tokens/no-hardcoded-z-index": "warn",
     },
   },
 

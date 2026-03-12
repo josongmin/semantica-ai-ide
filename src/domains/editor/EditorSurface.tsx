@@ -201,7 +201,7 @@ function EditorStatusBar({
 
   return (
     <div
-      className="flex items-center px-1.5 bg-vsc-surface-1 border-t border-vsc-border/20 text-[11px] text-vsc-text-tertiary shrink-0 select-none gap-px"
+      className="flex items-center px-1.5 bg-vsc-surface-1 border-t border-vsc-border/20 text-xs text-vsc-text-tertiary shrink-0 select-none gap-px"
       style={{ height: STATUS_BAR_H }}
     >
       {/* ── Left ── */}
@@ -242,7 +242,7 @@ const StatusChip = React.memo(function StatusChip({
       type="button"
       className={cn(
         "inline-flex items-center gap-1 px-1.5 rounded-sm",
-        "text-[11px] leading-none tracking-[0.01em]",
+        "text-xs leading-none tracking-[0.01em]",
         "transition-colors duration-fast cursor-pointer border-none bg-transparent focus-ring",
         accent && "text-vsc-accent hover:bg-vsc-accent/10",
         !accent && highlight && "text-vsc-text-secondary hover:bg-vsc-list-hover",

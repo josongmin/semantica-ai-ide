@@ -34,9 +34,9 @@ export const AIGhostText = memo(function AIGhostText({
   return (
     <div
       className={cn(
-        "absolute bottom-1 left-12 z-[11]",
+        "absolute bottom-1 left-12 z-[--z-sticky]",
         "pointer-events-none select-none",
-        "animate-in fade-in duration-100",
+        "animate-in fade-in duration-normal",
         className,
       )}
       data-testid="ai-ghost-text"
@@ -67,10 +67,7 @@ function GhostSourceBadge({ source }: { source: "history" | "ai" | "script" }) {
   }[source];
 
   return (
-    <span
-      className="text-3xs opacity-70 ml-1"
-      title={config.title}
-    >
+    <span className="text-3xs opacity-70 ml-1" title={config.title}>
       {config.label}
     </span>
   );

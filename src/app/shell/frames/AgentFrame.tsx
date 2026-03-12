@@ -48,7 +48,7 @@ export const AgentFrame = React.memo(function AgentFrame({ width, children }: Ag
           <button
             type="button"
             onClick={handleHistory}
-            className="text-[11px] text-vsc-text-tertiary hover:text-vsc-fg transition-colors duration-fast focus-ring"
+            className="text-xs text-vsc-text-tertiary hover:text-vsc-fg transition-colors duration-fast focus-ring"
             aria-label="History"
           >
             History
@@ -56,7 +56,7 @@ export const AgentFrame = React.memo(function AgentFrame({ width, children }: Ag
           <button
             type="button"
             onClick={handleNewChat}
-            className="text-[11px] text-vsc-accent hover:underline font-medium transition-colors duration-fast focus-ring"
+            className="text-xs text-vsc-accent hover:underline font-medium transition-colors duration-fast focus-ring"
             aria-label="New Chat"
           >
             New Chat

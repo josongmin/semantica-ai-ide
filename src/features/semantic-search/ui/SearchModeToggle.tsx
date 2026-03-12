@@ -40,11 +40,15 @@ export const SearchModeToggle = React.memo(function SearchModeToggle({
   );
 
   return (
-    <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-vsc-surface-2/60" role="radiogroup" aria-label="Search mode">
+    <div
+      className="flex items-center gap-0.5 p-0.5 rounded-lg bg-vsc-surface-2/60"
+      role="radiogroup"
+      aria-label="Search mode"
+    >
       {/* Sliding background indicator */}
       <div className="relative flex items-center gap-0.5 w-full">
         <div
-          className="absolute top-0 bottom-0 rounded-md bg-vsc-accent/15 transition-transform duration-200 ease-out"
+          className="absolute top-0 bottom-0 rounded-md bg-vsc-accent/15 transition-transform duration-slow ease-out"
           style={{
             width: `${100 / MODES.length}%`,
             transform: `translateX(${activeIndex * 100}%)`,
@@ -61,7 +65,7 @@ export const SearchModeToggle = React.memo(function SearchModeToggle({
             className={cn(
               "relative z-10 flex-1 flex items-center justify-center gap-1.5",
               "px-3 py-1 rounded-md text-2xs font-medium",
-              "transition-colors duration-150 cursor-pointer select-none",
+              "transition-colors duration-slow cursor-pointer select-none",
               mode === m.id
                 ? "text-vsc-accent"
                 : "text-vsc-text-tertiary hover:text-vsc-text-secondary",

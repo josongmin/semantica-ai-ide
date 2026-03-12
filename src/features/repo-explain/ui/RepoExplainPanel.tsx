@@ -70,7 +70,7 @@ export const RepoExplainPanel = memo(function RepoExplainPanel({
             >
               {tab.label}
               {tab.id === "risks" && data.risks.length > 0 && (
-                <span className="ml-1.5 rounded-full bg-vsc-error/20 px-1.5 py-0.5 text-[10px] text-vsc-error">
+                <span className="ml-1.5 rounded-full bg-vsc-error/20 px-1.5 py-0.5 text-2xs text-vsc-error">
                   {data.risks.length}
                 </span>
               )}

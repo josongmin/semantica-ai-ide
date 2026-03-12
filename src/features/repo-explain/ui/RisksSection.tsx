@@ -91,7 +91,7 @@ const RiskCard = memo(function RiskCard({ risk }: { risk: RiskItem }) {
           {config.icon}
         </span>
         <span className="text-sm font-medium text-vsc-text-primary">{risk.title}</span>
-        <span className={`ml-auto rounded px-1.5 py-0.5 text-[10px] font-medium ${config.color}`}>
+        <span className={`ml-auto rounded px-1.5 py-0.5 text-2xs font-medium ${config.color}`}>
           {config.label}
         </span>
       </div>

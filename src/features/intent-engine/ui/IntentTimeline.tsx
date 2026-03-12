@@ -28,10 +28,22 @@ const categoryIcons: Record<string, { name: string; className: string }> = {
 
 const statusBadges: Record<string, { label: string; className: string }> = {
   input: { label: "Input", className: "text-vsc-text-ghost/50 bg-vsc-surface-2/30" },
-  analyzing: { label: "Analyzing", className: "text-(--color-status-analyzing) bg-(--color-status-analyzing)/10" },
-  planned: { label: "Planned", className: "text-(--color-status-planned) bg-(--color-status-planned)/10" },
-  executing: { label: "Executing", className: "text-(--color-status-executing) bg-(--color-status-executing)/10" },
-  completed: { label: "Done", className: "text-(--color-status-completed) bg-(--color-status-completed)/10" },
+  analyzing: {
+    label: "Analyzing",
+    className: "text-(--color-status-analyzing) bg-(--color-status-analyzing)/10",
+  },
+  planned: {
+    label: "Planned",
+    className: "text-(--color-status-planned) bg-(--color-status-planned)/10",
+  },
+  executing: {
+    label: "Executing",
+    className: "text-(--color-status-executing) bg-(--color-status-executing)/10",
+  },
+  completed: {
+    label: "Done",
+    className: "text-(--color-status-completed) bg-(--color-status-completed)/10",
+  },
 };
 
 // ─── Time Formatter ─────────────────────────────────────
@@ -57,7 +69,10 @@ const TimelineRow = React.memo(function TimelineRow({
   session: IntentSession;
   onClick?: (session: IntentSession) => void;
 }) {
-  const iconInfo = categoryIcons[session.intent.category] ?? { name: "question", className: "text-vsc-text-ghost" };
+  const iconInfo = categoryIcons[session.intent.category] ?? {
+    name: "question",
+    className: "text-vsc-text-ghost",
+  };
   const badge = statusBadges[session.status] ?? statusBadges.input;
 
   const handleClick = useCallback(() => onClick?.(session), [onClick, session]);
@@ -69,18 +84,12 @@ const TimelineRow = React.memo(function TimelineRow({
       disabled={!onClick}
       className={cn(
         "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
-        "text-left transition-colors duration-150",
-        onClick
-          ? "hover:bg-vsc-surface-2/30 cursor-pointer"
-          : "cursor-default",
+        "text-left transition-colors duration-slow",
+        onClick ? "hover:bg-vsc-surface-2/30 cursor-pointer" : "cursor-default",
       )}
     >
       {/* Category icon */}
-      <Icon
-        name={iconInfo.name}
-        className={cn("shrink-0", iconInfo.className)}
-        tokenSize="xs"
-      />
+      <Icon name={iconInfo.name} className={cn("shrink-0", iconInfo.className)} tokenSize="xs" />
 
       {/* Intent text */}
       <span className="flex-1 min-w-0 text-xs text-vsc-text-secondary truncate">
@@ -127,11 +136,7 @@ export const IntentTimeline = React.memo(function IntentTimeline({
   return (
     <div className={cn("space-y-0.5", className)}>
       {sessions.map((session) => (
-        <TimelineRow
-          key={session.id}
-          session={session}
-          onClick={onSessionClick}
-        />
+        <TimelineRow key={session.id} session={session} onClick={onSessionClick} />
       ))}
     </div>
   );

@@ -96,7 +96,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
 
   return (
     <nav
-      className="flex flex-col h-full shrink-0 bg-vsc-surface-0 border-r border-vsc-border/20 overflow-hidden transition-[width] duration-200 ease-out"
+      className="flex flex-col h-full shrink-0 bg-vsc-surface-0 border-r border-vsc-border/20 overflow-hidden transition-[width] duration-slow ease-out"
       style={{ width }}
       aria-label="Main navigation"
     >
@@ -117,7 +117,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
               <div key={section.id} className="mb-2 last:mb-0">
                 {section.label && (
                   <div className="px-4 py-1.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-vsc-text-ghost">
+                    <span className="text-2xs font-semibold uppercase tracking-wider text-vsc-text-ghost">
                       {section.label}
                     </span>
                   </div>
@@ -132,8 +132,8 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                         type="button"
                         onClick={() => handleCategoryClick(cat.id)}
                         className={cn(
-                          "flex items-center gap-3 h-8 px-2 rounded-[8px] shrink-0",
-                          "cursor-pointer border-none focus-ring transition-colors duration-150",
+                          "flex items-center gap-3 h-8 px-2 rounded-lg shrink-0",
+                          "cursor-pointer border-none focus-ring transition-colors duration-slow",
                           isActive
                             ? "bg-vsc-surface-3/50 text-vsc-fg font-medium"
                             : "text-vsc-text-secondary hover:text-vsc-fg hover:bg-vsc-surface-3/30",
@@ -147,7 +147,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                             isActive ? "text-vsc-fg" : "text-vsc-text-tertiary",
                           )}
                         />
-                        <span className="text-[13px] truncate">{cat.label}</span>
+                        <span className="text-md truncate">{cat.label}</span>
                       </button>
                     );
                   })}
@@ -158,8 +158,8 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                         key={tool.id}
                         type="button"
                         onClick={() => handleToolClick(tool.id)}
-                        className="flex items-center gap-3 h-8 px-2 rounded-[8px] shrink-0
-                                   cursor-pointer border-none focus-ring transition-colors duration-150
+                        className="flex items-center gap-3 h-8 px-2 rounded-lg shrink-0
+                                   cursor-pointer border-none focus-ring transition-colors duration-slow
                                    text-vsc-text-secondary hover:text-vsc-fg hover:bg-vsc-surface-3/30"
                       >
                         <LucideIcon
@@ -167,7 +167,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                           strokeWidth={1.75}
                           className="shrink-0 text-vsc-text-tertiary"
                         />
-                        <span className="text-[13px] truncate">{tool.label}</span>
+                        <span className="text-md truncate">{tool.label}</span>
                       </button>
                     );
                   })}
@@ -183,12 +183,12 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
             <button
               type="button"
               onClick={() => setActiveSurface("settings")}
-              className="flex items-center gap-3 h-8 px-2 rounded-[8px] w-full
-                         cursor-pointer border-none focus-ring transition-colors duration-150
+              className="flex items-center gap-3 h-8 px-2 rounded-lg w-full
+                         cursor-pointer border-none focus-ring transition-colors duration-slow
                          text-vsc-text-secondary hover:text-vsc-fg hover:bg-vsc-surface-3/30"
             >
               <Settings size={20} strokeWidth={1.75} className="shrink-0 text-vsc-text-tertiary" />
-              <span className="text-[13px]">Settings</span>
+              <span className="text-md">Settings</span>
             </button>
           </div>
         </div>
@@ -210,7 +210,7 @@ export const NavBar = React.memo(function NavBar({ width }: { width: number }) {
                 {/* Match expanded section label height exactly */}
                 {section.label && (
                   <div className="px-4 py-1.5">
-                    <span className="text-[10px] leading-normal invisible">&nbsp;</span>
+                    <span className="text-2xs leading-normal invisible">&nbsp;</span>
                   </div>
                 )}
                 <div className="flex flex-col items-center gap-0.5">
@@ -271,8 +271,8 @@ const NavIcon = React.memo(function NavIcon({ icon, label, isActive, onClick }: 
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "flex items-center justify-center w-9 h-8 shrink-0",
-        "cursor-pointer border-none focus-ring transition-colors duration-150",
-        "rounded-[8px]",
+        "cursor-pointer border-none focus-ring transition-colors duration-slow",
+        "rounded-lg",
         isActive
           ? "text-vsc-fg bg-vsc-surface-3/60"
           : "text-vsc-text-tertiary hover:text-vsc-fg hover:bg-vsc-surface-3/30",

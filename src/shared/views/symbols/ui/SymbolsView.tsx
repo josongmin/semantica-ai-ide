@@ -2,6 +2,7 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 
 import { getVscodeApi } from "~shared/lib/vscodeApi";
 import { Icon } from "~shared/ui/primitives/Icon";
+import { Text } from "~shared/ui/primitives/Text";
 import { cn } from "~shared/ui/variants";
 
 /** The file whose symbols are displayed (in a real implementation, driven by active editor) */
@@ -76,15 +77,17 @@ const SymbolRow = memo(function SymbolRow({ symbol }: { symbol: SymbolEntry }) {
       )}
     >
       <Icon name={config.icon} tokenSize="2xs" className={cn("shrink-0", config.color)} />
-      <span className="text-2xs text-vsc-fg truncate min-w-0">{symbol.name}</span>
+      <Text size="2xs" truncate>
+        {symbol.name}
+      </Text>
       {symbol.detail && (
-        <span className="text-3xs text-vsc-text-ghost/40 truncate min-w-0 hidden group-hover:inline">
+        <Text size="3xs" tone="ghost" truncate className="opacity-40 hidden group-hover:inline">
           {symbol.detail}
-        </span>
+        </Text>
       )}
-      <span className="ml-auto text-3xs text-vsc-text-ghost/40 tabular-nums shrink-0">
+      <Text size="3xs" tone="ghost" mono className="ml-auto opacity-40 shrink-0">
         :{symbol.line}
-      </span>
+      </Text>
     </button>
   );
 });
@@ -120,10 +123,12 @@ const SymbolGroup = memo(function SymbolGroup({
           )}
         />
         <Icon name={config.icon} tokenSize="2xs" className={config.color} />
-        <span className="text-2xs text-vsc-fg font-medium">{config.label}</span>
-        <span className="ml-auto text-3xs text-vsc-text-ghost/50 tabular-nums shrink-0">
+        <Text size="2xs" weight="medium">
+          {config.label}
+        </Text>
+        <Text size="3xs" tone="ghost" mono className="ml-auto opacity-50 shrink-0">
           {symbols.length}
-        </span>
+        </Text>
       </button>
       {open && symbols.map((s) => <SymbolRow key={`${s.kind}-${s.name}`} symbol={s} />)}
     </div>
@@ -156,10 +161,12 @@ export const SymbolsView = React.memo(function SymbolsView() {
       {/* ── Header ── */}
       <div className="shrink-0 px-2 pt-2.5 pb-2 space-y-1.5">
         <div className="flex items-center justify-between px-0.5">
-          <span className="text-2xs font-semibold text-vsc-fg">Symbols</span>
-          <span className="text-3xs text-vsc-text-ghost/40 tabular-nums">
+          <Text size="2xs" weight="semibold">
+            Symbols
+          </Text>
+          <Text size="3xs" tone="ghost" mono className="opacity-40">
             {filteredSymbols.length} symbol{filteredSymbols.length !== 1 ? "s" : ""}
-          </span>
+          </Text>
         </div>
 
         {/* Filter input */}
@@ -192,9 +199,9 @@ export const SymbolsView = React.memo(function SymbolsView() {
         {/* Source file indicator */}
         <div className="flex items-center gap-1.5 px-0.5">
           <Icon name="file" tokenSize="2xs" className="text-vsc-text-ghost/30" />
-          <span className="text-3xs text-vsc-text-ghost/40 truncate">
+          <Text size="3xs" tone="ghost" truncate className="opacity-40">
             src/core/engine/SemanticParser.ts
-          </span>
+          </Text>
         </div>
       </div>
 
@@ -205,9 +212,9 @@ export const SymbolsView = React.memo(function SymbolsView() {
         {filteredSymbols.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-2 px-4">
             <Icon name="symbol-class" tokenSize="lg" className="text-vsc-text-ghost/20" />
-            <span className="text-2xs text-vsc-text-ghost/40 text-center">
+            <Text size="2xs" tone="ghost" className="opacity-40 text-center">
               {filter ? `No symbols matching "${filter}"` : "No symbols found"}
-            </span>
+            </Text>
           </div>
         ) : (
           KIND_ORDER.filter((k) => grouped.has(k)).map((kind) => (

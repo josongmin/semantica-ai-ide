@@ -3,7 +3,7 @@ import { memo } from "react";
 import { Icon } from "~shared/ui/primitives/Icon";
 import { cn } from "~shared/ui/variants";
 
-import { type PanelTab,TAB_ITEMS } from "./workflowConstants";
+import { type PanelTab, TAB_ITEMS } from "./workflowConstants";
 
 export interface WorkflowTabBarProps {
   activeTab: PanelTab;
@@ -29,7 +29,7 @@ export const WorkflowTabBar = memo(function WorkflowTabBar({
           onClick={() => onTabChange(tab.id)}
           className={cn(
             "flex items-center gap-1.5 px-3 py-2 text-2xs font-medium",
-            "transition-colors duration-100",
+            "transition-colors duration-normal",
             "border-b-2 -mb-px",
             activeTab === tab.id
               ? "border-vsc-accent text-vsc-fg"
@@ -44,9 +44,7 @@ export const WorkflowTabBar = memo(function WorkflowTabBar({
             <span className="ml-0.5 w-1.5 h-1.5 rounded-full bg-vsc-success animate-pulse" />
           )}
           {tab.id === "history" && historyCount > 0 && (
-            <span className="ml-0.5 text-3xs text-vsc-text-ghost tabular-nums">
-              {historyCount}
-            </span>
+            <span className="ml-0.5 text-3xs text-vsc-text-ghost tabular-nums">{historyCount}</span>
           )}
         </button>
       ))}

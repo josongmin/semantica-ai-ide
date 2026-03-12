@@ -160,10 +160,8 @@ const WorkflowCard = memo(function WorkflowCard({
       onMouseEnter={onMouseEnter}
       className={cn(
         "flex items-start gap-2.5 w-full px-2.5 py-2 rounded-md text-left",
-        "transition-colors duration-100",
-        focused
-          ? "bg-vsc-accent/12 ring-1 ring-vsc-accent/30"
-          : "hover:bg-vsc-surface-2/60",
+        "transition-colors duration-normal",
+        focused ? "bg-vsc-accent/12 ring-1 ring-vsc-accent/30" : "hover:bg-vsc-surface-2/60",
       )}
       aria-label={`${template.name}: ${template.description}`}
     >
@@ -182,9 +180,7 @@ const WorkflowCard = memo(function WorkflowCard({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-2xs font-medium text-vsc-fg truncate">
-            {template.name}
-          </span>
+          <span className="text-2xs font-medium text-vsc-fg truncate">{template.name}</span>
           {template.params.length > 0 && (
             <span className="shrink-0 text-3xs text-vsc-text-ghost bg-vsc-surface-2 px-1 py-px rounded">
               {template.params.length} param{template.params.length !== 1 ? "s" : ""}

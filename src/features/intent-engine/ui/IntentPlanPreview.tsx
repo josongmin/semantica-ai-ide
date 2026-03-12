@@ -54,15 +54,19 @@ const PlanStepRow = React.memo(function PlanStepRow({ step }: { step: IntentPlan
 
         {/* Description + target */}
         <div className="flex-1 min-w-0">
-          <p className={cn(
-            "text-xs",
-            step.status === "done" ? "text-vsc-text-ghost/60 line-through" : "text-vsc-text-secondary",
-            step.status === "skipped" && "text-vsc-text-ghost/40 line-through",
-          )}>
+          <p
+            className={cn(
+              "text-xs",
+              step.status === "done"
+                ? "text-vsc-text-ghost/60 line-through"
+                : "text-vsc-text-secondary",
+              step.status === "skipped" && "text-vsc-text-ghost/40 line-through",
+            )}
+          >
             {step.description}
           </p>
           {step.targetFile && (
-            <p className="text-2xs text-vsc-text-ghost/50 font-mono mt-0.5 truncate cursor-pointer hover:text-vsc-accent transition-colors duration-150">
+            <p className="text-2xs text-vsc-text-ghost/50 font-mono mt-0.5 truncate cursor-pointer hover:text-vsc-accent transition-colors duration-slow">
               {step.targetFile}
               {step.targetLine !== undefined && `:${String(step.targetLine)}`}
             </p>
@@ -126,16 +130,24 @@ export const IntentPlanPreview = React.memo(function IntentPlanPreview({
         {/* Impact summary */}
         <div className="flex items-center gap-2 text-2xs text-vsc-text-ghost/50">
           {plan.estimatedImpact.newFiles > 0 && (
-            <span className="text-(--color-intent-feature)">+{plan.estimatedImpact.newFiles} new</span>
+            <span className="text-(--color-intent-feature)">
+              +{plan.estimatedImpact.newFiles} new
+            </span>
           )}
           {plan.estimatedImpact.modifiedFiles > 0 && (
-            <span className="text-(--color-intent-investigate)">~{plan.estimatedImpact.modifiedFiles} mod</span>
+            <span className="text-(--color-intent-investigate)">
+              ~{plan.estimatedImpact.modifiedFiles} mod
+            </span>
           )}
           {plan.estimatedImpact.deletedFiles > 0 && (
-            <span className="text-(--color-intent-bugfix)">-{plan.estimatedImpact.deletedFiles} del</span>
+            <span className="text-(--color-intent-bugfix)">
+              -{plan.estimatedImpact.deletedFiles} del
+            </span>
           )}
           {plan.estimatedImpact.testsNeeded > 0 && (
-            <span className="text-(--color-intent-test)">{plan.estimatedImpact.testsNeeded} tests</span>
+            <span className="text-(--color-intent-test)">
+              {plan.estimatedImpact.testsNeeded} tests
+            </span>
           )}
         </div>
       </div>
@@ -167,7 +179,7 @@ export const IntentPlanPreview = React.memo(function IntentPlanPreview({
               className={cn(
                 "px-3 py-1.5 rounded-md text-xs font-medium",
                 "bg-vsc-accent/20 text-vsc-accent",
-                "hover:bg-vsc-accent/30 transition-colors duration-150",
+                "hover:bg-vsc-accent/30 transition-colors duration-slow",
                 "cursor-pointer",
               )}
             >
@@ -181,7 +193,7 @@ export const IntentPlanPreview = React.memo(function IntentPlanPreview({
               className={cn(
                 "px-3 py-1.5 rounded-md text-xs font-medium",
                 "text-vsc-text-ghost hover:text-vsc-text-secondary",
-                "hover:bg-vsc-surface-2/40 transition-colors duration-150",
+                "hover:bg-vsc-surface-2/40 transition-colors duration-slow",
                 "cursor-pointer",
               )}
             >

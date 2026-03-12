@@ -50,7 +50,7 @@ const HistoryRow = memo(function HistoryRow({ execution }: HistoryRowProps) {
       className={cn(
         "flex items-center gap-2.5 px-2.5 py-2 rounded-md",
         "bg-vsc-surface-2/40 hover:bg-vsc-surface-2/70",
-        "transition-colors duration-100",
+        "transition-colors duration-normal",
       )}
     >
       <ExecutionStatusBadge status={execution.status} />

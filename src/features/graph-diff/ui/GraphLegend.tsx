@@ -20,10 +20,10 @@ interface GraphLegendProps {
 // ─── Data ──────────────────────────────────────────────────
 
 const LEGEND_ITEMS: readonly LegendItem[] = [
-  { status: "added", label: "Added", color: "var(--color-green-500, #22c55e)" },
-  { status: "removed", label: "Removed", color: "var(--color-red-500, #ef4444)" },
-  { status: "modified", label: "Modified", color: "var(--color-amber-500, #f59e0b)" },
-  { status: "unchanged", label: "Unchanged", color: "var(--color-zinc-400, #a1a1aa)" },
+  { status: "added", label: "Added", color: "var(--color-graph-added)" },
+  { status: "removed", label: "Removed", color: "var(--color-graph-removed)" },
+  { status: "modified", label: "Modified", color: "var(--color-graph-modified)" },
+  { status: "unchanged", label: "Unchanged", color: "var(--color-graph-unchanged)" },
 ];
 
 // ─── Component ─────────────────────────────────────────────
@@ -31,7 +31,7 @@ const LEGEND_ITEMS: readonly LegendItem[] = [
 export const GraphLegend = memo(function GraphLegend({ className }: GraphLegendProps) {
   return (
     <div
-      className={`flex items-center gap-4 rounded-md bg-[var(--color-zinc-900,#18181b)] px-3 py-1.5 text-xs ${className ?? ""}`}
+      className={`flex items-center gap-4 rounded-md bg-vsc-surface-2 px-3 py-1.5 text-xs ${className ?? ""}`}
       role="list"
       aria-label="Graph diff legend"
     >
@@ -41,7 +41,7 @@ export const GraphLegend = memo(function GraphLegend({ className }: GraphLegendP
             className="inline-block h-2.5 w-2.5 rounded-full"
             style={{ backgroundColor: item.color }}
           />
-          <span className="text-[var(--color-zinc-300,#d4d4d8)]">{item.label}</span>
+          <span className="text-vsc-text-secondary">{item.label}</span>
         </div>
       ))}
     </div>

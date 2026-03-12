@@ -6,11 +6,7 @@ import { getVscodeApi } from "~shared/lib/vscodeApi";
 import type { EvidenceKind } from "~shared/protocol/types";
 import { type BreadcrumbItem, Breadcrumbs, Button, cn, Icon, Kbd, Text } from "~shared/ui";
 
-import {
-  rootCauseAnalysisAtom,
-  rootCauseLoadingAtom,
-  startRootCauseAtom,
-} from "../model/atoms";
+import { rootCauseAnalysisAtom, rootCauseLoadingAtom, startRootCauseAtom } from "../model/atoms";
 import { CausalChainGraph } from "./CausalChainGraph";
 import { CauseCandidateCard } from "./CauseCandidate";
 import { EvidenceBundle } from "./EvidenceBundle";
@@ -32,8 +28,7 @@ const ProgressStep = React.memo(function ProgressStep({
   progress: number;
 }) {
   const filled = Math.round(progress * 10);
-  const bar =
-    "\u25A0".repeat(filled) + "\u25A1".repeat(10 - filled);
+  const bar = "\u25A0".repeat(filled) + "\u25A1".repeat(10 - filled);
 
   return (
     <div className="flex items-center gap-2 font-mono">
@@ -86,8 +81,7 @@ const EmptyState = React.memo(function EmptyState({
         No root cause analysis active
       </Text>
       <Text size="2xs" tone="ghost">
-        Trigger with{" "}
-        <Kbd>Cmd+Shift+R</Kbd>
+        Trigger with <Kbd>Cmd+Shift+R</Kbd>
       </Text>
       <Button
         size="sm"
@@ -172,9 +166,12 @@ export const RootCausePanel = React.memo(function RootCausePanel() {
     });
   }, [startRootCause]);
 
-  const handleFileClick = useCallback((filePath: string, line: number) => {
-    navigateToFile(filePath, line);
-  }, [navigateToFile]);
+  const handleFileClick = useCallback(
+    (filePath: string, line: number) => {
+      navigateToFile(filePath, line);
+    },
+    [navigateToFile],
+  );
 
   const handleEvidenceClick = useCallback((evidenceId: string) => {
     // Scroll evidence into view and flash highlight
@@ -279,77 +276,93 @@ export const RootCausePanel = React.memo(function RootCausePanel() {
 
       {/* Content */}
       <div className="flex-1 min-h-0 overflow-y-auto">
-      {isLoading && <LoadingState />}
-      {!isLoading && !analysis && <EmptyState onAnalyzeLastError={handleAnalyzeLastError} />}
-      {!isLoading && analysis && (
-        <div className="flex flex-col gap-0.5 animate-in fade-in duration-200">
-          {/* Candidates */}
-          {analysis.candidates.length > 0 && (
-            <>
-              <SectionHeader title="Candidates" icon="list-ordered" />
-              <div role="listbox" aria-label="Root cause candidates" className="flex flex-col gap-2 px-3 pb-2">
-                {analysis.candidates.map((c, i) => (
-                  <div
-                    key={c.id}
-                    role="option"
-                    aria-selected={false}
-                    className="si-stagger-item"
-                    style={{ "--si-delay": `${i * 50}ms` } as React.CSSProperties}
-                  >
-                    <CauseCandidateCard
-                      candidate={c}
-                      evidenceKinds={evidenceKinds}
-                      onFileClick={handleFileClick}
-                      onEvidenceClick={handleEvidenceClick}
-                    />
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+        {isLoading && <LoadingState />}
+        {!isLoading && !analysis && <EmptyState onAnalyzeLastError={handleAnalyzeLastError} />}
+        {!isLoading && analysis && (
+          <div className="flex flex-col gap-0.5 animate-in fade-in duration-slow">
+            {/* Candidates */}
+            {analysis.candidates.length > 0 && (
+              <>
+                <SectionHeader title="Candidates" icon="list-ordered" />
+                <div
+                  role="listbox"
+                  aria-label="Root cause candidates"
+                  className="flex flex-col gap-2 px-3 pb-2"
+                >
+                  {analysis.candidates.map((c, i) => (
+                    <div
+                      key={c.id}
+                      role="option"
+                      aria-selected={false}
+                      className="si-stagger-item"
+                      style={{ "--si-delay": `${i * 50}ms` } as React.CSSProperties}
+                    >
+                      <CauseCandidateCard
+                        candidate={c}
+                        evidenceKinds={evidenceKinds}
+                        onFileClick={handleFileClick}
+                        onEvidenceClick={handleEvidenceClick}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
-          {/* Causal Chain */}
-          {analysis.causalChain.nodes.length > 0 && (
-            <>
-              <SectionHeader title="Causal Chain" icon="git-merge" />
-              <div className="px-3 pb-2">
-                <CausalChainGraph
-                  nodes={analysis.causalChain.nodes}
-                  edges={analysis.causalChain.edges}
-                  onNodeClick={handleFileClick}
-                />
-              </div>
-            </>
-          )}
+            {/* Causal Chain */}
+            {analysis.causalChain.nodes.length > 0 && (
+              <>
+                <SectionHeader title="Causal Chain" icon="git-merge" />
+                <div className="px-3 pb-2">
+                  <CausalChainGraph
+                    nodes={analysis.causalChain.nodes}
+                    edges={analysis.causalChain.edges}
+                    onNodeClick={handleFileClick}
+                  />
+                </div>
+              </>
+            )}
 
-          {/* Evidence */}
-          {analysis.evidence.length > 0 && (
-            <>
-              <SectionHeader title="Evidence" icon="book" />
-              <EvidenceBundle
-                evidence={analysis.evidence}
-                onFileClick={handleFileClick}
-              />
-            </>
-          )}
+            {/* Evidence */}
+            {analysis.evidence.length > 0 && (
+              <>
+                <SectionHeader title="Evidence" icon="book" />
+                <EvidenceBundle evidence={analysis.evidence} onFileClick={handleFileClick} />
+              </>
+            )}
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 px-3 py-3 border-t border-vsc-border/15 mt-1">
-            <Button size="sm" variant="secondary" onClick={handleFixSuggestion} disabled={analysis.candidates.length === 0}>
-              <Icon name="lightbulb" tokenSize="sm" />
-              Fix Suggestion
-            </Button>
-            <Button size="sm" variant="secondary" onClick={handleShowInEditor} disabled={analysis.candidates.length === 0}>
-              <Icon name="go-to-file" tokenSize="sm" />
-              Show in Editor
-            </Button>
-            <Button size="sm" variant="secondary" onClick={handleRunTests} disabled={!analysis.evidence.some((e) => e.kind === "test-failure")}>
-              <Icon name="beaker" tokenSize="sm" />
-              Run Tests
-            </Button>
+            {/* Actions */}
+            <div className="flex items-center gap-2 px-3 py-3 border-t border-vsc-border/15 mt-1">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleFixSuggestion}
+                disabled={analysis.candidates.length === 0}
+              >
+                <Icon name="lightbulb" tokenSize="sm" />
+                Fix Suggestion
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleShowInEditor}
+                disabled={analysis.candidates.length === 0}
+              >
+                <Icon name="go-to-file" tokenSize="sm" />
+                Show in Editor
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={handleRunTests}
+                disabled={!analysis.evidence.some((e) => e.kind === "test-failure")}
+              >
+                <Icon name="beaker" tokenSize="sm" />
+                Run Tests
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );

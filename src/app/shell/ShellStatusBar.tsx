@@ -163,7 +163,7 @@ function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 px-2 rounded-full cursor-default text-[11px] tracking-wide",
+        "inline-flex items-center gap-1 px-2 rounded-full cursor-default text-xs tracking-wide",
         pillStyles[variant],
       )}
       style={{ height: BAR_H - 6 }}
@@ -182,7 +182,7 @@ function DiagnosticChip({ errors, warnings }: { errors: number; warnings: number
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 rounded-full cursor-default text-[11px] tracking-wide",
+        "inline-flex items-center gap-1.5 px-2 rounded-full cursor-default text-xs tracking-wide",
         clean && "text-vsc-text-ghost",
       )}
       style={{ height: BAR_H - 6 }}
@@ -228,9 +228,9 @@ function TrayToggleButton({
       onClick={onClick}
       className={cn(
         "inline-flex items-center gap-1 px-2 rounded-md border-none cursor-pointer",
-        "text-[11.25px] tracking-[0.01em]",
+        "text-xs tracking-[0.01em]",
         isActive
-          ? "text-white bg-[#2d2b55] rounded-full"
+          ? "text-white bg-vsc-accent rounded-full"
           : "text-vsc-text-secondary bg-transparent hover:text-vsc-text-primary hover:bg-vsc-surface-3/60",
       )}
       style={{ height: BAR_H - 7 }}
@@ -264,13 +264,11 @@ function MetaChip({ icon, label, accent }: { icon: string; label: string; accent
         className={cn("shrink-0", accent ? "text-rose-500" : "opacity-70")}
       />
       {accent && (
-        <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-bold leading-none">
+        <span className="min-w-[16px] h-[16px] inline-flex items-center justify-center rounded-full bg-rose-500 text-white text-2xs font-bold leading-none">
           {label}
         </span>
       )}
-      {!accent && (
-        <span className="truncate max-w-[100px] text-[11.5px] tracking-[0.01em]">{label}</span>
-      )}
+      {!accent && <span className="truncate max-w-[100px] text-xs tracking-[0.01em]">{label}</span>}
     </span>
   );
 }

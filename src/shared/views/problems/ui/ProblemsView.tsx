@@ -263,7 +263,7 @@ export const ProblemsView = React.memo(function ProblemsView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter problems…"
-            className="w-[140px] focus:w-[200px] transition-all duration-200 pl-5 pr-1.5 py-0.5 rounded-md text-2xs
+            className="w-[140px] focus:w-[200px] transition-all duration-slow pl-5 pr-1.5 py-0.5 rounded-md text-2xs
                        bg-vsc-surface-2/50 border border-transparent text-vsc-fg
                        placeholder:text-vsc-text-ghost
                        focus:bg-vsc-surface-2 focus:border-vsc-border/40 focus:outline-none"
@@ -337,9 +337,9 @@ const FilterPill = React.memo(function FilterPill({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-2xs cursor-pointer transition-colors duration-100 focus-ring border border-transparent",
+        "inline-flex items-center gap-1 px-1.5 py-[3px] rounded-md text-2xs cursor-pointer transition-colors duration-normal focus-ring border border-transparent",
         isActive
-          ? "bg-vsc-surface-2 text-vsc-fg font-medium border-vsc-border/20 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+          ? "bg-vsc-surface-2 text-vsc-fg font-medium border-vsc-border/20 shadow-sm"
           : "text-vsc-text-ghost hover:text-vsc-text-secondary hover:bg-vsc-surface-2/40",
         disabled && "opacity-30 cursor-default",
       )}
@@ -409,13 +409,13 @@ const FileGroup = React.memo(function FileGroup({
         onClick={handleToggle}
         className={cn(
           "flex items-center gap-1.5 w-full px-2 py-[5px] text-2xs",
-          "hover:bg-vsc-list-hover/60 cursor-pointer transition-colors duration-100 text-left group",
+          "hover:bg-vsc-list-hover/60 cursor-pointer transition-colors duration-normal text-left group",
         )}
       >
         <Icon
           name={collapsed ? "chevron-right" : "chevron-down"}
           tokenSize="3xs"
-          className="text-vsc-text-ghost shrink-0 transition-transform duration-100"
+          className="text-vsc-text-ghost shrink-0 transition-transform duration-normal"
         />
         <span className="text-vsc-fg font-medium truncate text-3xs">{fileName}</span>
         <span className="text-vsc-text-ghost truncate text-3xs opacity-50">{dirPath}</span>
@@ -494,7 +494,7 @@ const DiagnosticRow = React.memo(function DiagnosticRow({
         {d.fixable && (
           <span
             className={cn(
-              "opacity-0 group-hover/row:opacity-100 transition-opacity duration-100",
+              "opacity-0 group-hover/row:opacity-100 transition-opacity duration-normal",
               "inline-flex items-center gap-0.5 px-1 py-px rounded text-3xs",
               "bg-vsc-accent/10 text-vsc-accent cursor-pointer hover:bg-vsc-accent/20",
             )}
