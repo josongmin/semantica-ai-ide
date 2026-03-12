@@ -117,7 +117,7 @@ export const TitleBar = React.memo(function TitleBar() {
   return (
     <header
       role="banner"
-      className="relative flex items-center h-11 shrink-0 select-none"
+      className="relative flex items-center h-12 shrink-0 select-none"
       style={{
         background: `linear-gradient(135deg, ${gnb.from}, ${gnb.via} 50%, ${gnb.to})`,
         borderBottom: `1px solid ${gnb.border}`,
