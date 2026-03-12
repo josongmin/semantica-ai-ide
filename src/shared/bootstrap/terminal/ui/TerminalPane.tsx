@@ -76,6 +76,12 @@ export const TerminalPane = memo(function TerminalPane({
   // ─── Ghost text (history-based completion) ──────────────
   const ghostText = useGhostText();
   const inputBufferRef = useRef("");
+  /**
+   * AI inline mode ref — true once ##ai prefix is detected.
+   * Used by handleBeforeInput (ref-based, no re-render dependency).
+   * When active, ALL input is routed to AI pipeline; nothing reaches PTY.
+   */
+  const aiModeActiveRef = useRef(false);
   const [aiModeIntent, setAiModeIntent] = useState<AIInlineIntent | null>(null);
 
   const handleTerminalInput = useCallback(
@@ -85,7 +91,7 @@ export const TerminalPane = memo(function TerminalPane({
       if (data === "\r" || data === "\n" || data === "\x03") {
         inputBufferRef.current = "";
         ghostText.clearGhostText();
-        setAiModeIntent(null);
+        if (!aiModeActiveRef.current) setAiModeIntent(null);
         return;
       }
 
@@ -130,7 +136,7 @@ export const TerminalPane = memo(function TerminalPane({
 
       ghostText.updateGhostText(inputBufferRef.current);
 
-      // ─── Detect ##ai prefix for AI mode badge ────
+      // ─── Detect ##ai prefix → activate AI mode ────
       const buf = inputBufferRef.current;
       let detectedIntent: AIInlineIntent | null = null;
       const sortedPrefixes = Object.entries(AI_INLINE_PREFIX).sort(
@@ -142,9 +148,22 @@ export const TerminalPane = memo(function TerminalPane({
           break;
         }
       }
+
+      // Transition into AI mode: erase prefix from shell, take over input
+      if (detectedIntent && !aiModeActiveRef.current) {
+        aiModeActiveRef.current = true;
+        // Erase the prefix characters from shell's input buffer with Ctrl+U
+        // (they were already sent to PTY before detection)
+        if (isTerminalBridgeReady()) void writeToPty(sessionId, "\x15");
+        // Re-echo the prefix to xterm display so user still sees it
+        viewportRef.current?.writeToDisplay(`\r${buf}`);
+      } else if (!detectedIntent && aiModeActiveRef.current) {
+        aiModeActiveRef.current = false;
+      }
+
       setAiModeIntent(detectedIntent);
     },
-    [ghostText],
+    [ghostText, sessionId],
   );
 
   // ─── Block navigation ─────────────────────────────────────
@@ -193,76 +212,118 @@ export const TerminalPane = memo(function TerminalPane({
     [slashCmd],
   );
 
-  /** Write ##ai prefix to terminal prompt (user types query in terminal) */
-  const writeAIPrefix = useCallback(
-    (intent: AIInlineIntent) => {
-      if (!isTerminalBridgeReady()) return;
-      const prefix = AI_INLINE_PREFIX[intent];
-      void writeToPty(sessionId, `${prefix} `);
-      inputBufferRef.current = `${prefix} `;
-      setAiModeIntent(intent);
-    },
-    [sessionId],
-  );
+  /** Write ##ai prefix to terminal display and activate AI mode (slash command entry) */
+  const writeAIPrefix = useCallback((intent: AIInlineIntent) => {
+    const prefix = AI_INLINE_PREFIX[intent];
+    // Write prefix to display only (not PTY) — AI mode owns all input from here
+    viewportRef.current?.writeToDisplay(`${prefix} `);
+    inputBufferRef.current = `${prefix} `;
+    aiModeActiveRef.current = true;
+    setAiModeIntent(intent);
+  }, []);
 
-  /** Intercept Enter when ##ai prefix detected — don't let shell execute it */
+  /**
+   * Gate ALL terminal input through AI pipeline when aiModeActiveRef is true.
+   * Called from both attachCustomKeyEventHandler (DOM level) and onData (xterm level).
+   * Returns true → data is consumed here; PTY never receives it.
+   */
   const handleBeforeInput = useCallback(
     (data: string): boolean => {
-      if (data !== "\r") return false;
+      if (!aiModeActiveRef.current) return false;
 
-      const buf = inputBufferRef.current;
-      // Match longest prefix first (##ai-fix before ##ai)
-      const sorted = Object.entries(AI_INLINE_PREFIX).sort(([, a], [, b]) => b.length - a.length);
-      let matchedIntent: AIInlineIntent | null = null;
-      let matchedPrefix = "";
-      for (const [intent, prefix] of sorted) {
-        if (buf.startsWith(`${prefix} `) || buf === prefix) {
-          matchedIntent = intent as AIInlineIntent;
-          matchedPrefix = prefix;
-          break;
-        }
+      // ─── Ctrl+C / Escape: cancel AI mode, let shell handle ────
+      if (data === "\x03") {
+        aiModeActiveRef.current = false;
+        inputBufferRef.current = "";
+        setAiModeIntent(null);
+        // Let Ctrl+C pass to PTY so shell gets a fresh prompt
+        return false;
       }
-      if (!matchedIntent) return false;
 
-      const query = buf.slice(matchedPrefix.length).trim();
-      inputBufferRef.current = "";
-      setAiModeIntent(null);
+      // ─── Enter: submit AI query ────
+      if (data === "\r") {
+        const buf = inputBufferRef.current;
+        const sorted = Object.entries(AI_INLINE_PREFIX).sort(([, a], [, b]) => b.length - a.length);
+        let matchedIntent: AIInlineIntent = "ask";
+        let matchedPrefix = "##ai";
+        for (const [intent, prefix] of sorted) {
+          if (buf.startsWith(`${prefix} `) || buf === prefix) {
+            matchedIntent = intent as AIInlineIntent;
+            matchedPrefix = prefix;
+            break;
+          }
+        }
 
-      if (!query) {
-        // No query — just clear the line
-        if (isTerminalBridgeReady()) void writeToPty(sessionId, "\x15\r");
+        const query = buf.slice(matchedPrefix.length).trim();
+        inputBufferRef.current = "";
+        aiModeActiveRef.current = false;
+        setAiModeIntent(null);
+
+        if (!query) {
+          // No query typed — send Enter to PTY for fresh prompt
+          // (shell buffer is already clean since we Ctrl+U'd on mode enter)
+          if (isTerminalBridgeReady()) void writeToPty(sessionId, "\r");
+          return true;
+        }
+
+        // Generate AI response
+        const suggestion = mockGenerateCommand(query, null);
+        const intentLabel = { fix: "FIX", explain: "EXPLAIN", ask: "AI" }[matchedIntent];
+
+        const lines = [
+          `\x1b[1;35m✦ ${intentLabel}\x1b[0m \x1b[36m${suggestion.command}\x1b[0m`,
+          `\x1b[2m  ${suggestion.explanation}\x1b[0m`,
+        ];
+        if (suggestion.alternatives != null && suggestion.alternatives.length > 0) {
+          lines.push(`\x1b[2m  alt: ${suggestion.alternatives.join(" | ")}\x1b[0m`);
+        }
+        const response = `\r\n${lines.join("\r\n")}\r\n`;
+
+        // Shell buffer is already clean (Ctrl+U on mode enter).
+        // Send Enter for a fresh prompt, then display AI response.
+        if (isTerminalBridgeReady()) {
+          void writeToPty(sessionId, "\r");
+          setTimeout(() => {
+            viewportRef.current?.writeToDisplay(response);
+          }, 40);
+        } else {
+          viewportRef.current?.writeToDisplay(response);
+        }
+
+        // Dispatch to agent for deeper analysis
+        intents.dispatchAIQuery(matchedIntent, query, matchedIntent === "fix" ? "fix" : "explain");
+
         return true;
       }
 
-      // Generate AI response
-      const suggestion = mockGenerateCommand(query, null);
-      const intentLabel = { fix: "FIX", explain: "EXPLAIN", ask: "AI" }[matchedIntent];
+      // ─── Escape sequences (arrows, etc): ignore in AI mode ────
+      if (data.startsWith("\x1b")) return true;
 
-      // Format ANSI colored response
-      const lines = [
-        `\x1b[1;35m✦ ${intentLabel}\x1b[0m \x1b[36m${suggestion.command}\x1b[0m`,
-        `\x1b[2m  ${suggestion.explanation}\x1b[0m`,
-      ];
-      if (suggestion.alternatives != null && suggestion.alternatives.length > 0) {
-        lines.push(`\x1b[2m  alt: ${suggestion.alternatives.join(" | ")}\x1b[0m`);
-      }
-      const response = `\r\n${lines.join("\r\n")}\r\n`;
-
-      // Clear the typed ##ai text from shell, show response, get fresh prompt
-      if (isTerminalBridgeReady()) {
-        // Tauri mode: Ctrl+C aborts current line, then display response + fresh prompt
-        void writeToPty(sessionId, "\x03");
-        setTimeout(() => {
-          viewportRef.current?.writeToDisplay(response);
-        }, 40);
-      } else {
-        // Mock/dev mode: just display response directly
-        viewportRef.current?.writeToDisplay(response);
+      // ─── Backspace: erase from display + buffer ────
+      if (data === "\x7f" || data === "\b") {
+        // Don't backspace past the prefix
+        const sorted = Object.entries(AI_INLINE_PREFIX).sort(([, a], [, b]) => b.length - a.length);
+        let prefixLen = 4; // default "##ai"
+        for (const [, prefix] of sorted) {
+          if (inputBufferRef.current.startsWith(prefix)) {
+            prefixLen = prefix.length;
+            break;
+          }
+        }
+        if (inputBufferRef.current.length > prefixLen) {
+          viewportRef.current?.writeToDisplay("\b \b");
+        }
+        return true; // always consume — handleTerminalInput updates the buffer
       }
 
-      return true;
+      // ─── Printable chars: echo to display (PTY won't echo since we block it) ────
+      if (data.charCodeAt(0) >= 0x20) {
+        viewportRef.current?.writeToDisplay(data);
+      }
+
+      return true; // consume all input in AI mode
     },
-    [sessionId],
+    [sessionId, intents],
   );
 
   const handleSlashSelect = useCallback(

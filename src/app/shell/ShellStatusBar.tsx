@@ -123,13 +123,13 @@ export const ShellStatusBar = React.memo(function ShellStatusBar() {
       {/* ─── Floating Tray Tab Bar ─── */}
       <div
         className={cn(
-          "absolute left-1.5 z-10",
+          "absolute left-1.5 top-1/2 -translate-y-1/2 z-10",
           "inline-flex items-center gap-0.5 px-1 rounded-md",
           "bg-vsc-surface-2/80 backdrop-blur-sm",
           "border border-vsc-border/15",
           "shadow-sm",
         )}
-        style={{ top: -12, height: 24 }}
+        style={{ height: 24 }}
       >
         {trayViews.map((view) => {
           const isActive = trayVisible && activeView === view.id;
@@ -295,7 +295,13 @@ const TrayToggleButton = React.memo(function TrayToggleButton({
         size={11}
         className={cn("shrink-0", isActive ? "text-vsc-fg" : "opacity-60")}
       />
-      <span className="leading-none">{label}</span>
+      <span className="leading-none relative">
+        {/* Invisible bold copy reserves width so layout doesn't shift on activation */}
+        <span className="invisible font-medium" aria-hidden="true">
+          {label}
+        </span>
+        <span className="absolute inset-0">{label}</span>
+      </span>
     </button>
   );
 });

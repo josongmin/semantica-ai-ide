@@ -63,7 +63,7 @@ export const ZonePanelTabs = React.memo(function ZonePanelTabs({
             "inline-flex items-center gap-1 px-2 py-0.5 text-2xs uppercase tracking-wider rounded-sm",
             "cursor-pointer border-none transition-colors duration-fast focus-ring",
             active === view.id
-              ? "text-vsc-fg font-semibold"
+              ? "text-vsc-accent font-semibold"
               : "bg-transparent text-vsc-text-tertiary hover:text-vsc-text-secondary",
           )}
           style={

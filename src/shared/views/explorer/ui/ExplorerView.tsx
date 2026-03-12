@@ -22,6 +22,7 @@ import { ROW_HEIGHT } from "./explorer/constants";
 import { EmptyState } from "./explorer/EmptyState";
 import { FileContextMenu, type FileContextTarget } from "./explorer/FileContextMenu";
 import { collectAllFolders, deriveProjectStats, useAgentPresence } from "./explorer/helpers";
+import { LANG_DOT_COLOR } from "./explorer/ProjectSectionHeader";
 import { SidebarRow } from "./explorer/SidebarRow";
 import { type ViewMode, ViewModeSelector } from "./explorer/ViewModeSelector";
 
@@ -199,20 +200,26 @@ export const ExplorerView = React.memo(function ExplorerView() {
               <span className="text-[13px] font-medium text-vsc-fg truncate leading-tight">
                 {workspaceName || "Project"}
               </span>
-              <div className="flex items-center gap-1.5 text-[9px] text-vsc-text-ghost leading-none mt-0.5">
-                <span className="flex items-center gap-0.5">
+              <div className="flex items-center gap-1.5 text-[9px] text-vsc-text-ghost leading-none mt-0.5 overflow-hidden whitespace-nowrap">
+                <span className="flex items-center gap-0.5 shrink-0">
                   <Icon name="file" size={9} className="opacity-40" />
                   {projectStats.files}
                 </span>
-                <span className="flex items-center gap-0.5">
+                <span className="flex items-center gap-0.5 shrink-0">
                   <Icon name="folder" size={9} className="opacity-40" />
                   {projectStats.folders}
                 </span>
                 {projectStats.langBreakdown.length > 0 && (
                   <>
-                    <span className="opacity-20">·</span>
+                    <span className="opacity-20 shrink-0">·</span>
                     {projectStats.langBreakdown.map(({ lang, pct }) => (
-                      <span key={lang}>
+                      <span key={lang} className="flex items-center gap-0.5 shrink-0">
+                        <span
+                          className={cn(
+                            "w-1.5 h-1.5 rounded-full shrink-0",
+                            LANG_DOT_COLOR[lang] ?? "bg-vsc-text-ghost",
+                          )}
+                        />
                         {LANG_SHORT[lang] ?? lang} {pct}%
                       </span>
                     ))}

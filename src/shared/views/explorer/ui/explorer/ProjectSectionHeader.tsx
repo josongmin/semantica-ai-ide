@@ -6,7 +6,7 @@ import type { ProjectStats } from "./helpers";
 
 // ── Language color mapping ───────────────────────────────
 
-const LANG_DOT_COLOR: Record<string, string> = {
+export const LANG_DOT_COLOR: Record<string, string> = {
   TypeScript: "bg-lang-typescript",
   JavaScript: "bg-lang-javascript",
   Python: "bg-lang-python",
@@ -82,12 +82,12 @@ export const ProjectSectionHeader = memo(function ProjectSectionHeader({
       </div>
 
       {/* Row 2: meta stats */}
-      <div className="flex items-center gap-1.5 pl-[34px] mt-px">
-        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost">
+      <div className="flex items-center gap-1.5 pl-[34px] mt-px overflow-hidden whitespace-nowrap">
+        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost shrink-0">
           <Icon name="file" size={8} className="opacity-50" />
           {files}
         </span>
-        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost">
+        <span className="flex items-center gap-px text-[8px] leading-none text-vsc-text-ghost shrink-0">
           <Icon name="folder" size={8} className="opacity-50" />
           {folders}
         </span>

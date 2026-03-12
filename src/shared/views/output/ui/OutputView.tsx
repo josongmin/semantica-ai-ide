@@ -189,6 +189,14 @@ const CHANNEL_ICONS: Record<Channel, string> = {
   Extensions: "extensions",
 };
 
+/** Consistent channel tag color (independent of log level) */
+const CHANNEL_COLOR: Record<string, string> = {
+  Agent: "text-chart-purple",
+  Build: "text-chart-blue",
+  LSP: "text-chart-green",
+  Extensions: "text-chart-orange",
+};
+
 const LEVELS = ["error", "warn", "info", "debug"] as const;
 
 const LEVEL_ICON: Record<OutputLine["level"], string> = {
@@ -450,7 +458,7 @@ export const OutputView = React.memo(function OutputView() {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-2xs"
+        className="flex-1 overflow-y-auto overflow-x-hidden font-mono text-3xs"
         role="log"
       >
         {filtered.length === 0 ? (
@@ -549,7 +557,7 @@ const LogRow = React.memo(function LogRow({
     <div
       style={style}
       className={cn(
-        "group/row flex items-start gap-1.5 pl-2 pr-2 text-2xs",
+        "group/row flex items-start gap-1.5 pl-2 pr-2 text-3xs",
         "cursor-default transition-colors duration-75",
         hovered ? cn("bg-vsc-list-hover/80", LEVEL_BG[line.level]) : "hover:bg-vsc-list-hover/50",
       )}
@@ -578,8 +586,8 @@ const LogRow = React.memo(function LogRow({
         <span
           className={cn(
             "shrink-0 w-[52px] truncate text-3xs leading-snug mt-[4px] uppercase tracking-wider font-medium",
-            LEVEL_COLOR[line.level],
-            "opacity-50 group-hover/row:opacity-80 transition-opacity",
+            CHANNEL_COLOR[line.channel] ?? "text-vsc-text-ghost",
+            "opacity-60 group-hover/row:opacity-90 transition-opacity",
           )}
         >
           {line.channel}
@@ -590,7 +598,13 @@ const LogRow = React.memo(function LogRow({
       <div className="flex-1 min-w-0">
         <span
           className={cn(
-            "leading-snug text-vsc-text-secondary",
+            "leading-snug",
+            {
+              error: "text-vsc-error",
+              warn: "text-vsc-warning",
+              debug: "text-vsc-text-ghost",
+              info: "text-vsc-text-secondary",
+            }[line.level],
             wordWrap ? "whitespace-pre-wrap break-all" : "whitespace-pre truncate block",
           )}
         >

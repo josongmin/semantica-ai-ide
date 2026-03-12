@@ -289,10 +289,12 @@ export const TerminalViewportRaw = memo(
                 }
               }
 
-              // ##ai Enter interception — DOM level (most reliable)
+              // ##ai Enter interception — DOM level
+              // Check both keydown AND keypress: WKWebView may not suppress keypress
+              // after preventDefault on keydown, causing onData to fire despite return false.
               if (
                 e.key === "Enter" &&
-                e.type === "keydown" &&
+                (e.type === "keydown" || e.type === "keypress") &&
                 !e.ctrlKey &&
                 !e.altKey &&
                 !e.metaKey &&
