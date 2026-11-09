@@ -2,19 +2,19 @@
 
 # Semantica AI IDE
 
-An agent-oriented development interface combining code editing, conversation, terminal output, and workspace panels. React, CodeMirror, Jotai, virtualized lists, and xterm provide the UI foundation.
+<p align="center"><a href="#engineering-highlights">Engineering</a> · <a href="#architecture-at-a-glance">Architecture</a> · <a href="#run-locally">Get started</a> · <a href="#documentation">Reference</a></p>
 
+An agent-oriented development interface combining code editing, conversation, terminal output, and workspace panels. React, CodeMirror, Jotai, virtualized lists, and xterm provide the UI foundation.
 
 ## Engineering highlights
 
-| Mechanism | Engineering purpose |
-| :--- | :--- |
-| **Feature-registry bootstrap** | Application startup registers features and wires streaming events into frontend state. |
-| **Session-oriented surfaces** | Chat, review, task, and editor views are composed as domains/surfaces rather than one monolithic page. |
-| **Protocol and kernel packages** | Dedicated workspace packages hold shared contracts and state-machine concerns. |
-| **Local endpoint discovery** | The daemon writes endpoint and process metadata through temporary-file rename, so readers do not consume a partially written record. |
-| **Browser and desktop composition** | The web app and desktop package share the UI architecture while native and daemon responsibilities remain separately owned. |
-
+| Mechanism | Engineering purpose | Source |
+| :--- | :--- | :--- |
+| **Feature-registry bootstrap** | Application startup registers features and wires streaming events into frontend state. | [Bootstrap](src/app/useFeatureBootstrap.ts) |
+| **Session-oriented surfaces** | Chat, review, task, and editor views are composed as domains/surfaces rather than one monolithic page. | [Domains](src/domains/) |
+| **Protocol and kernel packages** | Dedicated workspace packages hold shared contracts and state-machine concerns. | [Protocol](packages/protocol/) |
+| **Local endpoint discovery** | The daemon writes endpoint and process metadata through temporary-file rename, so readers do not consume a partially written record. | [Daemon](apps/agentd/src/main.ts) |
+| **Browser and desktop composition** | The web app and desktop package share the UI architecture while native and daemon responsibilities remain separately owned. | [Desktop host](apps/desktop/) |
 
 ## Architecture at a glance
 
@@ -74,3 +74,5 @@ This is an earlier Semantica agent-interface workspace. The web shell, desktop a
 - [Repository structure](rfc/REPO-STRUCTURE.md)
 - [Panel architecture](docs/RFC-PANEL-ARCHITECTURE.md)
 - [Script reference](package.json)
+
+<p align="center"><sub><a href="https://github.com/josongmin">Project map</a> · <a href="#engineering-highlights">Back to overview</a></sub></p>
