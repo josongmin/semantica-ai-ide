@@ -1,6 +1,31 @@
+<p align="center"><img src="readme-banner.svg" alt="Semantica AI IDE — Agent-session interfaces with protocol, kernel, and host boundaries." width="100%"></p>
+
 # Semantica AI IDE
 
 An agent-oriented development interface combining code editing, conversation, terminal output, and workspace panels. React, CodeMirror, Jotai, virtualized lists, and xterm provide the UI foundation.
+
+
+## Engineering highlights
+
+| Mechanism | Engineering purpose |
+| :--- | :--- |
+| **Feature-registry bootstrap** | Application startup registers features and wires streaming events into frontend state. |
+| **Session-oriented surfaces** | Chat, review, task, and editor views are composed as domains/surfaces rather than one monolithic page. |
+| **Protocol and kernel packages** | Dedicated workspace packages hold shared contracts and state-machine concerns. |
+| **Local endpoint discovery** | The daemon writes endpoint and process metadata through temporary-file rename, so readers do not consume a partially written record. |
+| **Browser and desktop composition** | The web app and desktop package share the UI architecture while native and daemon responsibilities remain separately owned. |
+
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+    U["React / Jotai session UI"] --> B["Streaming and intent bridges"]
+    B --> P["Protocol and kernel packages"]
+    P --> D["Local WebSocket agentd"]
+    H["Tauri desktop host"] --> U
+    F["Feature registry and UI domains"] --> U
+```
 
 ## What it does
 
