@@ -1,28 +1,51 @@
-# semantica-code-agent-plugin
+# Semantica AI IDE
 
-Agent UX 웹 프론트엔드. React + TanStack Virtual + Jotai. [rfc/README.md](rfc/README.md)
+An agent-oriented development interface combining code editing, conversation, terminal output, and workspace panels. React, CodeMirror, Jotai, virtualized lists, and xterm provide the UI foundation.
 
-## 실행
+## What it does
 
-```bash
-npm run dev
+- Explore source and conversation context in one workspace.
+- Compose editor, terminal, and panel features around explicit UX contracts.
+- Keep agent runtime, protocol, and extension-host packages separate.
+- Develop web, desktop, and daemon entry points within one repository.
+
+## Repository map
+
+| Path | Responsibility |
+| --- | --- |
+| [src](src) | Screens, features, domains, and shared UI. |
+| [schemas/agent-ux](schemas/agent-ux) | UX schemas and contracts. |
+| [packages/protocol](packages/protocol) | Protocol definitions. |
+| [packages/agent-runtime](packages/agent-runtime) | Agent runtime package. |
+| [packages/extension-host](packages/extension-host) | Extension host. |
+| [apps](apps) | Desktop, webview development, and daemon applications. |
+| [rfc](rfc) | Design documentation. |
+
+## Run locally
+
+Use Node.js and pnpm@9.15.0. Run these commands from the repository root.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-## 빌드 아티팩트 (레포 외부)
+## Development checks
 
-레포 용량 절감을 위해 빌드 캐시는 프로젝트 밖에 저장됩니다.
+```sh
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+```
 
-| 아티팩트 | 경로 |
-|----------|------|
-| Cargo (Rust) | `$HOME/.cache/cargo-build/semantica-desktop` |
-| Turbo | `../.turbo-cache` (레포 상위 폴더) |
+## Scope and status
 
-기존 `apps/desktop/src-tauri/target/` 폴더는 삭제해도 됩니다.
+This is an earlier Semantica agent-interface workspace. The web shell, desktop application, and daemon have separate configuration and verification requirements. Build-cache locations follow the repository tooling rather than a universal in-tree `target` directory.
 
-## 구조
+## Documentation
 
-- `src/` - FSD (app → pages → widgets → features → entities → shared)
-- `schemas/agent-ux/` - Gate, contracts SSOT
-- `rfc/` - 설계 문서
-
-[rfc/REPO-STRUCTURE.md](rfc/REPO-STRUCTURE.md)
+- [Design index](rfc/README.md)
+- [Repository structure](rfc/REPO-STRUCTURE.md)
+- [Panel architecture](docs/RFC-PANEL-ARCHITECTURE.md)
+- [Script reference](package.json)
